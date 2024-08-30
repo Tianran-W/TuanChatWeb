@@ -5,12 +5,14 @@
   margin: 0 auto;
   padding: 2rem;
   font-weight: normal;
+  border: 2px solid gray;
+  border-radius: 10px; /* 添加 10 像素的圆角 */
 }
 
 a,
-.green {
+.purple {
   text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
+  color: #a860e0;
   transition: 0.4s;
   padding: 3px;
 }

@@ -1,15 +1,12 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import IconTitle from './components/IconTitle.vue'
 </script>
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
     <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
+      <IconTitle title="团子" />
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/chat">Chat</RouterLink>
