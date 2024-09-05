@@ -15,6 +15,7 @@
     "commitlint": "commitlint --edit"
   },
   "dependencies": {
+    "element-plus": "^2.8.1",
     "vue": "^3.4.29",
     "vue-router": "^4.4.3"
   },
@@ -29,12 +30,15 @@
     "@vue/eslint-config-prettier": "^9.0.0",
     "@vue/eslint-config-typescript": "^13.0.0",
     "@vue/tsconfig": "^0.5.1",
+    "conventional-changelog-atom": "^5.0.0",
     "eslint": "^8.57.0",
     "eslint-plugin-vue": "^9.23.0",
     "husky": "^9.1.5",
     "npm-run-all2": "^6.2.0",
     "prettier": "^3.2.5",
     "typescript": "~5.4.0",
+    "unplugin-auto-import": "^0.18.2",
+    "unplugin-vue-components": "^0.27.4",
     "vite": "^5.3.1",
     "vue-tsc": "^2.0.21"
   }

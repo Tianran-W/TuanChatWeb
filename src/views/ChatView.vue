@@ -8,20 +8,18 @@ const messages = ref<string[]>(['Hello', 'Hi', 'How are you?'])
 
 <template>
   <div class="chat">
-    <div>
-      <MessageList v-model:msgs="messages" />
-    </div>
-    <div>
-      <InputBox v-model:msgs="messages" />
-    </div>
+    <MessageList v-model:msgs="messages" />
+    <InputBox v-model:msgs="messages" />
   </div>
 </template>
 
 <style scoped>
 .chat {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
+  display: grid;
+  grid-template-rows: 10fr 1fr;
+}
+
+.chat .message-list {
+  padding: 10px;
 }
 </style>

@@ -6,14 +6,23 @@ defineProps<{
 
 <template>
   <div class="message-item">
-    <div class="message">{{ msg }}</div>
+    <img alt="Vue logo" src="@/assets/avatar.svg" width="100px" height="100px" />
+    <p>{{ msg }}</p>
   </div>
 </template>
 
 <style scoped>
 .message-item {
-  display: flex;
-  justify-content: flex-start;
-  margin: 10px 0;
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  align-items: start;
+}
+
+.message-item p {
+  font-size: 20px;
+  padding: 10px;
+  width: 100%;
+  height: 100%;
+  word-break: break-all;
 }
 </style>
