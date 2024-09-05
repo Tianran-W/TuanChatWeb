@@ -1,49 +1,70 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { Menu as Message, Setting } from '@element-plus/icons-vue'
+import zhCn from 'element-plus/es/locale/lang/zh-cn'
 
 // Element Plus 国际化配置
-import { ElConfigProvider } from 'element-plus'
-import zhCn from 'element-plus/es/locale/lang/zh-cn'
+import {
+  ElAside,
+  ElConfigProvider,
+  ElContainer,
+  ElDropdown,
+  ElDropdownItem,
+  ElDropdownMenu,
+  ElHeader,
+  ElIcon,
+  ElMain,
+  ElMenu,
+  ElMenuItem,
+  ElMenuItemGroup,
+  ElScrollbar,
+  ElSubMenu,
+  ElTable,
+  ElTableColumn
+} from 'element-plus'
 </script>
 
 <template>
   <ElConfigProvider :locale="zhCn">
-    <nav>
-      <RouterLink to="/">
-        <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="50px" height="50px" />
-      </RouterLink>
-      <RouterLink to="/">主页</RouterLink>
-      <RouterLink to="/chat">聊天</RouterLink>
-    </nav>
-    <RouterView class="content" />
+    <ElContainer class="main-layout">
+      <ElAside width="200px">
+        <ElScrollbar>
+          <ElMenu>
+            <ElSubMenu index="1">
+              <template #title>
+                <ElIcon><message /></ElIcon>Navigator One
+              </template>
+              <ElMenuItemGroup>
+                <template #title>Group 1</template>
+                <ElMenuItem index="1-1">Option 1</ElMenuItem>
+              </ElMenuItemGroup>
+            </ElSubMenu>
+          </ElMenu>
+        </ElScrollbar>
+      </ElAside>
+
+      <ElContainer>
+        <ElHeader style="text-align: right; font-size: 12px">
+          <div class="toolbar">
+            <ElDropdown>
+              <ElIcon style="margin-right: 8px; margin-top: 1px">
+                <setting />
+              </ElIcon>
+              <template #dropdown>
+                <ElDropdownMenu>
+                  <ElDropdownItem>View</ElDropdownItem>
+                  <ElDropdownItem>Add</ElDropdownItem>
+                  <ElDropdownItem>Delete</ElDropdownItem>
+                </ElDropdownMenu>
+              </template>
+            </ElDropdown>
+            <span>Tom</span>
+          </div>
+        </ElHeader>
+
+        <ElMain>Main</ElMain>
+      </ElContainer>
+    </ElContainer>
   </ElConfigProvider>
 </template>
 
-<style scoped>
-nav {
-  font-size: 25px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: start;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a {
-  display: inline-block;
-  padding: 1rem 0;
-  border-top: 1px solid var(--color-border);
-  background-color: transparent;
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-.content {
-  background-color: #1e1e1e;
-}
-</style>
+<style scoped></style>
