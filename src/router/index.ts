@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import ChatView from '../views/ChatView.vue'
-import MainLayout from '../layout/MainLayout.vue'
+import HomeLayout from '../layout/HomeLayout.vue'
+import ContentRouter from './ContentRouter'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -8,14 +8,8 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: MainLayout,
-      children: [
-        {
-          path: 'chat',
-          name: 'chat',
-          component: ChatView
-        }
-      ]
+      component: HomeLayout,
+      children: ContentRouter
     }
   ]
 })

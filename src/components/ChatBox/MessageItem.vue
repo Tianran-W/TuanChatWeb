@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { UserFilled } from '@element-plus/icons-vue'
+import { ElAvatar, ElText } from 'element-plus'
+
 defineProps<{
   msg: string
 }>()
@@ -6,22 +9,21 @@ defineProps<{
 
 <template>
   <div class="message-item">
-    <img alt="Vue logo" src="@/assets/avatar.svg" width="100px" height="100px" />
-    <p>{{ msg }}</p>
+    <ElAvatar :size="80" shape="square" fit="cover" :icon="UserFilled" />
+    <ElText size="large">{{ msg }}</ElText>
   </div>
 </template>
 
 <style scoped>
 .message-item {
+  padding-left: 10px;
+  padding-right: 10px;
   display: grid;
-  grid-template-columns: 100px 1fr;
-  align-items: start;
+  grid-template-columns: 80px 1fr;
+  gap: 10px;
 }
 
-.message-item p {
-  font-size: 20px;
-  width: 100%;
-  height: 100%;
+.el-text {
   word-break: break-all;
 }
 </style>

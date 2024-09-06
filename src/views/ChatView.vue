@@ -16,7 +16,7 @@ const messages = ref<string[]>(['Hello', 'Hi', 'How are you?'])
 <style scoped>
 .chat {
   display: grid;
-  grid-template-rows: 10fr 1fr;
+  grid-template-rows: 1fr 50px;
   width: 100%;
   height: 100%;
 }
