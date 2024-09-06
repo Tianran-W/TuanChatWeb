@@ -1,0 +1,12 @@
+:root {
+  --color-primary: #75409a;
+  --color-secondary: #42b883;
+}
+
+body {
+  margin: 0;
+}
+
+#app {
+  height: 100%;
+}

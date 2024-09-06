@@ -17,6 +17,8 @@ const messages = ref<string[]>(['Hello', 'Hi', 'How are you?'])
 .chat {
   display: grid;
   grid-template-rows: 10fr 1fr;
+  width: 100%;
+  height: 100%;
 }
 
 .chat .message-list {

@@ -29,6 +29,7 @@ declare module 'vue' {
     IconSupport: typeof import('./src/components/icons/IconSupport.vue')['default']
     IconTooling: typeof import('./src/components/icons/IconTooling.vue')['default']
     InputBox: typeof import('./src/components/ChatBox/InputBox.vue')['default']
+    MainLayout: typeof import('./src/components/Layout/MainLayout.vue')['default']
     MessageItem: typeof import('./src/components/ChatBox/MessageItem.vue')['default']
     MessageList: typeof import('./src/components/ChatBox/MessageList.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
