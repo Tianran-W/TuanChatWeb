@@ -16,8 +16,6 @@ defineProps<{
 
 <style scoped>
 .message-item {
-  padding-left: 10px;
-  padding-right: 10px;
   display: grid;
   grid-template-columns: 80px 1fr;
   gap: 10px;

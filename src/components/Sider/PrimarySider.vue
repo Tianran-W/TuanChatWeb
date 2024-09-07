@@ -22,7 +22,7 @@ import {
 
         <ElSubMenu index="1">
           <template #title>
-            <ElIcon><Message /></ElIcon>
+            <ElIcon><Message /></ElIcon>Chat
           </template>
           <ElMenuItemGroup>
             <template #title>Server</template>

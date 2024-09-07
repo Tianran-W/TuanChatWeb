@@ -3,6 +3,11 @@
   --color-secondary: #42b883;
 }
 
+a {
+  color: auto;
+  text-decoration: none;
+}
+
 body {
   margin: 0;
 }

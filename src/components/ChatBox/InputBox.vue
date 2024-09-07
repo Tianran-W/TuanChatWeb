@@ -9,6 +9,7 @@ const messages = defineModel<string[]>('msgs', {
 const message = ref('')
 
 const sendMessage = () => {
+  if (message.value.trim() === '') return
   messages.value.push(message.value)
   message.value = ''
 }
@@ -16,9 +17,9 @@ const sendMessage = () => {
 
 <template>
   <div class="input-box">
-    <ElInput v-model="message" placeholder="Please input">
+    <ElInput v-model="message" placeholder="Please input" @keyup.enter="sendMessage">
       <template #append>
-        <ElButton :icon="Promotion" @click="sendMessage" :disabled="message.trim() === ''" />
+        <ElButton :icon="Promotion" @click="sendMessage" />
       </template>
     </ElInput>
   </div>

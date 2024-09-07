@@ -17,7 +17,7 @@ defineProps<{
 
 <style scoped>
 .message-list {
-  padding-top: 10px;
+  padding: 10px;
   display: flex;
   flex-direction: column;
   gap: 10px;
