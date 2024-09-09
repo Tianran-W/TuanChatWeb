@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeLayout from '../layout/HomeLayout.vue'
+import HomeLayout from '../components/Layout/HomeLayout.vue'
 import ContentRouter from './ContentRouter'
 
 const router = createRouter({

@@ -1,6 +1,10 @@
 <script setup lang="ts">
-import { Setting } from '@element-plus/icons-vue'
+import { Operation } from '@element-plus/icons-vue'
 import { ElDropdown, ElDropdownItem, ElDropdownMenu, ElHeader, ElIcon } from 'element-plus'
+import { RouterLink } from 'vue-router'
+import { useUserStore } from '@/stores/user'
+
+const userStore = useUserStore()
 </script>
 
 <template>
@@ -8,17 +12,19 @@ import { ElDropdown, ElDropdownItem, ElDropdownMenu, ElHeader, ElIcon } from 'el
     <div class="toolbar">
       <ElDropdown>
         <ElIcon style="margin-right: 8px; margin-top: 1px">
-          <setting />
+          <Operation />
         </ElIcon>
         <template #dropdown>
           <ElDropdownMenu>
-            <ElDropdownItem>View</ElDropdownItem>
-            <ElDropdownItem>Add</ElDropdownItem>
-            <ElDropdownItem>Delete</ElDropdownItem>
+            <ElDropdownItem>
+              <RouterLink v-if="!userStore.isSign" to="/login">Login</RouterLink>
+              <span v-else>Logout</span>
+            </ElDropdownItem>
+            <ElDropdownItem>Settings</ElDropdownItem>
           </ElDropdownMenu>
         </template>
       </ElDropdown>
-      <span>Tom</span>
+      <span>{{ userStore.userInfo.username }}</span>
     </div>
   </ElHeader>
 </template>

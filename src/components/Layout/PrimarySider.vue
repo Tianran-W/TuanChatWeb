@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
-import { Message, Coordinate } from '@element-plus/icons-vue'
+import { Message, Coordinate, Setting } from '@element-plus/icons-vue'
 import {
   ElAside,
   ElIcon,
@@ -16,17 +16,17 @@ import {
   <ElAside width="200px">
     <ElScrollbar>
       <ElMenu :collapse="false">
-        <ElMenuItem index="1-1">
+        <ElMenuItem index="1">
           <el-icon><Coordinate /></el-icon><RouterLink to="/">Home</RouterLink>
         </ElMenuItem>
 
-        <ElSubMenu index="1">
+        <ElSubMenu index="2">
           <template #title>
             <ElIcon><Message /></ElIcon>Chat
           </template>
           <ElMenuItemGroup>
             <template #title>Server</template>
-            <ElMenuItem index="1-1">
+            <ElMenuItem index="2-1">
               <RouterLink to="/chat">Chat</RouterLink>
             </ElMenuItem>
           </ElMenuItemGroup>
