@@ -23,22 +23,46 @@ export type MessageListResp = {
   list: MsgObject[]
 }
 
-/** 获取群聊信息 */
-export type GroupInfoResp = {
-  /** 房间id */
-  roomId: number
-  /** 群名 */
-  groupName: string
-  /** 群头像 */
-  groupAvatar: string
-  /** 角色 */
-  role: number[]
-}
-
 /** 获取群成员列表 */
 export type GroupMemberResp = {
   uid: number
   roleId: number
+}[]
+
+/** 获取用户信息 */
+export type UserInfoResp = {
+  /** 用户id */
+  userId: number
+  /** 用户名 */
+  username: string
+  /** 用户标签 */
+  userMark: number
+  /** 用户等级 */
+  userLevel: number
+  /** 用户头像 */
+  avatar: string
+  /** ip信息 */
+  ipInfo: string
+  /** 活跃状态 */
+  activeStatus: number
+  /** 最后登录时间 */
+  lastLoginTime: string
+  /** 创建时间 */
+  createTime: string
+  /** 更新时间 */
+  updateTime: string
+}
+
+/** 获取群聊列表 */
+export type GroupListResp = {
+  roomId: number
+  name: string
+  avatar: string
+  description: string
+  deleteStatus: number
+  createTime: string
+  updateTime: string
+  parentGroupId: number
 }[]
 
 //*********************参数类型************************
@@ -90,6 +114,13 @@ export type GroupMemberParam = {
   roomId: number
 }
 
+export type UserInfoParam = {
+  /** 房间id */
+  userId: number
+}
+
+export type GroupListParam = null
+
 //*********************自定义类型************************
 export type MsgObject = {
   /** 发送用户id */
@@ -117,4 +148,15 @@ export type UserInfoType = {
   avatar: string
   /** 角色id */
   roleIds: number[]
+}
+
+export type RoleInfoType = {
+  /** 用户id */
+  userId: number
+  /** 角色id */
+  roleId: number
+  /** 角色名 */
+  roleName: string
+  /** 角色头像 */
+  roleAvatar: string
 }

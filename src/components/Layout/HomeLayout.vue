@@ -3,7 +3,7 @@ import { RouterView } from 'vue-router'
 
 import { ElContainer, ElMain } from 'element-plus'
 
-import PrimarySider from './PrimarySider.vue'
+import PrimarySider from './Sider/PrimarySider.vue'
 import PrimaryHeader from './PrimaryHeader.vue'
 </script>
 

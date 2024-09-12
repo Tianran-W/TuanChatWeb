@@ -4,21 +4,11 @@ import VueHook from 'alova/vue'
 
 const prefix = 'http://192.168.137.181:8081'
 
-function getToken() {
-  let tempToken = ''
-  return {
-    get() {
-      if (tempToken) return tempToken
-      const token = localStorage.getItem('TOKEN')
-      if (token) {
-        tempToken = token
-      }
-      return tempToken
-    }
+export const computedToken = {
+  get() {
+    return localStorage.getItem('token') || ''
   }
 }
-
-export const computedToken = getToken()
 
 export const userAlovaIns = createAlova({
   baseURL: prefix, // 请求的基础路径

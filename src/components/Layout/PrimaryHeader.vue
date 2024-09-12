@@ -5,6 +5,10 @@ import { RouterLink } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 
 const userStore = useUserStore()
+
+function logout() {
+  userStore.logout()
+}
 </script>
 
 <template>
@@ -18,9 +22,11 @@ const userStore = useUserStore()
           <ElDropdownMenu>
             <ElDropdownItem>
               <RouterLink v-if="!userStore.isSign" to="/login">Login</RouterLink>
-              <span v-else>Logout</span>
+              <RouterLink v-else @click="logout()" to="/login">Logout</RouterLink>
             </ElDropdownItem>
-            <ElDropdownItem>Settings</ElDropdownItem>
+            <ElDropdownItem>
+              <RouterLink to="/setting">Settings</RouterLink>
+            </ElDropdownItem>
           </ElDropdownMenu>
         </template>
       </ElDropdown>

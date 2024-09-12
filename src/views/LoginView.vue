@@ -3,12 +3,13 @@ import { reactive, ref } from 'vue'
 import { ElButton, ElForm, ElFormItem, ElInput } from 'element-plus'
 import { useUserStore } from '../stores/user'
 import type { FormInstance } from 'element-plus'
+import { useRoute } from 'vue-router'
 
 import router from '../router'
-import apis from '@/services/apis'
 
 const userStore = useUserStore()
 const formRef = ref<FormInstance>()
+const route = useRoute()
 
 const formMember = reactive({
   uid: ''
@@ -18,9 +19,10 @@ const submitForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return
   formEl.validate((valid) => {
     if (valid) {
-      apis.login({ userId: Number(formMember.uid), password: '123456' }).then((res) => {
-        if (res !== undefined) {
-          userStore.login(Number(formMember.uid), res)
+      userStore.login(Number(formMember.uid)).then(() => {
+        if (route.query.redirect) {
+          router.push(route.query.redirect as string)
+        } else {
           router.push('/')
         }
       })

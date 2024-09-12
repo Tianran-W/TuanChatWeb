@@ -1,5 +1,17 @@
-import type { LoginResp, MessageListResp } from '@/services/types'
-import type { LoginParam, MessageListParam } from '@/services/types'
+import type {
+  LoginResp,
+  MessageListResp,
+  UserInfoResp,
+  SendMessageResp,
+  GroupListResp
+} from '@/services/types'
+import type {
+  LoginParam,
+  MessageListParam,
+  UserInfoParam,
+  MessageParam,
+  GroupListParam
+} from '@/services/types'
 import { userAlovaIns } from './requests'
 import urls from './urls'
 
@@ -8,13 +20,19 @@ const getRequest = <T>(url: string, config?: any) =>
 const postRequest = <T>(url: string, params?: any) => userAlovaIns.Post<T, unknown>(url, params)
 
 export default {
-  /** 登录 */
+  /** 用户模块 */
   login: (params: LoginParam) => postRequest<LoginResp>(urls.postLogin, params),
+  getUserInfo: (params: UserInfoParam) =>
+    getRequest<UserInfoResp>(urls.getUserInfo + '?userId=' + params.userId),
 
-  /** 接受消息 */
+  /** 聊天模块 */
+  sendMessage: (params: SendMessageResp) => postRequest<MessageParam>(urls.postMessage, params),
   getMessageList: (params: MessageListParam) =>
     getRequest<MessageListResp>(
       urls.getMessageList + '?pageSize=' + params.pageSize + '&roomId=' + params.roomId,
       params.cursor
-    )
+    ),
+  getGroupList: (params: GroupListParam) => getRequest<GroupListResp>(urls.getGroupList)
+
+  /** 角色模块 */
 }
