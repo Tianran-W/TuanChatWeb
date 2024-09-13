@@ -5,13 +5,7 @@ import type {
   SendMessageResp,
   GroupListResp
 } from '@/services/types'
-import type {
-  LoginParam,
-  MessageListParam,
-  UserInfoParam,
-  MessageParam,
-  GroupListParam
-} from '@/services/types'
+import type { LoginParam, MessageListParam, UserInfoParam, MessageParam } from '@/services/types'
 import { userAlovaIns } from './requests'
 import urls from './urls'
 
@@ -32,7 +26,7 @@ export default {
       urls.getMessageList + '?pageSize=' + params.pageSize + '&roomId=' + params.roomId,
       params.cursor
     ),
-  getGroupList: (params: GroupListParam) => getRequest<GroupListResp>(urls.getGroupList)
+  getGroupList: () => getRequest<GroupListResp>(urls.getGroupList)
 
   /** 角色模块 */
 }

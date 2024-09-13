@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
-import { ElIcon, ElMenuItem } from 'element-plus'
-import { More } from '@element-plus/icons-vue'
+import { ElAvatar, ElMenuItem } from 'element-plus'
+import { More, UserFilled } from '@element-plus/icons-vue'
 </script>
 
 <template>
   <ElMenuItem>
-    <RouterLink to="/group">
-      <ElIcon><More /></ElIcon>Chat
-    </RouterLink>
+    <ElAvatar :icon="UserFilled"><More /></ElAvatar>Chat
   </ElMenuItem>
 </template>
 

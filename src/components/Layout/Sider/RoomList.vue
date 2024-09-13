@@ -27,7 +27,7 @@ const userStore = useUserStore()
       <template #title>
         <ElIcon><List /></ElIcon>Group
       </template>
-      <GroupItem />
+      <GroupItem v-for="group in userStore.groupList" :key="group.roomId" :groupInfo="group" />
     </ElSubMenu>
   </span>
 </template>

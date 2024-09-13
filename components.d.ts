@@ -21,7 +21,7 @@ declare module 'vue' {
     MemberList: typeof import('./src/components/ChatBox/MemberList.vue')['default']
     MessageItem: typeof import('./src/components/ChatBox/MessageItem.vue')['default']
     MessageList: typeof import('./src/components/ChatBox/MessageList.vue')['default']
-    PrimaryHeader: typeof import('./src/components/Layout/PrimaryHeader.vue')['default']
+    PrimaryHeader: typeof import('./src/components/Layout/Header/PrimaryHeader.vue')['default']
     PrimarySider: typeof import('./src/components/Layout/Sider/PrimarySider.vue')['default']
     RoomList: typeof import('./src/components/Layout/Sider/RoomList.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

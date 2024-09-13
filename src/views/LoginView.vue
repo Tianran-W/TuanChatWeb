@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
-import { ElButton, ElForm, ElFormItem, ElInput } from 'element-plus'
-import { useUserStore } from '../stores/user'
-import type { FormInstance } from 'element-plus'
-import { useRoute } from 'vue-router'
-
 import router from '../router'
+
+import { reactive, ref } from 'vue'
+import { useRoute } from 'vue-router'
+import { useUserStore } from '../stores/user'
+import { ElButton, ElForm, ElFormItem, ElInput } from 'element-plus'
+
+import type { FormInstance } from 'element-plus'
 
 const userStore = useUserStore()
 const formRef = ref<FormInstance>()
@@ -19,13 +20,18 @@ const submitForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return
   formEl.validate((valid) => {
     if (valid) {
-      userStore.login(Number(formMember.uid)).then(() => {
-        if (route.query.redirect) {
-          router.push(route.query.redirect as string)
-        } else {
-          router.push('/')
+      userStore.login(Number(formMember.uid)).then(
+        () => {
+          if (route.query.redirect) {
+            router.push(route.query.redirect as string)
+          } else {
+            router.push('/')
+          }
+        },
+        (failedMsg) => {
+          console.log(failedMsg)
         }
-      })
+      )
     }
   })
 }

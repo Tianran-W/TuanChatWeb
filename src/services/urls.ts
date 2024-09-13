@@ -10,7 +10,7 @@ export default {
   getMessageList: `/capi/chat/message/page`, // 获取消息列表
   getRoomInfo: `/capi/room/group`, // 获取群聊信息
   getRoomMember: `/capi/room/group/member/page`, // 获取群成员列表
-  getGroupList: `/capi/room/group/page`, // 获取群列表
+  getGroupList: `/capi/room/group/list`, // 获取群列表
 
   // -------------- 角色模块 ---------------
   getRole: `/capi/role/avatar`, // 获取角色头像

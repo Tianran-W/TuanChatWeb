@@ -1,6 +1,5 @@
 import HomeView from '@/views/HomeView.vue'
-import ChatView from '@/views/GroupView.vue'
-import SettingView from '@/views/SettingView.vue'
+import GroupView from '@/views/GroupView.vue'
 
 const ContentRouter = [
   {
@@ -12,9 +11,9 @@ const ContentRouter = [
     }
   },
   {
-    path: 'group',
+    path: 'group/:id',
     name: 'group',
-    component: ChatView,
+    component: GroupView,
     meta: {
       requiresAuth: true
     }
@@ -30,7 +29,7 @@ const ContentRouter = [
   {
     path: 'setting',
     name: 'setting',
-    component: SettingView,
+    component: () => import('@/views/SettingView.vue'),
     meta: {
       requiresAuth: true
     }

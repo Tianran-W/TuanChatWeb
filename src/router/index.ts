@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeLayout from '../components/Layout/HomeLayout.vue'
+import HomeLayout from '../layout/HomeLayout.vue'
 import ContentRouter from './ContentRouter'
 import { useUserStore } from '@/stores/user'
 import pinia from '@/stores'

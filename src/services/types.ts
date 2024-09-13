@@ -119,8 +119,6 @@ export type UserInfoParam = {
   userId: number
 }
 
-export type GroupListParam = null
-
 //*********************自定义类型************************
 export type MsgObject = {
   /** 发送用户id */

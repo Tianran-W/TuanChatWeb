@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import InputBox from '../components/ChatBox/InputBox.vue'
-import MessageList from '../components/ChatBox/MessageList.vue'
-import MemberList from '@/components/ChatBox/MemberList.vue'
+import { MemberList, MessageList, InputBox } from '@/components'
 import { ElContainer, ElMain, ElScrollbar, ElAside } from 'element-plus'
 
 const messages = ref<string[]>(['Hello', 'Hi', 'How are you?'])
