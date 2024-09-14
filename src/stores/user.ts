@@ -4,26 +4,26 @@ import type { UserInfoType, GroupListResp } from '@/services/types'
 import apis from '@/services/apis'
 
 export const useUserStore = defineStore('user', () => {
-  // const isSign = ref(false)
-  // const userInfo = ref<UserInfoType>({ userId: 0, username: '', avatar: '', roleIds: [] })
-  // const userToken = ref('')
-  // const groupList = ref<GroupListResp>([])
+  const isSign = ref(false)
+  const userInfo = ref<UserInfoType>({ userId: 0, username: '', avatar: '', roleIds: [] })
+  const userToken = ref('')
+  const groupList = ref<GroupListResp>([])
 
-  const isSign = ref(true)
-  const userInfo = ref<UserInfoType>({ userId: 1, username: 'jxc', avatar: '', roleIds: [] })
-  const userToken = ref('1')
-  const groupList = ref<GroupListResp>([
-    {
-      roomId: 1,
-      name: 'kpkp',
-      avatar: '',
-      description: '123',
-      deleteStatus: 0,
-      createTime: '0',
-      updateTime: '0',
-      parentGroupId: 1
-    }
-  ])
+  // const isSign = ref(true)
+  // const userInfo = ref<UserInfoType>({ userId: 1, username: 'jxc', avatar: '', roleIds: [] })
+  // const userToken = ref('1')
+  // const groupList = ref<GroupListResp>([
+  //   {
+  //     roomId: 1,
+  //     name: 'kpkp',
+  //     avatar: '',
+  //     description: '123',
+  //     deleteStatus: 0,
+  //     createTime: '0',
+  //     updateTime: '0',
+  //     parentGroupId: 1
+  //   }
+  // ])
 
   function login(uid: number) {
     return new Promise((resolve, reject) => {

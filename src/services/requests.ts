@@ -2,7 +2,7 @@ import { createAlova } from 'alova'
 import adapterFetch from 'alova/fetch'
 import VueHook from 'alova/vue'
 
-const prefix = 'http://192.168.137.181:8081'
+const prefix = import.meta.env.VITE_API_PREFIX
 
 export const computedToken = {
   get() {

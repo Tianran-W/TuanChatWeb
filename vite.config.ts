@@ -8,8 +8,8 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
-// https://vitejs.dev/config/
 export default defineConfig({
+  mode: 'dev',
   plugins: [
     vue(),
     vueJsx(),
@@ -26,7 +26,6 @@ export default defineConfig({
     }
   },
   server: {
-    // host: '192.168.137.1',
     host: '0.0.0.0',
     port: 5173,
     open: false

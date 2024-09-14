@@ -1,5 +1,4 @@
-import HomeView from '@/views/HomeView.vue'
-import GroupView from '@/views/GroupView.vue'
+import { HomeView, LoginView, GroupView, SettingView } from '@/views'
 
 const ContentRouter = [
   {
@@ -21,7 +20,7 @@ const ContentRouter = [
   {
     path: 'login',
     name: 'login',
-    component: () => import('@/views/LoginView.vue'),
+    component: LoginView,
     meta: {
       requiresAuth: false
     }
@@ -29,7 +28,7 @@ const ContentRouter = [
   {
     path: 'setting',
     name: 'setting',
-    component: () => import('@/views/SettingView.vue'),
+    component: SettingView,
     meta: {
       requiresAuth: true
     }
