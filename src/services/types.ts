@@ -119,42 +119,38 @@ export type UserInfoParam = {
   userId: number
 }
 
-//*********************自定义类型************************
 export type MsgObject = {
-  /** 发送用户id */
-  uid: number
-  /** 消息id */
-  syncId: number
-  /** 房间id */
-  roomId: number
-  /** 发送时间 */
-  sendTime: string
-  /** 消息类型 */
-  messageType: MsgEnum
-  /** 消息体 */
-  content: string
-  /** 消息标记 */
-  messageMark: string
-}
-
-export type UserInfoType = {
-  /** 用户id */
-  userId: number
-  /** 用户名 */
-  username: string
-  /** 头像 */
-  avatar: string
-  /** 角色id */
-  roleIds: number[]
-}
-
-export type RoleInfoType = {
-  /** 用户id */
-  userId: number
-  /** 角色id */
   roleId: number
-  /** 角色名 */
-  roleName: string
-  /** 角色头像 */
-  roleAvatar: string
+  avatarId: number
+  syncId: number
+  roomId: number
+  sendTime: string
+  msgType: MsgEnum
+  body: MsgEnumToBody[MsgEnum]
 }
+
+type MsgEnumToBody = {
+  [MsgEnum.UNKNOWN]: undefined
+  [MsgEnum.TEXT]: TextBody
+  [MsgEnum.RECALL]: RecallBody
+  [MsgEnum.IMAGE]: ImageBody
+  [MsgEnum.FILE]: FileBody
+  [MsgEnum.VOICE]: VoiceBody
+  [MsgEnum.VIDEO]: VideoBody
+}
+
+type TextBody = {
+  content: string
+  replyMsgId?: number
+  atUidList?: number[]
+}
+
+type RecallBody = {}
+
+type ImageBody = {}
+
+type FileBody = {}
+
+type VoiceBody = {}
+
+type VideoBody = {}
