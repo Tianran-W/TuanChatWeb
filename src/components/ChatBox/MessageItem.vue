@@ -2,10 +2,13 @@
 import { UserFilled } from '@element-plus/icons-vue'
 import { ElAvatar, ElText } from 'element-plus'
 import type { MsgObject, TextBody } from '@/services/types'
+import { computed } from 'vue'
 
-defineProps<{
+const props = defineProps<{
   msg: MsgObject
 }>()
+
+const msg = computed(() => props.msg)
 </script>
 
 <template>

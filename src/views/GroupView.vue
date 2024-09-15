@@ -1,12 +1,24 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { MemberList, MessageList, InputBox } from '@/components'
 import { ElContainer, ElMain, ElScrollbar, ElAside } from 'element-plus'
 import { useMsgStore } from '@/stores'
+import { useRoute } from 'vue-router'
 
 const msgStore = useMsgStore()
+const route = useRoute()
 
-const messages = msgStore.messages
+onMounted(() => {
+  msgStore.switchRoom(Number(route.params.id))
+})
+
+watch(
+  () => route.params.id,
+  (newId) => {
+    msgStore.switchRoom(Number(newId))
+  }
+)
+
 const members = ref<[string, string][]>([
   ['jxc', 'alice'],
   ['wtr', 'terra'],
@@ -17,8 +29,8 @@ const members = ref<[string, string][]>([
 <template>
   <ElContainer>
     <ElMain class="group">
-      <MessageList v-model:msgs="messages" />
-      <InputBox v-model:msgs="messages" />
+      <MessageList v-model:msgs="msgStore.curMessages" />
+      <InputBox v-model:msgs="msgStore.curMessages" />
     </ElMain>
     <ElAside>
       <ElScrollbar>

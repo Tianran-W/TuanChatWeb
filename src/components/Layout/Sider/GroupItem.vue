@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ElMenuItemGroup, ElMenuItem, ElAvatar } from 'element-plus'
 import { computed } from 'vue'
+import { RouterLink } from 'vue-router'
 import { useGroupStore } from '@/stores'
 import type { GroupInfoType } from '@/stores/types'
 
@@ -10,9 +11,13 @@ const props = defineProps<{
 }>()
 
 const groupStore = useGroupStore()
-const subGroupList = computed(() => groupStore.groupMap.get(props.groupId) || [])
+const subGroupList = computed(() => {
+  return props.subGroupIds.map(
+    (subGroupId) => groupStore.groupList.get(subGroupId) as GroupInfoType
+  )
+})
 const pathToGroup = computed(() => `/group/${props.groupId}`)
-const groupInfo = computed(() => groupStore.groupList.get(props.groupId) || ({} as GroupInfoType))
+const groupInfo = computed(() => groupStore.groupList.get(props.groupId) as GroupInfoType)
 </script>
 
 <template>
@@ -22,6 +27,16 @@ const groupInfo = computed(() => groupStore.groupList.get(props.groupId) || ({} 
       <RouterLink :to="pathToGroup">
         <ElAvatar :src="groupInfo.avatar" style="" fit="cover" />
         {{ groupInfo.name }}
+      </RouterLink>
+    </ElMenuItem>
+    <ElMenuItem
+      v-for="(subGroupId, index) in props.subGroupIds"
+      :key="index"
+      :index="`3-1-${index + 2}`"
+    >
+      <RouterLink :to="`/group/${subGroupId}`">
+        <ElAvatar :src="subGroupList[index].avatar" style="" fit="cover" />
+        {{ subGroupList[index].name }}
       </RouterLink>
     </ElMenuItem>
   </ElMenuItemGroup>

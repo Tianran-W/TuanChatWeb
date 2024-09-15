@@ -29,7 +29,7 @@ const groupStore = useGroupStore()
         <ElIcon><List /></ElIcon>Group
       </template>
       <GroupItem
-        v-for="[groupId, subGroupIds] in groupStore.groupMap"
+        v-for="[groupId, subGroupIds] in groupStore.subGroupMap"
         :key="groupId"
         :groupId="groupId"
         :subGroupIds="subGroupIds"

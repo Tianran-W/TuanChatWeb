@@ -20,7 +20,9 @@ export type SendMessageResp = null
 export type MessageListResp = {
   cursor: number
   isLast: boolean
-  list: MsgObject[]
+  list: {
+    message: MsgObject
+  }[]
 }
 
 /** 获取群成员列表 */
@@ -106,7 +108,7 @@ export type MessageListParam = {
   /** 页码 */
   pageSize: number
   /** 游标 */
-  cursor: number
+  cursor?: number
 }
 
 export type GroupMemberParam = {

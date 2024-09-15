@@ -9,13 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     ChatItem: typeof import('./src/components/Layout/Sider/ChatItem.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
-    ElIcon: typeof import('element-plus/es')['ElIcon']
-    ElMain: typeof import('element-plus/es')['ElMain']
-    ElMenuItem: typeof import('element-plus/es')['ElMenuItem']
-    ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
     GroupItem: typeof import('./src/components/Layout/Sider/GroupItem.vue')['default']
-    GroupList: typeof import('./src/components/Layout/Sider/GroupList.vue')['default']
-    HomeLayout: typeof import('./src/components/Layout/HomeLayout.vue')['default']
     InputBox: typeof import('./src/components/ChatBox/InputBox.vue')['default']
     MemberItem: typeof import('./src/components/ChatBox/MemberItem.vue')['default']
     MemberList: typeof import('./src/components/ChatBox/MemberList.vue')['default']
@@ -26,8 +20,5 @@ declare module 'vue' {
     RoomList: typeof import('./src/components/Layout/Sider/RoomList.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-  }
-  export interface ComponentCustomProperties {
-    vInfiniteScroll: typeof import('element-plus/es')['ElInfiniteScroll']
   }
 }

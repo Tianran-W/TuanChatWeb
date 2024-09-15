@@ -43,5 +43,5 @@ export const useGroupStore = defineStore('group', () => {
     })
   }
 
-  return { groupList, groupMap: subGroupMap, getGroupList }
+  return { groupList, subGroupMap, getGroupList }
 })
