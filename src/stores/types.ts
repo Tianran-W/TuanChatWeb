@@ -1,3 +1,4 @@
+/** 用户信息 */
 export type UserInfoType = {
   /** 用户id */
   userId: number
@@ -21,17 +22,14 @@ export type RoleInfoType = {
   roleAvatar: string
 }
 
-export type MessageType = {
-  /** 消息id */
-  messageId: number
-  /** 发送者id */
-  roleId: number
-  /** 发送者名 */
-  roleName: string
-  /** 发送者头像 */
-  roleAvatar: string
-  /** 消息内容 */
-  content: string
-  /** 发送时间 */
-  sendTime: string
+/** 群聊信息 */
+export type GroupInfoType = {
+  roomId: number
+  name: string
+  avatar: string
+  description: string
+  deleteStatus: number
+  createTime: string
+  updateTime: string
+  parentGroupId: number
 }

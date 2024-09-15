@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { UserFilled } from '@element-plus/icons-vue'
 import { ElAvatar, ElText } from 'element-plus'
+import type { MsgObject, TextBody } from '@/services/types'
 
 defineProps<{
-  msg: string
+  msg: MsgObject
 }>()
 </script>
 
 <template>
   <div class="message-item">
     <ElAvatar :size="80" shape="square" fit="cover" :icon="UserFilled" />
-    <ElText size="large">{{ msg }}</ElText>
+    <ElText size="large">{{ (msg.body as TextBody).content }}</ElText>
   </div>
 </template>
 

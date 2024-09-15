@@ -3,9 +3,10 @@ import { ElIcon, ElMenuItem, ElSubMenu } from 'element-plus'
 import { Message, More, List } from '@element-plus/icons-vue'
 import ChatItem from './ChatItem.vue'
 import GroupItem from './GroupItem.vue'
-import { useUserStore } from '@/stores/user'
+import { useUserStore, useGroupStore } from '@/stores'
 
 const userStore = useUserStore()
+const groupStore = useGroupStore()
 </script>
 
 <template>
@@ -27,7 +28,12 @@ const userStore = useUserStore()
       <template #title>
         <ElIcon><List /></ElIcon>Group
       </template>
-      <GroupItem v-for="group in userStore.groupList" :key="group.roomId" :groupInfo="group" />
+      <GroupItem
+        v-for="[groupId, subGroupIds] in groupStore.groupMap"
+        :key="groupId"
+        :groupId="groupId"
+        :subGroupIds="subGroupIds"
+      />
     </ElSubMenu>
   </span>
 </template>

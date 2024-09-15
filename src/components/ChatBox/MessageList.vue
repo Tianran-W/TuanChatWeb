@@ -2,9 +2,10 @@
 import { ElScrollbar } from 'element-plus'
 import MessageItem from './MessageItem.vue'
 import { computed } from 'vue'
+import type { MsgObject } from '@/services/types'
 
 const props = defineProps<{
-  msgs: string[]
+  msgs: MsgObject[]
 }>()
 
 const reversedMsgs = computed(() => props.msgs.slice().reverse())
@@ -13,7 +14,7 @@ const reversedMsgs = computed(() => props.msgs.slice().reverse())
 <template>
   <ElScrollbar>
     <div class="message-list">
-      <MessageItem v-for="msg in reversedMsgs" :key="msg" :msg="msg" />
+      <MessageItem v-for="msg in reversedMsgs" :key="msg.syncId" :msg="msg" />
     </div>
   </ElScrollbar>
 </template>

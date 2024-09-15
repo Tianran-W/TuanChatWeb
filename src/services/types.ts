@@ -139,7 +139,7 @@ type MsgEnumToBody = {
   [MsgEnum.VIDEO]: VideoBody
 }
 
-type TextBody = {
+export type TextBody = {
   content: string
   replyMsgId?: number
   atUidList?: number[]

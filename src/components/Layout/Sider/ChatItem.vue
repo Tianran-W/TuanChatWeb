@@ -5,7 +5,7 @@ import { More, UserFilled } from '@element-plus/icons-vue'
 </script>
 
 <template>
-  <ElMenuItem>
+  <ElMenuItem index="2-1">
     <ElAvatar :icon="UserFilled"><More /></ElAvatar>Chat
   </ElMenuItem>
 </template>

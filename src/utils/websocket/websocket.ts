@@ -1,7 +1,7 @@
-import { useUserStore, useChatStore } from '@/stores'
+import { useUserStore, useMsgStore } from '@/stores'
 import { WsResponseMessageType } from './types'
 import type { WsReqMsgContentType } from './types'
-import type { MessageType } from '@/stores'
+import type { MsgObject } from '@/services/types'
 
 const worker: Worker = new Worker(new URL('./worker.ts', import.meta.url), {
   type: 'module'
@@ -57,11 +57,11 @@ class WS {
 
   // 收到消息回调
   onMessage = (value: string) => {
-    const params: { type: WsResponseMessageType; data: unknown } = JSON.parse(value)
-    const chatStore = useChatStore()
+    const params: { type: WsResponseMessageType; data: { message: MsgObject } } = JSON.parse(value)
+    const msgStore = useMsgStore()
     switch (params.type) {
       case WsResponseMessageType.MESSAGE: {
-        chatStore.pushMsg(params.data as MessageType)
+        msgStore.pushMsg(params.data.message)
         break
       }
       default: {

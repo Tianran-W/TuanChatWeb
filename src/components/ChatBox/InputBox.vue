@@ -2,15 +2,26 @@
 import { ElButton, ElInput } from 'element-plus'
 import { ref } from 'vue'
 import { Promotion } from '@element-plus/icons-vue'
+import type { MsgObject } from '@/services/types'
 
-const messages = defineModel<string[]>('msgs', {
+const messages = defineModel<MsgObject[]>('msgs', {
   required: true
 })
 const message = ref('')
 
 const sendMessage = () => {
   if (message.value.trim() === '') return
-  messages.value.push(message.value)
+  messages.value.push({
+    roleId: 1,
+    avatarId: 1,
+    syncId: 1,
+    roomId: 1,
+    sendTime: new Date().toISOString(),
+    msgType: 1,
+    body: {
+      content: message.value
+    }
+  })
   message.value = ''
 }
 </script>

@@ -2,8 +2,11 @@
 import { ref } from 'vue'
 import { MemberList, MessageList, InputBox } from '@/components'
 import { ElContainer, ElMain, ElScrollbar, ElAside } from 'element-plus'
+import { useMsgStore } from '@/stores'
 
-const messages = ref<string[]>(['Hello', 'Hi', 'How are you?'])
+const msgStore = useMsgStore()
+
+const messages = msgStore.messages
 const members = ref<[string, string][]>([
   ['jxc', 'alice'],
   ['wtr', 'terra'],

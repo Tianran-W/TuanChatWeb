@@ -1,14 +1,14 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { GroupListResp } from '@/services/types'
 import type { UserInfoType } from './types'
 import apis from '@/services/apis'
+import { useGroupStore } from './group'
 
 export const useUserStore = defineStore('user', () => {
   const isSign = ref(false)
   const userInfo = ref<UserInfoType>({ userId: 0, username: '', avatar: '', roleIds: [] })
   const userToken = ref('')
-  const groupList = ref<GroupListResp>([])
+  const groupStore = useGroupStore()
 
   function login(uid: number) {
     return new Promise((resolve, reject) => {
@@ -48,7 +48,8 @@ export const useUserStore = defineStore('user', () => {
           userInfo.value.userId = data.userId
           userInfo.value.username = data.username
           userInfo.value.avatar = data.avatar
-          getGroupList()
+          groupStore
+            .getGroupList()
             .then(() => {
               resolve('User info loaded')
             })
@@ -63,18 +64,5 @@ export const useUserStore = defineStore('user', () => {
     })
   }
 
-  function getGroupList() {
-    return new Promise((resolve, reject) => {
-      apis.getGroupList().then((data) => {
-        if (data !== undefined) {
-          groupList.value = data
-          resolve('Group list loaded')
-        } else {
-          reject(new Error('Group list not found'))
-        }
-      })
-    })
-  }
-
-  return { userInfo, isSign, groupList, login, logout }
+  return { userInfo, isSign, login, logout }
 })

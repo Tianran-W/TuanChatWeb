@@ -1,10 +1,9 @@
 import { createPinia } from 'pinia'
-import type { MessageType } from './types'
 import { useUserStore } from './user'
-import { useChatStore } from './chat'
+import { useMsgStore } from './message'
+import { useGroupStore } from './group'
 
 const pinia = createPinia()
 
 export default pinia
-export type { MessageType }
-export { useUserStore, useChatStore }
+export { useUserStore, useMsgStore, useGroupStore }
