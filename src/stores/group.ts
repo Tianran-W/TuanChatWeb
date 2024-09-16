@@ -1,4 +1,4 @@
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { GroupInfoType } from './types'
 import apis from '@/services/apis'
@@ -6,6 +6,7 @@ import apis from '@/services/apis'
 export const useGroupStore = defineStore('group', () => {
   const groupList = reactive<Map<number, GroupInfoType>>(new Map<number, GroupInfoType>())
   const subGroupMap = reactive(new Map<number, number[]>())
+  const currentGroup = ref<number>(0)
 
   function getGroupList() {
     return new Promise((resolve, reject) => {
@@ -43,5 +44,5 @@ export const useGroupStore = defineStore('group', () => {
     })
   }
 
-  return { groupList, subGroupMap, getGroupList }
+  return { currentGroup, groupList, subGroupMap, getGroupList }
 })

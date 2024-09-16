@@ -23,8 +23,7 @@ export default {
   sendMessage: (params: SendMessageResp) => postRequest<MessageParam>(urls.postMessage, params),
   getMessageList: (params: MessageListParam) =>
     getRequest<MessageListResp>(
-      urls.getMessageList + '?pageSize=' + params.pageSize + '&roomId=' + params.roomId,
-      params.cursor
+      `${urls.getMessageList}?pageSize=${params.pageSize}&roomId=${params.roomId}${params.cursor ? '&cursor=' + params.cursor : ''}`
     ),
   getGroupList: () => getRequest<GroupListResp>(urls.getGroupList)
 

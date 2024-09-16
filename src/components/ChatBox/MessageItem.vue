@@ -7,8 +7,6 @@ import { computed } from 'vue'
 const props = defineProps<{
   msg: MsgObject
 }>()
-
-const msg = computed(() => props.msg)
 </script>
 
 <template>

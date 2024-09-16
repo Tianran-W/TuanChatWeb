@@ -29,8 +29,8 @@ const members = ref<[string, string][]>([
 <template>
   <ElContainer>
     <ElMain class="group">
-      <MessageList v-model:msgs="msgStore.curMessages" />
-      <InputBox v-model:msgs="msgStore.curMessages" />
+      <MessageList :msgs="msgStore.curMessages" />
+      <InputBox />
     </ElMain>
     <ElAside>
       <ElScrollbar>
