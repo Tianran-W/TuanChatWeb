@@ -13,9 +13,6 @@ export type LoginResp = string
 /** 注册返回体*/
 export type RegisterResp = null
 
-/** 发送消息返回体*/
-export type SendMessageResp = null
-
 /** 获取消息列表返回体*/
 export type MessageListResp = {
   cursor: number
@@ -82,26 +79,6 @@ export type RegisterParam = {
   password: string
 }
 
-export type MessageParam = {
-  /** 房间id */
-  roomId: number
-  /** 发送者id */
-  roleId: number
-  /** 发送者头像id */
-  avatarId: number
-  /** 消息类型 */
-  msgType: MsgEnum
-  /** 消息体 */
-  body: {
-    /** 文本消息内容 */
-    content: string
-    /** 回复的消息id */
-    replyMsgId?: number
-    /** 指出的uid */
-    atUidList?: number[]
-  }
-}
-
 export type MessageListParam = {
   /** 房间id */
   roomId: number
@@ -127,7 +104,7 @@ export type MsgObject = {
   syncId: number
   roomId: number
   sendTime: string
-  msgType: MsgEnum
+  messageType: MsgEnum
   body: MsgEnumToBody[MsgEnum]
 }
 

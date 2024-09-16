@@ -1,7 +1,7 @@
 /**
  * socket消息类型
  */
-export enum WsResponseMessageType {
+export enum WsRespEnum {
   /** 消息 */
   MESSAGE = 4,
   /** 标记 */
@@ -14,12 +14,16 @@ export enum WsResponseMessageType {
   MEMBER_CHANGE = 11
 }
 
-export type WsReqMsgContentType = {
-  type: WsReqMsgType
+export type WsReqType = {
+  type: WsReqEnum
   data?: Record<string, unknown>
 }
 
-export enum WsReqMsgType {
+export enum WsReqEnum {
+  /** 第三方登录 */
+  ThirdLogin = 1,
   /** 心跳检测 */
-  HeartBeatDetection
+  HeartBeatDetection = 2,
+  /** 发送消息 */
+  SendMessage = 3
 }

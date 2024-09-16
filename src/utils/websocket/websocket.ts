@@ -1,6 +1,6 @@
 import { useUserStore, useMsgStore } from '@/stores'
-import { WsResponseMessageType } from './types'
-import type { WsReqMsgContentType } from './types'
+import { WsRespEnum } from './types'
+import type { WsReqType } from './types'
 import type { MsgObject } from '@/services/types'
 
 const worker: Worker = new Worker(new URL('./worker.ts', import.meta.url), {
@@ -8,13 +8,12 @@ const worker: Worker = new Worker(new URL('./worker.ts', import.meta.url), {
 })
 
 class WS {
-  #tasks: WsReqMsgContentType[] = []
+  #tasks: WsReqType[] = []
   #connectReady = false
 
   constructor() {
     this.initConnect()
-    worker.addEventListener('message', this.onWorkerMsg)
-
+    worker.onmessage = this.#onWorkerMsg
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden && !this.#connectReady) {
         this.initConnect()
@@ -23,15 +22,23 @@ class WS {
   }
 
   initConnect = () => {
-    const token = localStorage.getItem('TOKEN')
-    worker.postMessage(`{"type":"initWS","value":${token ? `"${token}"` : null}}`)
+    const token = localStorage.getItem('token')
+    worker.postMessage(`{"type":"initWS","value":${token}}`)
   }
 
-  onWorkerMsg = (e: MessageEvent<any>) => {
-    const params: { type: string; value: unknown } = JSON.parse(e.data)
-    switch (params.type) {
+  send = (req: WsReqType) => {
+    if (this.#connectReady) {
+      this.#send(req)
+    } else {
+      this.#tasks.push(req)
+    }
+  }
+
+  #onWorkerMsg = (e: MessageEvent<any>) => {
+    const workMsg: { type: string; value: unknown } = JSON.parse(e.data)
+    switch (workMsg.type) {
       case 'message': {
-        this.onMessage(params.value as string)
+        this.#onMessage(workMsg.value as string)
         break
       }
       case 'open': {
@@ -46,26 +53,17 @@ class WS {
     }
   }
 
-  send = (params: WsReqMsgContentType) => {
-    if (this.#connectReady) {
-      this.#send(params)
-    } else {
-      // 放到队列
-      this.#tasks.push(params)
-    }
-  }
-
   // 收到消息回调
-  onMessage = (value: string) => {
-    const params: { type: WsResponseMessageType; data: { message: MsgObject } } = JSON.parse(value)
+  #onMessage = (value: string) => {
+    const wsResp: { type: WsRespEnum; data: { message: MsgObject } } = JSON.parse(value)
     const msgStore = useMsgStore()
-    switch (params.type) {
-      case WsResponseMessageType.MESSAGE: {
-        msgStore.pushMsg(params.data.message)
+    switch (wsResp.type) {
+      case WsRespEnum.MESSAGE: {
+        msgStore.pushMsg(wsResp.data.message)
         break
       }
       default: {
-        console.log('接收到未处理类型的消息:', params)
+        console.log('接收到未处理类型的消息:', wsResp)
         break
       }
     }
@@ -91,7 +89,7 @@ class WS {
     }, 500)
   }
 
-  #send(msg: WsReqMsgContentType) {
+  #send(msg: WsReqType) {
     worker.postMessage(
       `{"type":"message","value":${typeof msg === 'string' ? msg : JSON.stringify(msg)}}`
     )

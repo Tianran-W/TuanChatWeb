@@ -7,7 +7,7 @@ import { useGroupStore, useMsgStore } from '@/stores'
 
 const groupStore = useGroupStore()
 const msgStore = useMsgStore()
-const isScrollTop = ref(false)
+const isScrollTop = ref(true)
 defineProps<{
   msgs: MsgObject[]
 }>()

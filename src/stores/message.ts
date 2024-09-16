@@ -11,7 +11,9 @@ export const useMsgStore = defineStore('chat', () => {
   const cacheMessages = reactive(new Map<number, MsgObject[]>())
   const curMessages = ref<MsgObject[]>([])
   const cursorMap = new Map<number, number>()
+  const isLoaded = new Map<number, boolean>()
   const curGroup = useGroupStore().currentGroup
+  const ws = wsIns
 
   function pushMsg(msg: MsgObject) {
     const roomId = msg.roomId
@@ -29,14 +31,22 @@ export const useMsgStore = defineStore('chat', () => {
 
   function fetchMsg(roomId: number, size: number = pageSize) {
     return new Promise((resolve, reject) => {
+      if (isLoaded.get(roomId)) {
+        resolve('No more message')
+        return
+      }
+
       apis
         .getMessageList({
           pageSize: size,
           roomId: roomId,
-          cursor: cursorMap.get(roomId) || undefined
+          cursor: cursorMap.get(roomId)
         })
         .then((data) => {
           if (data !== undefined) {
+            if (data.isLast) {
+              isLoaded.set(roomId, true)
+            }
             const msgs = data.list.map((msg) => msg.message)
             console.log('fetchMsg', msgs)
             if (msgs.length > 0) {
@@ -68,5 +78,20 @@ export const useMsgStore = defineStore('chat', () => {
     }
   }
 
-  return { cacheMessages, curMessages, pushMsg, switchRoom, fetchMsg }
+  function sendMsg(msg: string, roomId: number) {
+    ws.send({
+      type: 3,
+      data: {
+        roomId: roomId,
+        roleId: 1,
+        avatarId: 1,
+        msgType: 1,
+        body: {
+          content: msg
+        }
+      }
+    })
+  }
+
+  return { cacheMessages, curMessages, pushMsg, switchRoom, fetchMsg, sendMsg }
 })

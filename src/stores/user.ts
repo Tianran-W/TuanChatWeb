@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import type { UserInfoType } from './types'
 import apis from '@/services/apis'
 import { useGroupStore } from './group'
+import wsIns from '@/utils/websocket/websocket'
 
 export const useUserStore = defineStore('user', () => {
   const isSign = ref(false)
@@ -18,6 +19,7 @@ export const useUserStore = defineStore('user', () => {
           userInfo.value.userId = uid
           userToken.value = data
           localStorage.setItem('token', data)
+          wsIns.initConnect()
           setUserInfo(uid)
             .then(() => {
               resolve('Login success')

@@ -4,12 +4,28 @@ const heartBeatGap = 10000 // 心跳检测间隔
 
 let connection: WebSocket // socket实例
 let heartTimer: number | null = null // 心跳检测间隔标记符
-let reconnectCount = 0 // 重连次数
-let timer: null | number = null // 重连定时器
-let lockReconnect = false // 是否重连中
+let reconnectCount: number = 0 // 重连次数
+let reconnectTimer: null | number = null // 重连定时器
+let lockReconnect: boolean = false // 是否重连中
 let token: null | string = null // token
 
-// 发消息给主进程
+self.onmessage = (e: MessageEvent<string>) => {
+  const { type, value } = JSON.parse(e.data)
+  switch (type) {
+    case 'initWS': {
+      reconnectCount = 0
+      token = value
+      initConnection()
+      break
+    }
+    case 'message': {
+      if (connection?.readyState !== 1) return
+      connectionSend(value)
+      break
+    }
+  }
+}
+
 const postMsg = ({ type, value }: { type: string; value?: object }) => {
   self.postMessage(JSON.stringify({ type, value }))
 }
@@ -28,7 +44,6 @@ const initConnection = () => {
   connection.addEventListener('error', onConnectError)
 }
 
-// 往 ws 发消息
 const connectionSend = (value: object) => {
   connection?.send(JSON.stringify(value))
 }
@@ -55,9 +70,9 @@ const onCloseHandler = () => {
   lockReconnect = true
 
   // 清除 timer，避免任务堆积。
-  if (timer) {
-    clearTimeout(timer)
-    timer = null
+  if (reconnectTimer) {
+    clearTimeout(reconnectTimer)
+    reconnectTimer = null
   }
   // 达到重连次数上限
   if (reconnectCount >= reconnectCountMax) {
@@ -66,7 +81,7 @@ const onCloseHandler = () => {
   }
 
   // 断线重连
-  timer = setTimeout(() => {
+  reconnectTimer = setTimeout(() => {
     initConnection()
     reconnectCount++
     // 标识已经开启重连任务
@@ -74,42 +89,20 @@ const onCloseHandler = () => {
   }, 2000)
 }
 
-// ws 连接 error
-const onConnectError = () => {
-  onCloseHandler()
-  postMsg({ type: 'error' })
+const onConnectMsg = (e: any) => postMsg({ type: 'message', value: e.data })
+
+const onConnectOpen = () => {
+  postMsg({ type: 'open' })
+  sendHeartPack()
 }
 
-// ws 连接 close
 const onConnectClose = () => {
   onCloseHandler()
   token = null
   postMsg({ type: 'close' })
 }
 
-// ws 连接成功
-const onConnectOpen = () => {
-  postMsg({ type: 'open' })
-  // 心跳❤️检测
-  sendHeartPack()
-}
-
-// ws 连接 接收到消息
-const onConnectMsg = (e: any) => postMsg({ type: 'message', value: e.data })
-
-self.onmessage = (e: MessageEvent<string>) => {
-  const { type, value } = JSON.parse(e.data)
-  switch (type) {
-    case 'initWS': {
-      reconnectCount = 0
-      token = value
-      initConnection()
-      break
-    }
-    case 'message': {
-      if (connection?.readyState !== 1) return
-      connectionSend(value)
-      break
-    }
-  }
+const onConnectError = () => {
+  onCloseHandler()
+  postMsg({ type: 'error' })
 }

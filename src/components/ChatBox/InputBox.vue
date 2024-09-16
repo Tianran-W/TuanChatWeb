@@ -2,24 +2,15 @@
 import { ElButton, ElInput } from 'element-plus'
 import { ref } from 'vue'
 import { Promotion } from '@element-plus/icons-vue'
-import { useMsgStore } from '@/stores'
+import { useMsgStore, useGroupStore } from '@/stores'
 
 const message = ref('')
 const msgStore = useMsgStore()
+const groupStore = useGroupStore()
 
 const sendMessage = () => {
   if (message.value.trim() === '') return
-  msgStore.pushMsg({
-    roleId: 1,
-    avatarId: 1,
-    syncId: 1,
-    roomId: 1,
-    sendTime: new Date().toISOString(),
-    msgType: 1,
-    body: {
-      content: message.value
-    }
-  })
+  msgStore.sendMsg(message.value, groupStore.currentGroup)
   message.value = ''
 }
 </script>

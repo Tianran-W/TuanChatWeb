@@ -1,11 +1,5 @@
-import type {
-  LoginResp,
-  MessageListResp,
-  UserInfoResp,
-  SendMessageResp,
-  GroupListResp
-} from '@/services/types'
-import type { LoginParam, MessageListParam, UserInfoParam, MessageParam } from '@/services/types'
+import type { LoginResp, MessageListResp, UserInfoResp, GroupListResp } from '@/services/types'
+import type { LoginParam, MessageListParam, UserInfoParam } from '@/services/types'
 import { userAlovaIns } from './requests'
 import urls from './urls'
 
@@ -20,7 +14,6 @@ export default {
     getRequest<UserInfoResp>(urls.getUserInfo + '?userId=' + params.userId),
 
   /** 聊天模块 */
-  sendMessage: (params: SendMessageResp) => postRequest<MessageParam>(urls.postMessage, params),
   getMessageList: (params: MessageListParam) =>
     getRequest<MessageListResp>(
       `${urls.getMessageList}?pageSize=${params.pageSize}&roomId=${params.roomId}${params.cursor ? '&cursor=' + params.cursor : ''}`
