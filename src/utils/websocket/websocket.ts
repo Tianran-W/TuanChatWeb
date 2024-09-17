@@ -1,7 +1,7 @@
 import { useUserStore, useMsgStore } from '@/stores'
 import { WsRespEnum } from './types'
 import type { WsReqType } from './types'
-import type { MsgObject } from '@/services/types'
+import type { MsgType } from '@/stores/types'
 
 const worker: Worker = new Worker(new URL('./worker.ts', import.meta.url), {
   type: 'module'
@@ -55,7 +55,7 @@ class WS {
 
   // 收到消息回调
   #onMessage = (value: string) => {
-    const wsResp: { type: WsRespEnum; data: { message: MsgObject } } = JSON.parse(value)
+    const wsResp: { type: WsRespEnum; data: { message: MsgType } } = JSON.parse(value)
     const msgStore = useMsgStore()
     switch (wsResp.type) {
       case WsRespEnum.MESSAGE: {

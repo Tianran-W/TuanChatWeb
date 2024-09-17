@@ -2,21 +2,31 @@
 import { ElScrollbar } from 'element-plus'
 import MessageItem from './MessageItem.vue'
 import { ref, nextTick, watch } from 'vue'
-import type { MsgObject } from '@/services/types'
+import type { MsgType } from '@/stores/types'
 import { useGroupStore, useMsgStore } from '@/stores'
 
 const groupStore = useGroupStore()
 const msgStore = useMsgStore()
-const isScrollTop = ref(true)
+const scrollTop = ref(0)
+const innerRef = ref<HTMLDivElement>()
+const scrollbarRef = ref<InstanceType<typeof ElScrollbar>>()
+
 defineProps<{
-  msgs: MsgObject[]
+  msgs: MsgType[]
 }>()
 
 watch(
-  () => groupStore.currentGroup,
-  () => {
+  () => [msgStore.curMessages.length, groupStore.currentGroup],
+  (newval, oldval) => {
     nextTick(() => {
-      if (innerRef.value!.clientHeight > 200) {
+      if (
+        oldval[1] === newval[1] &&
+        newval[0] > oldval[0] &&
+        innerRef.value!.clientHeight - scrollTop.value < 1000
+      ) {
+        scrollbarRef.value!.setScrollTop(innerRef.value!.clientHeight)
+      }
+      if (oldval[1] !== newval[1]) {
         scrollbarRef.value!.setScrollTop(innerRef.value!.clientHeight)
       }
     })
@@ -24,17 +34,14 @@ watch(
 )
 
 const onScroll = (scroll: { scrollLeft: number; scrollTop: number }) => {
-  isScrollTop.value = scroll.scrollTop === 0
+  scrollTop.value = scroll.scrollTop
 }
 
 const onWheel = (e: WheelEvent) => {
-  if (e.deltaY < 0 && isScrollTop.value) {
+  if (e.deltaY < 0 && scrollTop.value === 0) {
     msgStore.fetchMsg(groupStore.currentGroup)
   }
 }
-
-const innerRef = ref<HTMLDivElement>()
-const scrollbarRef = ref<InstanceType<typeof ElScrollbar>>()
 </script>
 
 <template>

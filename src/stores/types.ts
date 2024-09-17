@@ -1,3 +1,5 @@
+import { MsgEnum } from '@/enums/MessageType'
+
 /** 用户信息 */
 export type UserInfoType = {
   /** 用户id */
@@ -33,3 +35,39 @@ export type GroupInfoType = {
   updateTime: string
   parentGroupId: number
 }
+
+export type MsgType = {
+  roleId: number
+  avatarId: number
+  syncId: number
+  roomId: number
+  sendTime: string
+  messageType: MsgEnum
+  body: MsgEnumToBody[MsgEnum]
+}
+
+type MsgEnumToBody = {
+  [MsgEnum.UNKNOWN]: undefined
+  [MsgEnum.TEXT]: TextBody
+  [MsgEnum.RECALL]: RecallBody
+  [MsgEnum.IMAGE]: ImageBody
+  [MsgEnum.FILE]: FileBody
+  [MsgEnum.VOICE]: VoiceBody
+  [MsgEnum.VIDEO]: VideoBody
+}
+
+export type TextBody = {
+  content: string
+  replyMsgId?: number
+  atUidList?: number[]
+}
+
+type RecallBody = {}
+
+type ImageBody = {}
+
+type FileBody = {}
+
+type VoiceBody = {}
+
+type VideoBody = {}

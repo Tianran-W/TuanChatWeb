@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { UserFilled } from '@element-plus/icons-vue'
 import { ElAvatar, ElText } from 'element-plus'
-import type { MsgObject, TextBody } from '@/services/types'
+import type { MsgType, TextBody } from '@/stores/types'
 import { MsgEnum } from '@/enums'
 
 const props = defineProps<{
-  msg: MsgObject
+  msg: MsgType
 }>()
 
 const msgType: MsgEnum = props.msg.messageType

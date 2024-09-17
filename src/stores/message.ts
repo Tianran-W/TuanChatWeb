@@ -1,6 +1,6 @@
 import { ref, reactive } from 'vue'
 import { defineStore } from 'pinia'
-import type { MsgObject } from '@/services/types'
+import type { MsgType } from '@/stores/types'
 import apis from '@/services/apis'
 import { useGroupStore } from './group'
 import wsIns from '@/utils/websocket/websocket'
@@ -8,14 +8,14 @@ import wsIns from '@/utils/websocket/websocket'
 const pageSize = 10
 
 export const useMsgStore = defineStore('chat', () => {
-  const cacheMessages = reactive(new Map<number, MsgObject[]>())
-  const curMessages = ref<MsgObject[]>([])
+  const cacheMessages = reactive(new Map<number, MsgType[]>())
+  const curMessages = ref<MsgType[]>([])
   const cursorMap = new Map<number, number>()
   const isLoaded = new Map<number, boolean>()
   const curGroup = useGroupStore().currentGroup
   const ws = wsIns
 
-  function pushMsg(msg: MsgObject) {
+  function pushMsg(msg: MsgType) {
     const roomId = msg.roomId
     if (cacheMessages.has(roomId)) {
       cacheMessages.get(roomId)?.push(msg)
