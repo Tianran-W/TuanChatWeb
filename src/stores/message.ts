@@ -4,6 +4,7 @@ import type { MsgType } from '@/stores/types'
 import apis from '@/services/apis'
 import { useGroupStore } from './group'
 import wsIns from '@/utils/websocket/websocket'
+import type { WsReqType } from '@/utils/websocket/types'
 
 const pageSize = 10
 
@@ -79,7 +80,7 @@ export const useMsgStore = defineStore('chat', () => {
   }
 
   function sendMsg(msg: string, roomId: number) {
-    ws.send({
+    const wsReq: WsReqType = {
       type: 3,
       data: {
         roomId: roomId,
@@ -90,7 +91,8 @@ export const useMsgStore = defineStore('chat', () => {
           content: msg
         }
       }
-    })
+    }
+    ws.send(wsReq)
   }
 
   return { cacheMessages, curMessages, pushMsg, switchRoom, fetchMsg, sendMsg }

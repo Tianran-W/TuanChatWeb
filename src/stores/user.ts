@@ -8,7 +8,6 @@ import wsIns from '@/utils/websocket/websocket'
 export const useUserStore = defineStore('user', () => {
   const isSign = ref(false)
   const userInfo = ref<UserInfoType>({ userId: 0, username: '', avatar: '', roleIds: [] })
-  const userToken = ref('')
   const groupStore = useGroupStore()
 
   function login(uid: number) {
@@ -16,8 +15,6 @@ export const useUserStore = defineStore('user', () => {
       apis.login({ userId: Number(uid), password: '123456' }).then((data) => {
         if (data !== undefined) {
           isSign.value = true
-          userInfo.value.userId = uid
-          userToken.value = data
           localStorage.setItem('token', data)
           wsIns.initConnect()
           setUserInfo(uid)
@@ -39,7 +36,6 @@ export const useUserStore = defineStore('user', () => {
     userInfo.value.userId = 0
     userInfo.value.username = ''
     userInfo.value.avatar = ''
-    userToken.value = ''
     localStorage.removeItem('token')
   }
 

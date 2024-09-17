@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import { Operation } from '@element-plus/icons-vue'
-import { ElDropdown, ElDropdownItem, ElDropdownMenu, ElHeader, ElIcon } from 'element-plus'
+import {
+  ElDropdown,
+  ElDropdownItem,
+  ElDropdownMenu,
+  ElHeader,
+  ElIcon,
+  ElAvatar,
+  ElText
+} from 'element-plus'
 import { RouterLink } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 
@@ -10,6 +18,10 @@ const userStore = useUserStore()
 <template>
   <ElHeader style="text-align: right; font-size: 12px">
     <div class="toolbar">
+      <span class="user-preview" v-if="userStore.isSign">
+        <ElAvatar shape="square" fit="cover" src="" />
+        <ElText type="info">{{ userStore.userInfo.username }}</ElText>
+      </span>
       <ElDropdown>
         <ElIcon style="margin-right: 8px; margin-top: 1px">
           <Operation />
@@ -26,7 +38,6 @@ const userStore = useUserStore()
           </ElDropdownMenu>
         </template>
       </ElDropdown>
-      <span>{{ userStore.userInfo.username }}</span>
     </div>
   </ElHeader>
 </template>
@@ -48,5 +59,14 @@ const userStore = useUserStore()
   justify-content: center;
   height: 100%;
   right: 20px;
+  gap: 15px;
+}
+
+.user-preview {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  gap: 15px;
 }
 </style>

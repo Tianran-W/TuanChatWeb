@@ -90,9 +90,7 @@ class WS {
   }
 
   #send(msg: WsReqType) {
-    worker.postMessage(
-      `{"type":"message","value":${typeof msg === 'string' ? msg : JSON.stringify(msg)}}`
-    )
+    worker.postMessage(`{"type":"message","value":${JSON.stringify(msg)}}`)
   }
 }
 

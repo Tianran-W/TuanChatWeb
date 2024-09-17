@@ -46,7 +46,7 @@ export type MsgType = {
   body: MsgEnumToBody[MsgEnum]
 }
 
-type MsgEnumToBody = {
+export type MsgEnumToBody = {
   [MsgEnum.UNKNOWN]: undefined
   [MsgEnum.TEXT]: TextBody
   [MsgEnum.RECALL]: RecallBody

@@ -25,7 +25,7 @@ const groupInfo = computed(() => groupStore.groupList.get(props.groupId) as Grou
     <template #title>{{ groupInfo.name }}</template>
     <ElMenuItem index="3-1-1">
       <RouterLink :to="pathToGroup">
-        <ElAvatar :src="groupInfo.avatar" style="" fit="cover" />
+        <ElAvatar :src="groupInfo.avatar" shape="square" fit="cover" />
         {{ groupInfo.name }}
       </RouterLink>
     </ElMenuItem>
@@ -35,7 +35,7 @@ const groupInfo = computed(() => groupStore.groupList.get(props.groupId) as Grou
       :index="`3-1-${index + 2}`"
     >
       <RouterLink :to="`/group/${subGroupId}`">
-        <ElAvatar :src="subGroupList[index].avatar" style="" fit="cover" />
+        <ElAvatar :src="subGroupList[index].avatar" shape="square" fit="cover" />
         {{ subGroupList[index].name }}
       </RouterLink>
     </ElMenuItem>

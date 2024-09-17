@@ -1,3 +1,6 @@
+import type { MsgEnumToBody } from '@/stores/types'
+import { MsgEnum } from '@/enums'
+
 /**
  * socket消息类型
  */
@@ -16,7 +19,23 @@ export enum WsRespEnum {
 
 export type WsReqType = {
   type: WsReqEnum
-  data?: Record<string, unknown>
+  data: WsReqEnumToData[WsReqEnum]
+}
+
+type WsReqEnumToData = {
+  [WsReqEnum.ThirdLogin]: ThirdLoginData
+  [WsReqEnum.HeartBeatDetection]: undefined
+  [WsReqEnum.SendMessage]: SendMessageData
+}
+
+type ThirdLoginData = {}
+
+type SendMessageData = {
+  roomId: number
+  roleId: number
+  avatarId: number
+  messageType: MsgEnum
+  body: MsgEnumToBody[MsgEnum]
 }
 
 export enum WsReqEnum {

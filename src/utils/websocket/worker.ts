@@ -1,3 +1,6 @@
+import { WsReqEnum } from './types'
+import type { WsReqType } from './types'
+
 /* 常量 */
 const reconnectCountMax = 100 // 重连次数上限
 const heartBeatGap = 10000 // 心跳检测间隔
@@ -9,28 +12,12 @@ let reconnectTimer: null | number = null // 重连定时器
 let lockReconnect: boolean = false // 是否重连中
 let token: null | string = null // token
 
-self.onmessage = (e: MessageEvent<string>) => {
-  const { type, value } = JSON.parse(e.data)
-  switch (type) {
-    case 'initWS': {
-      reconnectCount = 0
-      token = value
-      initConnection()
-      break
-    }
-    case 'message': {
-      if (connection?.readyState !== 1) return
-      connectionSend(value)
-      break
-    }
-  }
-}
+/** 主线程通信 */
 
 const postMsg = ({ type, value }: { type: string; value?: object }) => {
   self.postMessage(JSON.stringify({ type, value }))
 }
 
-// 初始化 ws 连接
 const initConnection = () => {
   connection?.removeEventListener('message', onConnectMsg)
   connection?.removeEventListener('open', onConnectOpen)
@@ -44,21 +31,22 @@ const initConnection = () => {
   connection.addEventListener('error', onConnectError)
 }
 
-const connectionSend = (value: object) => {
-  connection?.send(JSON.stringify(value))
+const onConnectMsg = (e: any) => postMsg({ type: 'message', value: e.data })
+
+const onConnectOpen = () => {
+  postMsg({ type: 'open' })
+  sendHeartPack()
 }
 
-const sendHeartPack = () => {
-  heartTimer = setInterval(() => {
-    connectionSend({ type: 2 })
-  }, heartBeatGap)
+const onConnectClose = () => {
+  onCloseHandler()
+  token = null
+  postMsg({ type: 'close' })
 }
 
-const clearHeartPackTimer = () => {
-  if (heartTimer) {
-    clearInterval(heartTimer)
-    heartTimer = null
-  }
+const onConnectError = () => {
+  onCloseHandler()
+  postMsg({ type: 'error' })
 }
 
 const onCloseHandler = () => {
@@ -89,20 +77,39 @@ const onCloseHandler = () => {
   }, 2000)
 }
 
-const onConnectMsg = (e: any) => postMsg({ type: 'message', value: e.data })
-
-const onConnectOpen = () => {
-  postMsg({ type: 'open' })
-  sendHeartPack()
+const sendHeartPack = () => {
+  heartTimer = setInterval(() => {
+    connection?.send(JSON.stringify({ type: WsReqEnum.HeartBeatDetection }))
+  }, heartBeatGap)
 }
 
-const onConnectClose = () => {
-  onCloseHandler()
-  token = null
-  postMsg({ type: 'close' })
+const clearHeartPackTimer = () => {
+  if (heartTimer) {
+    clearInterval(heartTimer)
+    heartTimer = null
+  }
 }
 
-const onConnectError = () => {
-  onCloseHandler()
-  postMsg({ type: 'error' })
+self.onmessage = (e: MessageEvent<string>) => {
+  console.log(e.data)
+  const { type, value } = JSON.parse(e.data)
+  switch (type) {
+    case 'initWS': {
+      reconnectCount = 0
+      token = value
+      initConnection()
+      break
+    }
+    case 'message': {
+      if (connection?.readyState !== 1) return
+      connectionSend(value)
+      break
+    }
+  }
+}
+
+/** socket通信 */
+
+const connectionSend = (value: WsReqType) => {
+  connection?.send(JSON.stringify(value))
 }
