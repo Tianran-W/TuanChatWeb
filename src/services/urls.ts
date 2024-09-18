@@ -14,5 +14,6 @@ export default {
   // -------------- 角色模块 ---------------
   getRole: `/capi/role/avatar`, // 获取角色头像
   setRoleAbility: `/capi/role/ability`, // 设置角色能力
-  getRoleAbility: `/capi/role/ability` // 获取角色能力
+  getRoleAbility: `/capi/role/ability`, // 获取角色能力
+  getRoleInfo: `/capi/role/info` // 获取角色信息
 }

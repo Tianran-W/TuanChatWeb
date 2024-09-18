@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { UserFilled } from '@element-plus/icons-vue'
-import { ElAvatar, ElPopover, ElText } from 'element-plus'
+import { ElAvatar, ElPopover } from 'element-plus'
 
 defineProps<{
   member: [string, string]

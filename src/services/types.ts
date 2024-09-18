@@ -42,6 +42,14 @@ export type GroupListResp = {
   parentGroupId: number
 }[]
 
+export type RoleAvatarResp = {
+  roleId: number
+  avatarId: string
+  avatarTitle: string
+  avatarUrl: string
+  createTime: string
+}
+
 //*********************参数类型************************
 export type LoginParam = {
   userId: number
@@ -65,4 +73,8 @@ export type GroupMemberParam = {
 
 export type UserInfoParam = {
   userId: number
+}
+
+export type RoleAvatarParam = {
+  roleId: number
 }
