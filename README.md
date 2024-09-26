@@ -1,6 +1,6 @@
 # TuanChatWeb
 
-团剧共创前端项目，开发ing
+团剧共创前端项目，开发 ing
 
 ## Project Setup
 
