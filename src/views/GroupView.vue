@@ -24,11 +24,13 @@ const members = ref<[string, string][]>([
   ['wtr', 'terra'],
   ['kp', '']
 ])
+const prevUrl = ``
 </script>
 
 <template>
   <ElContainer>
     <ElMain class="group">
+      <iframe class="gamePreview" :src="prevUrl"></iframe>
       <MessageList :msgs="msgStore.curMessages" />
       <InputBox />
     </ElMain>
@@ -43,7 +45,7 @@ const members = ref<[string, string][]>([
 <style scoped>
 .group {
   display: grid;
-  grid-template-rows: 1fr 50px;
+  grid-template-rows: 1fr 1fr 50px;
   width: 100%;
   height: 100%;
   padding: 0;
