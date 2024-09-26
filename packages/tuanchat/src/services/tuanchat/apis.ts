@@ -1,5 +1,10 @@
-import type { LoginResp, MessageListResp, UserInfoResp, GroupListResp } from '@/services/types'
-import type { LoginParam, MessageListParam, UserInfoParam } from '@/services/types'
+import type {
+  LoginResp,
+  MessageListResp,
+  UserInfoResp,
+  GroupListResp
+} from '@/services/tuanchat/types'
+import type { LoginParam, MessageListParam, UserInfoParam } from '@/services/tuanchat/types'
 import { userAlovaIns } from './requests'
 import urls from './urls'
 

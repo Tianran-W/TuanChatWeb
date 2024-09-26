@@ -1,7 +1,7 @@
 import { ref, reactive } from 'vue'
 import { defineStore } from 'pinia'
 import type { MsgType } from '@/stores/types'
-import apis from '@/services/apis'
+import { api as tuanApis } from '@/services/tuanchat'
 import { useGroupStore } from './group'
 import wsIns from '@/utils/websocket/websocket'
 import type { WsReqType } from '@/utils/websocket/types'
@@ -37,7 +37,7 @@ export const useMsgStore = defineStore('chat', () => {
         return
       }
 
-      apis
+      tuanApis
         .getMessageList({
           pageSize: size,
           roomId: roomId,

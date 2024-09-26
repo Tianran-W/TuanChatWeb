@@ -10,9 +10,7 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
-    "format": "prettier --write src/",
-    "prepare": "husky",
-    "commitlint": "commitlint --edit"
+    "format": "prettier --write src/"
   },
   "dependencies": {
     "alova": "^3.0.16",
@@ -36,7 +34,6 @@
     "conventional-changelog-atom": "^5.0.0",
     "eslint": "^8.57.0",
     "eslint-plugin-vue": "^9.23.0",
-    "husky": "^9.1.5",
     "npm-run-all2": "^6.2.0",
     "prettier": "^3.2.5",
     "typescript": "~5.4.0",

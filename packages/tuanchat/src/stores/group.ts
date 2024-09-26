@@ -1,7 +1,7 @@
 import { reactive, ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { GroupInfoType } from './types'
-import apis from '@/services/apis'
+import { api as tuanApis } from '@/services/tuanchat'
 
 export const useGroupStore = defineStore('group', () => {
   const groupList = reactive<Map<number, GroupInfoType>>(new Map<number, GroupInfoType>())
@@ -10,7 +10,7 @@ export const useGroupStore = defineStore('group', () => {
 
   function getGroupList() {
     return new Promise((resolve, reject) => {
-      apis.getGroupList().then((data) => {
+      tuanApis.getGroupList().then((data) => {
         if (data !== undefined) {
           initGroupMap(data)
           resolve('Group list loaded')

@@ -8,7 +8,9 @@
   "scripts": {
     "dev": "concurrently \"yarn dev:terre\" \"yarn dev:tuanchat\"",
     "dev:terre": "cd packages/terre2 && yarn start:debug",
-    "dev:tuanchat": "cd packages/tuanchat && yarn dev"
+    "dev:tuanchat": "cd packages/tuanchat && yarn dev",
+    "prepare": "husky",
+    "commitlint": "commitlint --edit"
   },
   "workspaces": {
     "packages": [

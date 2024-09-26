@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { RouterLink } from 'vue-router'
 import { ElAvatar, ElMenuItem } from 'element-plus'
 import { More, UserFilled } from '@element-plus/icons-vue'
 </script>

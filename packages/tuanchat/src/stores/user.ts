@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { UserInfoType } from './types'
-import apis from '@/services/apis'
+import { api as tuanApis } from '@/services/tuanchat'
 import { useGroupStore } from './group'
 import wsIns from '@/utils/websocket/websocket'
 
@@ -12,7 +12,7 @@ export const useUserStore = defineStore('user', () => {
 
   function login(uid: number) {
     return new Promise((resolve, reject) => {
-      apis.login({ userId: Number(uid), password: '123456' }).then((data) => {
+      tuanApis.login({ userId: Number(uid), password: '123456' }).then((data) => {
         if (data !== undefined) {
           isSign.value = true
           localStorage.setItem('token', data)
@@ -41,7 +41,7 @@ export const useUserStore = defineStore('user', () => {
 
   function setUserInfo(uid: number) {
     return new Promise((resolve, reject) => {
-      apis.getUserInfo({ userId: uid }).then((data) => {
+      tuanApis.getUserInfo({ userId: uid }).then((data) => {
         if (data !== undefined) {
           userInfo.value.userId = data.userId
           userInfo.value.username = data.username
