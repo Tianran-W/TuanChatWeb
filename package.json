@@ -10,7 +10,8 @@
     "dev:terre": "cd packages/terre2 && yarn start:debug",
     "dev:tuanchat": "cd packages/tuanchat && yarn dev",
     "prepare": "husky",
-    "commitlint": "commitlint --edit"
+    "commitlint": "commitlint --edit",
+    "openapi": "cd packages/tuanchat && npx swagger-typescript-api -p ./src/assets/tuanchat_OpenAPI.json -o ./src/services/tuanchat/Api.ts --axios"
   },
   "workspaces": {
     "packages": [

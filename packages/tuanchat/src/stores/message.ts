@@ -1,7 +1,7 @@
 import { ref, reactive } from 'vue'
 import { defineStore } from 'pinia'
 import type { MsgType } from '@/stores/types'
-import { api as tuanApis } from '@/services/tuanchat'
+import { tuanApis } from '@/services'
 import { useGroupStore } from './group'
 import wsIns from '@/utils/websocket/websocket'
 import type { WsReqType } from '@/utils/websocket/types'

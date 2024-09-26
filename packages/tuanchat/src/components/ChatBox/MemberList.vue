@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import MemberItem from './MemberItem.vue'
+import { ElScrollbar } from 'element-plus'
 
 defineProps<{
   members: [string, string][]
@@ -7,9 +8,11 @@ defineProps<{
 </script>
 
 <template>
-  <div class="member-list">
-    <MemberItem v-for="member in members" :key="member[0]" :member="member" />
-  </div>
+  <ElScrollbar>
+    <div class="member-list">
+      <MemberItem v-for="member in members" :key="member[0]" :member="member" />
+    </div>
+  </ElScrollbar>
 </template>
 
 <style scoped>

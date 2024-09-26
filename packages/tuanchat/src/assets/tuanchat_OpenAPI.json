@@ -1,0 +1,2087 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "团剧共创",
+    "description": "接口文档",
+    "contact": {
+      "name": "降星驰",
+      "url": "https://space.bilibili.com/108753930",
+      "email": "starrybamboo@qq.com"
+    },
+    "version": "v1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8081",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/capi/user/friend/apply": {
+      "put": {
+        "tags": [
+          "friend-controller"
+        ],
+        "operationId": "applyApprove",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FriendApproveReq"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVoid"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "friend-controller"
+        ],
+        "operationId": "apply",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FriendApplyReq"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVoid"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/capi/chat/message": {
+      "put": {
+        "tags": [
+          "chat-controller"
+        ],
+        "operationId": "updateMessage",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatMessageRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultTextMsgResp"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "chat-controller"
+        ],
+        "operationId": "sendMessage",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatMessageRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/capi/chat/message/mark": {
+      "put": {
+        "tags": [
+          "chat-controller"
+        ],
+        "operationId": "setMsgMark",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatMessageMarkRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVoid"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/capi/user/public/login": {
+      "post": {
+        "tags": [
+          "user-controller"
+        ],
+        "operationId": "login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/capi/room/subgroup": {
+      "post": {
+        "tags": [
+          "room-controller"
+        ],
+        "operationId": "createSubgroup",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubRoomRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultRoom"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/capi/room/friend": {
+      "post": {
+        "tags": [
+          "room-controller"
+        ],
+        "operationId": "createPrivateChat",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubRoomRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultRoom"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/capi/role/ability": {
+      "get": {
+        "tags": [
+          "role-controller"
+        ],
+        "operationId": "getRoleAbility",
+        "parameters": [
+          {
+            "name": "roleId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultRoleAbilityTable"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "role-controller"
+        ],
+        "operationId": "setRoleAbility",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoleAbilityTable"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultObject"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/capi/chat/upload": {
+      "post": {
+        "tags": [
+          "chat-controller"
+        ],
+        "operationId": "getUploadUrl",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "file"
+                ],
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/capi/user/info": {
+      "get": {
+        "tags": [
+          "user-controller"
+        ],
+        "operationId": "getUserInfo",
+        "parameters": [
+          {
+            "name": "userInfoRequest",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UserInfoRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultUserInfoResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/capi/user/friend/page": {
+      "get": {
+        "tags": [
+          "friend-controller"
+        ],
+        "operationId": "friendList",
+        "parameters": [
+          {
+            "name": "request",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/CursorPageBaseReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultCursorPageBaseResponseFriendResp"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/capi/user/friend/check": {
+      "get": {
+        "tags": [
+          "friend-controller"
+        ],
+        "operationId": "check",
+        "parameters": [
+          {
+            "name": "request",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/FriendCheckReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultFriendCheckResp"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/capi/user/friend/apply/unread": {
+      "get": {
+        "tags": [
+          "friend-controller"
+        ],
+        "operationId": "unread",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultFriendUnreadResp"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/capi/user/friend/apply/page": {
+      "get": {
+        "tags": [
+          "friend-controller"
+        ],
+        "operationId": "page",
+        "parameters": [
+          {
+            "name": "request",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PageBaseReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultPageBaseRespFriendApplyResp"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/capi/room/info": {
+      "get": {
+        "tags": [
+          "room-controller"
+        ],
+        "operationId": "groupDetail",
+        "parameters": [
+          {
+            "name": "roomId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultMemberResp"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/capi/room/group/member/page": {
+      "get": {
+        "tags": [
+          "room-controller"
+        ],
+        "operationId": "getMemberPage",
+        "parameters": [
+          {
+            "name": "request",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/MemberReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultListChatMemberResp"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/capi/room/group/list": {
+      "get": {
+        "tags": [
+          "room-controller"
+        ],
+        "operationId": "getUserGroups",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultListRoomGroup"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/capi/role": {
+      "get": {
+        "tags": [
+          "role-controller"
+        ],
+        "operationId": "getRole",
+        "parameters": [
+          {
+            "name": "roleId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultUserRole"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/capi/role/avatar": {
+      "get": {
+        "tags": [
+          "role-controller"
+        ],
+        "operationId": "getRoleAvatar",
+        "parameters": [
+          {
+            "name": "roleId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultRoleAvatar"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/capi/chat/message/page": {
+      "get": {
+        "tags": [
+          "chat-controller"
+        ],
+        "operationId": "getMsgPage",
+        "parameters": [
+          {
+            "name": "request",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ChatMessagePageRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultCursorPageBaseResponseChatMessageResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/capi/chat/contact/page": {
+      "get": {
+        "tags": [
+          "contact-controller"
+        ],
+        "operationId": "getRoomPage",
+        "parameters": [
+          {
+            "name": "request",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/CursorPageBaseReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultCursorPageBaseResponseChatRoomResp"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/capi/avatar": {
+      "get": {
+        "tags": [
+          "avatar-controller"
+        ],
+        "operationId": "getRoleAvatar_1",
+        "parameters": [
+          {
+            "name": "avatarId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultRoleAvatar"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/capi/user/friend": {
+      "delete": {
+        "tags": [
+          "friend-controller"
+        ],
+        "operationId": "delete",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FriendDeleteReq"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVoid"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "FriendApproveReq": {
+        "required": [
+          "applyId",
+          "applyStatus"
+        ],
+        "type": "object",
+        "properties": {
+          "applyId": {
+            "type": "integer",
+            "format": "int64",
+            "refType": null
+          },
+          "applyStatus": {
+            "type": "string",
+            "enum": [
+              "WAIT_APPROVAL",
+              "AGREE",
+              "IGNORE"
+            ],
+            "refType": null
+          }
+        }
+      },
+      "ApiResultVoid": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "refType": null
+          },
+          "errCode": {
+            "type": "integer",
+            "format": "int32",
+            "refType": null
+          },
+          "errMsg": {
+            "type": "string",
+            "refType": null
+          },
+          "data": {
+            "type": "object",
+            "refType": "object"
+          }
+        }
+      },
+      "ChatMessageRequest": {
+        "required": [
+          "body",
+          "msgType",
+          "roomId"
+        ],
+        "type": "object",
+        "properties": {
+          "roomId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "msgType": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "roleId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "avatarId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "body": {
+            "type": "object"
+          }
+        }
+      },
+      "ApiResultTextMsgResp": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "errCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errMsg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/TextMsgResp"
+          }
+        }
+      },
+      "TextMsgResp": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string"
+          }
+        }
+      },
+      "ChatMessageMarkRequest": {
+        "required": [
+          "actType",
+          "avatarId",
+          "markType",
+          "roomId",
+          "syncId"
+        ],
+        "type": "object",
+        "properties": {
+          "syncId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "roomId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "markType": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "actType": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "avatarId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "UserLoginRequest": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "ApiResultString": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "errCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errMsg": {
+            "type": "string"
+          },
+          "data": {
+            "type": "string"
+          }
+        }
+      },
+      "FriendApplyReq": {
+        "required": [
+          "msg",
+          "targetUid"
+        ],
+        "type": "object",
+        "properties": {
+          "msg": {
+            "type": "string"
+          },
+          "targetUid": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "GroupMember": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "roleId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "roleName": {
+            "type": "string"
+          },
+          "avatarId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "SubRoomRequest": {
+        "type": "object",
+        "properties": {
+          "parentRoomId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "groupMembers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GroupMember"
+            }
+          }
+        }
+      },
+      "ApiResultRoom": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "errCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errMsg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Room"
+          }
+        }
+      },
+      "Room": {
+        "type": "object",
+        "properties": {
+          "roomId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "type": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "lastMessageId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "createTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastActiveTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "RoleAbilityTable": {
+        "type": "object",
+        "properties": {
+          "roleId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "strength": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dexterity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "willpower": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "constitution": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "appearance": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "education": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "intelligence": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sanity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "luck": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "magicPoints": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "healthPoints": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "accounting": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "anthropology": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "appraisal": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "archaeology": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "acting": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "charm": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "climb": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "computerUse": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "creditRating": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cthulhuMythos": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "disguise": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dodge": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "drive": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "electricRepair": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "electronics": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fastTalk": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fistfight": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "firearms": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "firstAid": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "history": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "intimidate": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "jump": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "english": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "russian": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "law": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "libraryUse": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "listen": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "locksmith": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "machineRepair": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "medicine": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "naturalWorld": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "navigation": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "occult": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "persuade": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "psychology": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ride": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pharmacy": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sleightOfHand": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "investigation": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "stealth": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "survival": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "swim": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "throwAbility": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "track": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "animalTraining": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "demolition": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "lipReading": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hypnosis": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "artillery": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "ApiResultObject": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "errCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errMsg": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object"
+          }
+        }
+      },
+      "ApiResult": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "errCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errMsg": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object"
+          }
+        }
+      },
+      "UserInfoRequest": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "ApiResultUserInfoResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "errCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errMsg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/UserInfoResponse"
+          }
+        }
+      },
+      "UserInfoResponse": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "username": {
+            "type": "string"
+          },
+          "userMark": {
+            "type": "number"
+          },
+          "userLevel": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "avatar": {
+            "type": "string"
+          },
+          "ipInfo": {
+            "type": "string"
+          },
+          "activeStatus": {
+            "type": "string",
+            "format": "byte"
+          },
+          "lastLoginTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserRole"
+            }
+          }
+        }
+      },
+      "UserRole": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "roleId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "roleName": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "createTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "avatar": {
+            "type": "string"
+          }
+        }
+      },
+      "CursorPageBaseReq": {
+        "type": "object",
+        "properties": {
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cursor": {
+            "type": "string"
+          }
+        }
+      },
+      "ApiResultCursorPageBaseResponseFriendResp": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "errCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errMsg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/CursorPageBaseResponseFriendResp"
+          }
+        }
+      },
+      "CursorPageBaseResponseFriendResp": {
+        "type": "object",
+        "properties": {
+          "cursor": {
+            "type": "string"
+          },
+          "isLast": {
+            "type": "boolean"
+          },
+          "list": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FriendResp"
+            }
+          }
+        }
+      },
+      "FriendResp": {
+        "type": "object",
+        "properties": {
+          "uid": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "activeStatus": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "FriendCheckReq": {
+        "required": [
+          "uidList"
+        ],
+        "type": "object",
+        "properties": {
+          "uidList": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        }
+      },
+      "ApiResultFriendCheckResp": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "errCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errMsg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/FriendCheckResp"
+          }
+        }
+      },
+      "FriendCheck": {
+        "type": "object",
+        "properties": {
+          "uid": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "isFriend": {
+            "type": "boolean"
+          }
+        }
+      },
+      "FriendCheckResp": {
+        "type": "object",
+        "properties": {
+          "checkedList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FriendCheck"
+            }
+          }
+        }
+      },
+      "ApiResultFriendUnreadResp": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "errCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errMsg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/FriendUnreadResp"
+          }
+        }
+      },
+      "FriendUnreadResp": {
+        "type": "object",
+        "properties": {
+          "unReadCount": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "PageBaseReq": {
+        "type": "object",
+        "properties": {
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageNo": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "ApiResultPageBaseRespFriendApplyResp": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "errCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errMsg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PageBaseRespFriendApplyResp"
+          }
+        }
+      },
+      "FriendApplyResp": {
+        "type": "object",
+        "properties": {
+          "uid": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "PageBaseRespFriendApplyResp": {
+        "type": "object",
+        "properties": {
+          "pageNo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalRecords": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "isLast": {
+            "type": "boolean"
+          },
+          "list": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FriendApplyResp"
+            }
+          }
+        }
+      },
+      "ApiResultMemberResp": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "errCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errMsg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/MemberResp"
+          }
+        }
+      },
+      "MemberResp": {
+        "type": "object",
+        "properties": {
+          "roomId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "groupName": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string"
+          },
+          "role": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "MemberReq": {
+        "type": "object",
+        "properties": {
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cursor": {
+            "type": "string"
+          },
+          "roomId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "ApiResultListChatMemberResp": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "errCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errMsg": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChatMemberResp"
+            }
+          }
+        }
+      },
+      "ChatMemberResp": {
+        "type": "object",
+        "properties": {
+          "uid": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "roleId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "avatarId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "memberType": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "ApiResultListRoomGroup": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "errCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errMsg": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RoomGroup"
+            }
+          }
+        }
+      },
+      "RoomGroup": {
+        "type": "object",
+        "properties": {
+          "roomId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "deleteStatus": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "parentGroupId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "ApiResultUserRole": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "errCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errMsg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/UserRole"
+          }
+        }
+      },
+      "ApiResultRoleAvatar": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "errCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errMsg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/RoleAvatar"
+          }
+        }
+      },
+      "RoleAvatar": {
+        "type": "object",
+        "properties": {
+          "roleId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "avatarId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "avatarTitle": {
+            "type": "string"
+          },
+          "avatarUrl": {
+            "type": "string"
+          },
+          "createTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updateTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ApiResultRoleAbilityTable": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "errCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errMsg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/RoleAbilityTable"
+          }
+        }
+      },
+      "ChatMessagePageRequest": {
+        "required": [
+          "roomId"
+        ],
+        "type": "object",
+        "properties": {
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cursor": {
+            "type": "string"
+          },
+          "roomId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "ApiResultCursorPageBaseResponseChatMessageResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "errCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errMsg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/CursorPageBaseResponseChatMessageResponse"
+          }
+        }
+      },
+      "ChatMessageResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "$ref": "#/components/schemas/Message"
+          },
+          "messageMark": {
+            "$ref": "#/components/schemas/MessageMark"
+          }
+        }
+      },
+      "CursorPageBaseResponseChatMessageResponse": {
+        "type": "object",
+        "properties": {
+          "cursor": {
+            "type": "string"
+          },
+          "isLast": {
+            "type": "boolean"
+          },
+          "list": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChatMessageResponse"
+            }
+          }
+        }
+      },
+      "Message": {
+        "type": "object",
+        "properties": {
+          "uid": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "roleId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "avatarId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "syncId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "roomId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sendTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "messageType": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "body": {
+            "type": "object"
+          }
+        }
+      },
+      "MessageMark": {
+        "type": "object",
+        "properties": {
+          "likeCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userLike": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dislikeCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userDislike": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "ApiResultCursorPageBaseResponseChatRoomResp": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "errCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errMsg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/CursorPageBaseResponseChatRoomResp"
+          }
+        }
+      },
+      "ChatRoomResp": {
+        "type": "object",
+        "properties": {
+          "roomId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "type": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "text": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string"
+          },
+          "activeTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "unreadCount": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "CursorPageBaseResponseChatRoomResp": {
+        "type": "object",
+        "properties": {
+          "cursor": {
+            "type": "string"
+          },
+          "isLast": {
+            "type": "boolean"
+          },
+          "list": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChatRoomResp"
+            }
+          }
+        }
+      },
+      "FriendDeleteReq": {
+        "required": [
+          "targetUid"
+        ],
+        "type": "object",
+        "properties": {
+          "targetUid": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      }
+    }
+  },
+  "x-openapi": {
+    "x-setting": {
+      "customCode": 200,
+      "language": "zh-CN",
+      "enableSwaggerModels": true,
+      "swaggerModelName": "Swagger Models",
+      "enableReloadCacheParameter": false,
+      "enableAfterScript": true,
+      "enableDocumentManage": true,
+      "enableVersion": false,
+      "enableRequestCache": true,
+      "enableFilterMultipartApis": false,
+      "enableFilterMultipartApiMethodType": "POST",
+      "enableHost": false,
+      "enableHostText": "",
+      "enableDynamicParameter": false,
+      "enableDebug": true,
+      "enableFooter": true,
+      "enableFooterCustom": false,
+      "enableSearch": true,
+      "enableOpenApi": true,
+      "enableHomeCustom": false,
+      "enableGroup": true,
+      "enableResponseCode": true
+    },
+    "x-markdownFiles": []
+  }
+}

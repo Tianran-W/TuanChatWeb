@@ -28,5 +28,6 @@ import RoomList from './RoomList.vue'
 .el-aside {
   position: relative;
   background-color: #3375b9;
+  border-right: 2px solid #4072e7;
 }
 </style>

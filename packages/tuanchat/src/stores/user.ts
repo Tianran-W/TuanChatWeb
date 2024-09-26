@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { UserInfoType } from './types'
-import { api as tuanApis } from '@/services/tuanchat'
+import { tuanApis } from '@/services'
 import { useGroupStore } from './group'
 import wsIns from '@/utils/websocket/websocket'
 
@@ -17,7 +17,7 @@ export const useUserStore = defineStore('user', () => {
           isSign.value = true
           localStorage.setItem('token', data)
           wsIns.initConnect()
-          setUserInfo(uid)
+          getUserInfo(uid)
             .then(() => {
               resolve('Login success')
             })
@@ -39,26 +39,26 @@ export const useUserStore = defineStore('user', () => {
     localStorage.removeItem('token')
   }
 
-  function setUserInfo(uid: number) {
+  function getUserInfo(uid: number) {
     return new Promise((resolve, reject) => {
       tuanApis.getUserInfo({ userId: uid }).then((data) => {
         if (data !== undefined) {
           userInfo.value.userId = data.userId
           userInfo.value.username = data.username
           userInfo.value.avatar = data.avatar
-          groupStore
-            .getGroupList()
-            .then(() => {
-              resolve('User info loaded')
-            })
-            .catch((err) => {
-              reject(err)
-            })
+          getUserDetail()
+          resolve('User info loaded')
         } else {
           logout()
           reject(new Error('User info not found'))
         }
       })
+    })
+  }
+
+  function getUserDetail() {
+    groupStore.getGroupList().catch((err) => {
+      throw new Error(err)
     })
   }
 

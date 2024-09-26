@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue'
 import { MemberList, MessageList, InputBox } from '@/components'
-import { ElContainer, ElMain, ElScrollbar, ElAside } from 'element-plus'
+import { ElContainer, ElMain, ElAside } from 'element-plus'
 import { useMsgStore } from '@/stores'
 import { useRoute } from 'vue-router'
 
@@ -30,29 +30,40 @@ const prevUrl = `${import.meta.env.VITE_TERRE_URL}/games/${gameName}`
 
 <template>
   <ElContainer>
-    <ElMain class="group">
-      <iframe class="gamePreview" :src="prevUrl"></iframe>
+    <ElMain>
       <MessageList :msgs="msgStore.curMessages" />
       <InputBox />
     </ElMain>
-    <ElAside>
-      <ElScrollbar>
-        <MemberList v-model:members="members" />
-      </ElScrollbar>
+    <ElAside class="sider">
+      <iframe class="game-preview" :src="prevUrl" frameborder="0"></iframe>
+      <MemberList v-model:members="members" />
     </ElAside>
   </ElContainer>
 </template>
 
 <style scoped>
-.group {
+.game-preview {
+  width: 100%;
+  height: 100%;
+}
+
+.sider {
   display: grid;
-  grid-template-rows: 1fr 1fr 50px;
+  grid-template-rows: 1fr 2fr;
   width: 100%;
   height: 100%;
   padding: 0;
 }
 
-.group .message-list {
+.el-main {
+  display: grid;
+  grid-template-rows: 1fr 50px;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+}
+
+.el-main .message-list {
   padding: 10px;
 }
 
@@ -62,7 +73,7 @@ const prevUrl = `${import.meta.env.VITE_TERRE_URL}/games/${gameName}`
 
 .el-aside {
   background-color: #a5c7e4;
-  width: 20%;
+  width: 32%;
   height: 100%;
   border-left: 2px solid #4072e7;
 }
