@@ -1,6 +1,6 @@
 import { ref, reactive } from 'vue'
 import { defineStore } from 'pinia'
-import type { MsgType } from '@/stores/types'
+import type { Message } from '@/services/tuanchat/Api'
 import { tuanApis } from '@/services'
 import { useGroupStore } from './group'
 import wsIns from '@/utils/websocket/websocket'
@@ -9,15 +9,15 @@ import type { WsReqType } from '@/utils/websocket/types'
 const pageSize = 10
 
 export const useMsgStore = defineStore('chat', () => {
-  const cacheMessages = reactive(new Map<number, MsgType[]>())
-  const curMessages = ref<MsgType[]>([])
-  const cursorMap = new Map<number, number>()
+  const cacheMessages = reactive(new Map<number, Message[]>())
+  const curMessages = ref<Message[]>([])
+  const cursorMap = new Map<number, string>()
   const isLoaded = new Map<number, boolean>()
   const curGroup = useGroupStore().currentGroup
   const ws = wsIns
 
-  function pushMsg(msg: MsgType) {
-    const roomId = msg.roomId
+  function pushMsg(msg: Message) {
+    const roomId = msg.roomId!
     if (cacheMessages.has(roomId)) {
       cacheMessages.get(roomId)?.push(msg)
     } else {
@@ -38,31 +38,31 @@ export const useMsgStore = defineStore('chat', () => {
       }
 
       tuanApis
-        .getMessageList({
+        .getMsgPage({
           pageSize: size,
           roomId: roomId,
-          cursor: cursorMap.get(roomId)
+          cursor: cursorMap.get(roomId) || undefined
         })
-        .then((data) => {
-          if (data !== undefined) {
-            if (data.isLast) {
-              isLoaded.set(roomId, true)
-            }
-            const msgs = data.list.map((msg) => msg.message)
-            console.log('fetchMsg', msgs)
-            if (msgs.length > 0) {
-              cursorMap.set(roomId, data.cursor)
-              if (cacheMessages.has(roomId)) {
-                cacheMessages.get(roomId)?.unshift(...msgs)
-              } else {
-                cacheMessages.set(roomId, msgs)
-              }
-            }
-            cursorMap.set(roomId, data.cursor)
-            resolve('Fetch message success')
-          } else {
+        .then((res) => {
+          if (res.data.data === undefined) {
             reject(new Error('Fetch message failed'))
+            return
           }
+          const data = res.data.data
+          if (data.isLast) {
+            isLoaded.set(roomId, true)
+          }
+          const msgs = data.list!.map((msg) => msg.message).filter((item) => item !== undefined)
+          if (msgs.length > 0) {
+            cursorMap.set(roomId, data.cursor!)
+            if (cacheMessages.has(roomId)) {
+              cacheMessages.get(roomId)?.unshift(...msgs)
+            } else {
+              cacheMessages.set(roomId, msgs)
+            }
+          }
+          cursorMap.set(roomId, data.cursor!)
+          resolve('Fetch message success')
         })
     })
   }

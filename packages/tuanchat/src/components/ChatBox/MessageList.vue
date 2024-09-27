@@ -2,8 +2,8 @@
 import { ElScrollbar } from 'element-plus'
 import MessageItem from './MessageItem.vue'
 import { ref, nextTick, watch } from 'vue'
-import type { MsgType } from '@/stores/types'
 import { useGroupStore, useMsgStore } from '@/stores'
+import type { Message } from '@/services/tuanchat/Api'
 
 const groupStore = useGroupStore()
 const msgStore = useMsgStore()
@@ -12,7 +12,7 @@ const innerRef = ref<HTMLDivElement>()
 const scrollbarRef = ref<InstanceType<typeof ElScrollbar>>()
 
 defineProps<{
-  msgs: MsgType[]
+  msgs: Message[]
 }>()
 
 watch(

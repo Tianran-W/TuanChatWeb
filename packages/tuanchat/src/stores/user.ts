@@ -10,12 +10,12 @@ export const useUserStore = defineStore('user', () => {
   const userInfo = ref<UserInfoType>({ userId: 0, username: '', avatar: '', roleIds: [] })
   const groupStore = useGroupStore()
 
-  function login(uid: number) {
+  function login(uid: string) {
     return new Promise((resolve, reject) => {
-      tuanApis.login({ userId: Number(uid), password: '123456' }).then((data) => {
-        if (data !== undefined) {
+      tuanApis.login({ userId: uid, password: '123456' }).then((res) => {
+        if (res.data.data !== undefined) {
           isSign.value = true
-          localStorage.setItem('token', data)
+          localStorage.setItem('token', res.data.data)
           wsIns.initConnect()
           getUserInfo(uid)
             .then(() => {
@@ -39,13 +39,13 @@ export const useUserStore = defineStore('user', () => {
     localStorage.removeItem('token')
   }
 
-  function getUserInfo(uid: number) {
+  function getUserInfo(uid: string) {
     return new Promise((resolve, reject) => {
-      tuanApis.getUserInfo({ userId: uid }).then((data) => {
-        if (data !== undefined) {
-          userInfo.value.userId = data.userId
-          userInfo.value.username = data.username
-          userInfo.value.avatar = data.avatar
+      tuanApis.getUserInfo({ userId: Number(uid) }).then((res) => {
+        if (res.data.data !== undefined) {
+          userInfo.value.userId = res.data.data.userId || 0
+          userInfo.value.username = res.data.data.username || ''
+          userInfo.value.avatar = res.data.data.avatar || ''
           getUserDetail()
           resolve('User info loaded')
         } else {

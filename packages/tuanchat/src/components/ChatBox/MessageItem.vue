@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { UserFilled } from '@element-plus/icons-vue'
 import { ElAvatar, ElText } from 'element-plus'
-import type { MsgType, TextBody } from '@/stores/types'
+import type { TextBody } from '@/stores/types'
 import { MsgEnum } from '@/enums'
+import type { Message } from '@/services/tuanchat/Api'
 
 const props = defineProps<{
-  msg: MsgType
+  msg: Message
 }>()
 
-const msgType: MsgEnum = props.msg.messageType
+const msgType: MsgEnum = props.msg.messageType!
 </script>
 
 <template>

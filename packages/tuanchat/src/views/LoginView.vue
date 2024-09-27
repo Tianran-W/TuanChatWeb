@@ -20,7 +20,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return
   formEl.validate((valid) => {
     if (valid) {
-      userStore.login(Number(formMember.uid)).then(
+      userStore.login(formMember.uid).then(
         () => {
           if (route.query.redirect) {
             router.push(route.query.redirect as string)
