@@ -3,7 +3,7 @@ import { ElScrollbar } from 'element-plus'
 import MessageItem from './MessageItem.vue'
 import { ref, nextTick, watch } from 'vue'
 import { useGroupStore, useMsgStore } from '@/stores'
-import type { Message } from '@/services/tuanchat/Api'
+import type { Message } from '@/services/tuanchat/apis'
 
 const groupStore = useGroupStore()
 const msgStore = useMsgStore()
