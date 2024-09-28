@@ -1,7 +1,6 @@
-import { ref, reactive } from 'vue'
+import { reactive } from 'vue'
 import { defineStore } from 'pinia'
 import { tuanApis } from '@/services'
-import { useRoomStore } from './room'
 import type { Message } from '@/services'
 import type { WsReqType } from '@/utils/websocket/types'
 
@@ -11,10 +10,8 @@ const pageSize = 10
 
 export const useMsgStore = defineStore('chat', () => {
   const messagesList = reactive<Map<number, Message[]>>(new Map<number, Message[]>())
-  const curMessages = ref<Message[]>([])
   const cursorMap = new Map<number, string>()
   const isLoaded = new Map<number, boolean>()
-  const roomStore = useRoomStore()
   const ws = wsIns
 
   function pushMsg(msg: Message) {
@@ -25,9 +22,6 @@ export const useMsgStore = defineStore('chat', () => {
       fetchMsg(roomId, pageSize).then(() => {
         messagesList.get(roomId)?.push(msg)
       })
-    }
-    if (roomId === roomStore.curRoomId) {
-      curMessages.value.push(msg)
     }
   }
 
@@ -68,13 +62,13 @@ export const useMsgStore = defineStore('chat', () => {
     })
   }
 
-  function sendMsg(msg: string, roomId: number) {
+  function sendMsg(msg: string, roomId: number, roleId: number, avatarId: number) {
     const wsReq: WsReqType = {
       type: 3,
       data: {
         roomId: roomId,
-        roleId: 1,
-        avatarId: 1,
+        roleId: roleId,
+        avatarId: avatarId,
         msgType: 1,
         body: {
           content: msg
@@ -84,5 +78,5 @@ export const useMsgStore = defineStore('chat', () => {
     ws.send(wsReq)
   }
 
-  return { messagesList, curMessages, pushMsg, fetchMsg, sendMsg }
+  return { messagesList, pushMsg, fetchMsg, sendMsg }
 })

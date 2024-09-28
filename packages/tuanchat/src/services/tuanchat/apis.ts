@@ -399,21 +399,29 @@ export interface PageBaseRespFriendApplyResp {
   list?: FriendApplyResp[]
 }
 
-export interface ApiResultMemberResp {
+export interface ApiResultRoomResp {
   success?: boolean
   /** @format int32 */
   errCode?: number
   errMsg?: string
-  data?: MemberResp
+  data?: RoomResp
 }
 
-export interface MemberResp {
+export interface RoomResp {
   /** @format int64 */
   roomId?: number
   groupName?: string
   avatar?: string
   /** @format int32 */
-  role?: number
+  groupType?: number
+}
+
+export interface ApiResultListUserRole {
+  success?: boolean
+  /** @format int32 */
+  errCode?: number
+  errMsg?: string
+  data?: UserRole[]
 }
 
 export interface ApiResultListChatMemberResp {
@@ -429,8 +437,6 @@ export interface ChatMemberResp {
   uid?: number
   /** @format int64 */
   roleId?: number
-  /** @format int64 */
-  avatarId?: number
   /** @format int32 */
   memberType?: number
 }
@@ -467,12 +473,12 @@ export interface ApiResultUserRole {
   data?: UserRole
 }
 
-export interface ApiResultRoleAvatar {
+export interface ApiResultListRoleAvatar {
   success?: boolean
   /** @format int32 */
   errCode?: number
   errMsg?: string
-  data?: RoleAvatar
+  data?: RoleAvatar[]
 }
 
 export interface RoleAvatar {
@@ -599,9 +605,27 @@ export interface CursorPageBaseResponseChatRoomResp {
   list?: ChatRoomResp[]
 }
 
+export interface ApiResultRoleAvatar {
+  success?: boolean
+  /** @format int32 */
+  errCode?: number
+  errMsg?: string
+  data?: RoleAvatar
+}
+
 export interface FriendDeleteReq {
   /** @format int64 */
   targetUid: number
+}
+
+/** 发送消息请求体 */
+export interface GeneralMessage {
+  /** 会话id */
+  roomId: number
+  /** 消息类型 1文本消息 2撤回消息 3.图片消息 4.文件 5.语音 6视频 */
+  msgType: number
+  /** 消息内容 根据类型不同请求不同 */
+  body: object
 }
 
 import type {
@@ -757,7 +781,7 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title tuanchat
+ * @title 团剧共创
  * @version 1.0.0
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
@@ -765,17 +789,47 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags friend-controller
-     * @name ApplyApprove
-     * @summary applyApprove
-     * @request PUT:/capi/user/friend/apply
+     * @tags user-controller
+     * @name Login
+     * @summary login
+     * @request POST:/capi/user/public/login
+     * @secure
      */
-    applyApprove: (data: FriendApproveReq, params: RequestParams = {}) =>
-      this.request<ApiResultVoid, any>({
-        path: `/capi/user/friend/apply`,
-        method: 'PUT',
+    login: (data: UserLoginRequest, params: RequestParams = {}) =>
+      this.request<ApiResultString, any>({
+        path: `/capi/user/public/login`,
+        method: 'POST',
         body: data,
+        secure: true,
         type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags user-controller
+     * @name GetUserInfo
+     * @summary getUserInfo
+     * @request GET:/capi/user/info
+     * @secure
+     */
+    getUserInfo: (
+      query: {
+        /**
+         * @format int64
+         * @example 1
+         */
+        userId: number
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<ApiResultUserInfoResponse, any>({
+        path: `/capi/user/info`,
+        method: 'GET',
+        query: query,
+        secure: true,
         format: 'json',
         ...params
       }),
@@ -787,12 +841,53 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name Apply
      * @summary apply
      * @request POST:/capi/user/friend/apply
+     * @secure
      */
     apply: (data: FriendApplyReq, params: RequestParams = {}) =>
       this.request<ApiResultVoid, any>({
         path: `/capi/user/friend/apply`,
         method: 'POST',
         body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @name UserFriendApplyList
+     * @summary 好友审批同意或忽略
+     * @request GET:/capi/user/friend/apply
+     * @secure
+     */
+    userFriendApplyList: (data: object, params: RequestParams = {}) =>
+      this.request<object, any>({
+        path: `/capi/user/friend/apply`,
+        method: 'GET',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags friend-controller
+     * @name ApplyApprove
+     * @summary applyApprove
+     * @request PUT:/capi/user/friend/apply
+     * @secure
+     */
+    applyApprove: (data: FriendApproveReq, params: RequestParams = {}) =>
+      this.request<ApiResultVoid, any>({
+        path: `/capi/user/friend/apply`,
+        method: 'PUT',
+        body: data,
+        secure: true,
         type: ContentType.Json,
         format: 'json',
         ...params
@@ -805,6 +900,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name FriendList
      * @summary friendList
      * @request GET:/capi/user/friend/page
+     * @secure
      */
     friendList: (
       query?: {
@@ -822,6 +918,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/capi/user/friend/page`,
         method: 'GET',
         query: query,
+        secure: true,
         format: 'json',
         ...params
       }),
@@ -833,6 +930,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name Check
      * @summary check
      * @request GET:/capi/user/friend/check
+     * @secure
      */
     check: (
       query: {
@@ -845,6 +943,31 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/capi/user/friend/check`,
         method: 'GET',
         query: query,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @name UserPublicRegisterCreate
+     * @summary 注册
+     * @request POST:/capi/user/public/register
+     * @secure
+     */
+    userPublicRegisterCreate: (
+      data: {
+        username: string
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<object, any>({
+        path: `/capi/user/public/register`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         format: 'json',
         ...params
       }),
@@ -856,11 +979,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name Unread
      * @summary unread
      * @request GET:/capi/user/friend/apply/unread
+     * @secure
      */
     unread: (params: RequestParams = {}) =>
       this.request<ApiResultFriendUnreadResp, any>({
         path: `/capi/user/friend/apply/unread`,
         method: 'GET',
+        secure: true,
         format: 'json',
         ...params
       }),
@@ -872,6 +997,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name Page
      * @summary page
      * @request GET:/capi/user/friend/apply/page
+     * @secure
      */
     page: (
       query?: {
@@ -892,6 +1018,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/capi/user/friend/apply/page`,
         method: 'GET',
         query: query,
+        secure: true,
         format: 'json',
         ...params
       }),
@@ -903,12 +1030,94 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name Delete
      * @summary delete
      * @request DELETE:/capi/user/friend
+     * @secure
      */
     delete: (data: FriendDeleteReq, params: RequestParams = {}) =>
       this.request<ApiResultVoid, any>({
         path: `/capi/user/friend`,
         method: 'DELETE',
         body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags oss-controller
+     * @name GetUploadUrl
+     * @summary getUploadUrl
+     * @request GET:/capi/oss/upload/url
+     * @secure
+     */
+    getUploadUrl: (
+      query: {
+        /** @example "" */
+        fileName: string
+        /**
+         * @format int32
+         * @example 0
+         */
+        scene: number
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<ApiResultOssResp, any>({
+        path: `/capi/oss/upload/url`,
+        method: 'GET',
+        query: query,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags contact-controller
+     * @name GetRoomPage
+     * @summary getRoomPage
+     * @request GET:/capi/chat/contact/page
+     * @secure
+     */
+    getRoomPage: (
+      query?: {
+        /**
+         * @format int32
+         * @example 0
+         */
+        pageSize?: number
+        /** @example "" */
+        cursor?: string
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<ApiResultCursorPageBaseResponseChatRoomResp, any>({
+        path: `/capi/chat/contact/page`,
+        method: 'GET',
+        query: query,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags chat-controller
+     * @name SendMessage
+     * @summary sendMessage
+     * @request POST:/capi/chat/message
+     * @secure
+     */
+    sendMessage: (data: ChatMessageRequest, params: RequestParams = {}) =>
+      this.request<ApiResult, any>({
+        path: `/capi/chat/message`,
+        method: 'POST',
+        body: data,
+        secure: true,
         type: ContentType.Json,
         format: 'json',
         ...params
@@ -921,12 +1130,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name UpdateMessage
      * @summary updateMessage
      * @request PUT:/capi/chat/message
+     * @secure
      */
     updateMessage: (data: ChatMessageRequest, params: RequestParams = {}) =>
       this.request<ApiResultTextMsgResp, any>({
         path: `/capi/chat/message`,
         method: 'PUT',
         body: data,
+        secure: true,
         type: ContentType.Json,
         format: 'json',
         ...params
@@ -935,17 +1146,27 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags chat-controller
-     * @name SendMessage
-     * @summary sendMessage
-     * @request POST:/capi/chat/message
+     * @tags room-controller
+     * @name GroupDetail
+     * @summary groupDetail
+     * @request GET:/capi/room/info
+     * @secure
      */
-    sendMessage: (data: ChatMessageRequest, params: RequestParams = {}) =>
-      this.request<ApiResult, any>({
-        path: `/capi/chat/message`,
-        method: 'POST',
-        body: data,
-        type: ContentType.Json,
+    groupDetail: (
+      query: {
+        /**
+         * @format int64
+         * @example 1
+         */
+        roomId: number
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<ApiResultRoomResp, any>({
+        path: `/capi/room/info`,
+        method: 'GET',
+        query: query,
+        secure: true,
         format: 'json',
         ...params
       }),
@@ -957,12 +1178,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name SetMsgMark
      * @summary setMsgMark
      * @request PUT:/capi/chat/message/mark
+     * @secure
      */
     setMsgMark: (data: ChatMessageMarkRequest, params: RequestParams = {}) =>
       this.request<ApiResultVoid, any>({
         path: `/capi/chat/message/mark`,
         method: 'PUT',
         body: data,
+        secure: true,
         type: ContentType.Json,
         format: 'json',
         ...params
@@ -975,6 +1198,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name GetMsgPage
      * @summary getMsgPage
      * @request GET:/capi/chat/message/page
+     * @secure
      */
     getMsgPage: (
       query: {
@@ -997,6 +1221,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/capi/chat/message/page`,
         method: 'GET',
         query: query,
+        secure: true,
         format: 'json',
         ...params
       }),
@@ -1004,99 +1229,27 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags user-controller
-     * @name Login
-     * @summary login
-     * @request POST:/capi/user/public/login
+     * @tags room-controller
+     * @name GroupRole
+     * @summary groupRole
+     * @request GET:/capi/room/group/roles
+     * @secure
      */
-    login: (data: UserLoginRequest, params: RequestParams = {}) =>
-      this.request<ApiResultString, any>({
-        path: `/capi/user/public/login`,
-        method: 'POST',
-        body: data,
-        type: ContentType.Json,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * No description
-     *
-     * @tags user-controller
-     * @name GetUserInfo
-     * @summary getUserInfo
-     * @request GET:/capi/user/info
-     */
-    getUserInfo: (
+    groupRole: (
       query: {
-        /** @format int64 */
-        userId: number
-      },
-      params: RequestParams = {}
-    ) =>
-      this.request<ApiResultUserInfoResponse, any>({
-        path: `/capi/user/info`,
-        method: 'GET',
-        query: query,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * No description
-     *
-     * @tags room-controller
-     * @name CreateSubgroup
-     * @summary createSubgroup
-     * @request POST:/capi/room/subgroup
-     */
-    createSubgroup: (data: SubRoomRequest, params: RequestParams = {}) =>
-      this.request<ApiResultRoom, any>({
-        path: `/capi/room/subgroup`,
-        method: 'POST',
-        body: data,
-        type: ContentType.Json,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * No description
-     *
-     * @tags room-controller
-     * @name CreatePrivateChat
-     * @summary createPrivateChat
-     * @request POST:/capi/room/friend
-     */
-    createPrivateChat: (data: SubRoomRequest, params: RequestParams = {}) =>
-      this.request<ApiResultRoom, any>({
-        path: `/capi/room/friend`,
-        method: 'POST',
-        body: data,
-        type: ContentType.Json,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * No description
-     *
-     * @tags room-controller
-     * @name GroupDetail
-     * @summary groupDetail
-     * @request GET:/capi/room/info
-     */
-    groupDetail: (
-      query: {
-        /** @format int64 */
+        /**
+         * @format int64
+         * @example 1
+         */
         roomId: number
       },
       params: RequestParams = {}
     ) =>
-      this.request<ApiResultMemberResp, any>({
-        path: `/capi/room/info`,
+      this.request<ApiResultListUserRole, any>({
+        path: `/capi/room/group/roles`,
         method: 'GET',
         query: query,
+        secure: true,
         format: 'json',
         ...params
       }),
@@ -1108,6 +1261,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name GetMemberPage
      * @summary getMemberPage
      * @request GET:/capi/room/group/member/page
+     * @secure
      */
     getMemberPage: (
       query: {
@@ -1120,6 +1274,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/capi/room/group/member/page`,
         method: 'GET',
         query: query,
+        secure: true,
         format: 'json',
         ...params
       }),
@@ -1131,11 +1286,66 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name GetUserGroups
      * @summary getUserGroups
      * @request GET:/capi/room/group/list
+     * @secure
      */
     getUserGroups: (params: RequestParams = {}) =>
       this.request<ApiResultListRoomGroup, any>({
         path: `/capi/room/group/list`,
         method: 'GET',
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @name RoomCreateSubgroupList
+     * @summary 创建子群
+     * @request GET:/capi/room/create/subgroup
+     * @secure
+     */
+    roomCreateSubgroupList: (data: object, params: RequestParams = {}) =>
+      this.request<object, any>({
+        path: `/capi/room/create/subgroup`,
+        method: 'GET',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @name RoomCreatePrivatechatList
+     * @summary 创建私聊
+     * @request GET:/capi/room/create/privatechat
+     * @secure
+     */
+    roomCreatePrivatechatList: (data: object, params: RequestParams = {}) =>
+      this.request<
+        {
+          success: boolean
+          errCode: null
+          errMsg: null
+          data: {
+            roomId: number
+            type: number
+            lastMessageId: null
+            createTime: string
+            updateTime: string
+            lastActiveTime: null
+          }
+        },
+        any
+      >({
+        path: `/capi/room/create/privatechat`,
+        method: 'GET',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         format: 'json',
         ...params
       }),
@@ -1147,10 +1357,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name GetRoleAbility
      * @summary getRoleAbility
      * @request GET:/capi/role/ability
+     * @secure
      */
     getRoleAbility: (
       query: {
-        /** @format int64 */
+        /**
+         * @format int64
+         * @example 1
+         */
         roleId: number
       },
       params: RequestParams = {}
@@ -1159,6 +1373,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/capi/role/ability`,
         method: 'GET',
         query: query,
+        secure: true,
         format: 'json',
         ...params
       }),
@@ -1170,12 +1385,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name SetRoleAbility
      * @summary setRoleAbility
      * @request POST:/capi/role/ability
+     * @secure
      */
     setRoleAbility: (data: RoleAbilityTable, params: RequestParams = {}) =>
       this.request<ApiResultObject, any>({
         path: `/capi/role/ability`,
         method: 'POST',
         body: data,
+        secure: true,
         type: ContentType.Json,
         format: 'json',
         ...params
@@ -1188,10 +1405,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name GetRole
      * @summary getRole
      * @request GET:/capi/role
+     * @secure
      */
     getRole: (
       query: {
-        /** @format int64 */
+        /**
+         * @format int64
+         * @example 1
+         */
         roleId: number
       },
       params: RequestParams = {}
@@ -1200,6 +1421,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/capi/role`,
         method: 'GET',
         query: query,
+        secure: true,
         format: 'json',
         ...params
       }),
@@ -1208,21 +1430,26 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags role-controller
-     * @name GetRoleAvatar
-     * @summary getRoleAvatar
+     * @name GetRoleAvatars
+     * @summary getRoleAvatars
      * @request GET:/capi/role/avatar
+     * @secure
      */
-    getRoleAvatar: (
+    getRoleAvatars: (
       query: {
-        /** @format int64 */
+        /**
+         * @format int64
+         * @example 1
+         */
         roleId: number
       },
       params: RequestParams = {}
     ) =>
-      this.request<ApiResultRoleAvatar, any>({
+      this.request<ApiResultListRoleAvatar, any>({
         path: `/capi/role/avatar`,
         method: 'GET',
         query: query,
+        secure: true,
         format: 'json',
         ...params
       }),
@@ -1230,27 +1457,19 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags oss-controller
-     * @name GetUploadUrl
-     * @summary getUploadUrl
-     * @request GET:/capi/oss/upload/url
+     * @tags room-controller
+     * @name CreateSubgroup
+     * @summary createSubgroup
+     * @request POST:/capi/room/subgroup
+     * @secure
      */
-    getUploadUrl: (
-      query: {
-        /** @example "" */
-        fileName: string
-        /**
-         * @format int32
-         * @example 0
-         */
-        scene: number
-      },
-      params: RequestParams = {}
-    ) =>
-      this.request<ApiResultOssResp, any>({
-        path: `/capi/oss/upload/url`,
-        method: 'GET',
-        query: query,
+    createSubgroup: (data: SubRoomRequest, params: RequestParams = {}) =>
+      this.request<ApiResultRoom, any>({
+        path: `/capi/room/subgroup`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         format: 'json',
         ...params
       }),
@@ -1258,27 +1477,19 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags contact-controller
-     * @name GetRoomPage
-     * @summary getRoomPage
-     * @request GET:/capi/chat/contact/page
+     * @tags room-controller
+     * @name CreatePrivateChat
+     * @summary createPrivateChat
+     * @request POST:/capi/room/friend
+     * @secure
      */
-    getRoomPage: (
-      query?: {
-        /**
-         * @format int32
-         * @example 0
-         */
-        pageSize?: number
-        /** @example "" */
-        cursor?: string
-      },
-      params: RequestParams = {}
-    ) =>
-      this.request<ApiResultCursorPageBaseResponseChatRoomResp, any>({
-        path: `/capi/chat/contact/page`,
-        method: 'GET',
-        query: query,
+    createPrivateChat: (data: SubRoomRequest, params: RequestParams = {}) =>
+      this.request<ApiResultRoom, any>({
+        path: `/capi/room/friend`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         format: 'json',
         ...params
       }),
@@ -1287,13 +1498,18 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags avatar-controller
-     * @name GetRoleAvatar1
-     * @summary getRoleAvatar_1
+     * @name GetRoleAvatar
+     * @summary getRoleAvatar
      * @request GET:/capi/avatar
+     * @secure
      */
-    getRoleAvatar1: (
+    getRoleAvatar: (
       query: {
-        /** @format int64 */
+        /**
+         * ID 编号
+         * @format int64
+         * @example 1
+         */
         avatarId: number
       },
       params: RequestParams = {}
@@ -1302,6 +1518,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/capi/avatar`,
         method: 'GET',
         query: query,
+        secure: true,
         format: 'json',
         ...params
       })

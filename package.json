@@ -11,7 +11,7 @@
     "dev:tuanchat": "cd packages/tuanchat && yarn dev",
     "prepare": "husky",
     "commitlint": "commitlint --edit",
-    "openapi": "cd packages/tuanchat && npx swagger-typescript-api -p ./public/tuanchat_OpenAPI.json -o ./src/services/tuanchat --axios"
+    "openapi": "cd packages/tuanchat && npx swagger-typescript-api -p ./public/tuanchat.openapi.json -o ./src/services/tuanchat -n apis.ts --axios"
   },
   "workspaces": {
     "packages": [

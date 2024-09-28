@@ -38,6 +38,7 @@ export const useUserStore = defineStore('user', () => {
     userInfo.value.userId = 0
     userInfo.value.username = ''
     userInfo.value.avatar = ''
+    roleStore.roleList = []
     localStorage.removeItem('token')
   }
 
@@ -50,12 +51,10 @@ export const useUserStore = defineStore('user', () => {
           return
         }
         const data = res.data.data
-        userInfo.value.userId = data.userId || 0
-        userInfo.value.username = data.username || ''
-        userInfo.value.avatar = data.avatar || ''
-        data.roles?.forEach((role) => {
-          roleStore.roleList.set(role.roleId!, role)
-        })
+        userInfo.value.userId = data.userId!
+        userInfo.value.username = data.username!
+        userInfo.value.avatar = data.avatar!
+        roleStore.roleList = data.roles!
         getUserDetail()
         resolve('User info loaded')
       })

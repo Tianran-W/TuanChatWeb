@@ -1,11 +1,12 @@
 import { reactive } from 'vue'
 import { defineStore } from 'pinia'
 import { tuanApis } from '@/services'
-import type { RoomGroup } from '@/services'
+import type { RoomGroup, UserRole } from '@/services'
 
 export const useGroupStore = defineStore('group', () => {
   const groupList = reactive<Map<number, RoomGroup>>(new Map<number, RoomGroup>())
   const subGroupMap = reactive(new Map<number, number[]>())
+  const groupRoleList = reactive(new Map<number, UserRole[]>())
 
   function getGroupList() {
     return new Promise((resolve, reject) => {
@@ -45,5 +46,19 @@ export const useGroupStore = defineStore('group', () => {
     })
   }
 
-  return { groupList, subGroupMap, getGroupList }
+  function fetchRoles(groupId: number) {
+    return new Promise((resolve, reject) => {
+      tuanApis.groupRole({ roomId: groupId }).then((res) => {
+        if (res.data.data === undefined) {
+          reject(new Error('Group roles not found'))
+          return
+        }
+        const data = res.data.data
+        groupRoleList.set(groupId, data)
+        resolve('Group roles loaded')
+      })
+    })
+  }
+
+  return { groupList, subGroupMap, groupRoleList, getGroupList, fetchRoles }
 })

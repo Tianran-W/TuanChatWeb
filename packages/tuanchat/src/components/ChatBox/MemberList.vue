@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import MemberItem from './MemberItem.vue'
 import { ElScrollbar } from 'element-plus'
+import type { UserRole } from '@/services'
 
 defineProps<{
-  members: [string, string][]
+  members: UserRole[]
 }>()
 </script>
 
 <template>
   <ElScrollbar>
     <div class="member-list">
-      <MemberItem v-for="member in members" :key="member[0]" :member="member" />
+      <MemberItem v-for="member in members" :key="member.roleId" :member="member" />
     </div>
   </ElScrollbar>
 </template>
@@ -19,7 +20,7 @@ defineProps<{
 .member-list {
   padding: 10px;
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   gap: 10px;
 }
 </style>

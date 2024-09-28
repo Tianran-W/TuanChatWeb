@@ -1,24 +1,24 @@
 <script setup lang="ts">
-import { UserFilled } from '@element-plus/icons-vue'
-import { ElAvatar, ElPopover } from 'element-plus'
+import { ElAvatar, ElPopover, ElButton } from 'element-plus'
+import type { UserRole } from '@/services'
 
 defineProps<{
-  member: [string, string]
+  member: UserRole
 }>()
 </script>
 
 <template>
   <div class="message-item">
-    <ElAvatar :size="50" shape="square" fit="cover" :icon="UserFilled" />
+    <ElAvatar :size="50" shape="square" fit="cover" :src="member.avatar" />
     <ElPopover
       ref="popover"
-      title="用户"
+      title="description"
       placement="right"
       trigger="contextmenu"
-      :content="member[0]"
+      :content="String(member.description!)"
     >
       <template #reference>
-        <ElButton>{{ member[1] !== '' ? member[1] : 'KP' }}</ElButton>
+        <ElButton>{{ member.roleName }}</ElButton>
       </template>
     </ElPopover>
   </div>

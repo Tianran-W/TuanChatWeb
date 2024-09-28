@@ -16,7 +16,7 @@ defineProps<{
 }>()
 
 watch(
-  () => [msgStore.curMessages.length, roomStore.curRoomId],
+  () => [roomStore.messages.length, roomStore.curRoomId],
   (newval, oldval) => {
     nextTick(() => {
       if (

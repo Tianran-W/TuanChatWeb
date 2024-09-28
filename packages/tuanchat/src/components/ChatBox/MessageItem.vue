@@ -1,20 +1,26 @@
 <script setup lang="ts">
-import { UserFilled } from '@element-plus/icons-vue'
 import { ElAvatar, ElText } from 'element-plus'
-import type { TextBody } from '@/stores/types'
 import { MsgEnum } from '@/enums'
-import type { Message } from '@/services/tuanchat/Api'
+import { useRoleStore } from '@/stores/role'
+import type { TextBody } from '@/stores/types'
+import type { Message } from '@/services'
 
 const props = defineProps<{
   msg: Message
 }>()
 
+const roleStore = useRoleStore()
 const msgType: MsgEnum = props.msg.messageType!
 </script>
 
 <template>
   <div class="message-item">
-    <ElAvatar :size="80" shape="square" fit="cover" :icon="UserFilled" />
+    <ElAvatar
+      :size="80"
+      shape="square"
+      fit="cover"
+      :src="roleStore.avatarToUrl.get(props.msg.avatarId!)"
+    />
     <ElText v-if="msgType === MsgEnum.TEXT" size="large">{{
       (msg.body as TextBody).content
     }}</ElText>

@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue'
+import { watch, onMounted } from 'vue'
 import { MemberList, MessageList, InputBox } from '@/components'
 import { ElContainer, ElMain, ElAside } from 'element-plus'
-import { useRoomStore, useMsgStore } from '@/stores'
+import { useRoomStore } from '@/stores'
 import { useRoute } from 'vue-router'
 
 const roomStore = useRoomStore()
-const msgStore = useMsgStore()
 const route = useRoute()
 
 onMounted(() => {
@@ -20,11 +19,6 @@ watch(
   }
 )
 
-const members = ref<[string, string][]>([
-  ['jxc', 'alice'],
-  ['wtr', 'terra'],
-  ['kp', '']
-])
 const gameName = 'newtest'
 const prevUrl = `${import.meta.env.VITE_TERRE_URL}/games/${gameName}`
 </script>
@@ -32,12 +26,12 @@ const prevUrl = `${import.meta.env.VITE_TERRE_URL}/games/${gameName}`
 <template>
   <ElContainer>
     <ElMain>
-      <MessageList :msgs="msgStore.curMessages" />
+      <MessageList :msgs="roomStore.messages" />
       <InputBox />
     </ElMain>
     <ElAside class="sider">
       <iframe class="game-preview" :src="prevUrl" frameborder="0"></iframe>
-      <MemberList v-model:members="members" />
+      <MemberList v-model:members="roomStore.roleList" />
     </ElAside>
   </ElContainer>
 </template>

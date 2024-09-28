@@ -1,22 +1,37 @@
 <script setup lang="ts">
-import { ElButton, ElInput } from 'element-plus'
+import { ElButton, ElSelect, ElOption, ElInput, ElAvatar } from 'element-plus'
 import { ref } from 'vue'
 import { Promotion } from '@element-plus/icons-vue'
-import { useMsgStore, useRoomStore } from '@/stores'
+import { useMsgStore, useRoomStore, useRoleStore } from '@/stores'
 
 const message = ref('')
 const msgStore = useMsgStore()
 const roomStore = useRoomStore()
+const roleStore = useRoleStore()
 
 const sendMessage = () => {
   if (message.value.trim() === '') return
-  msgStore.sendMsg(message.value, roomStore.curRoomId)
+  msgStore.sendMsg(
+    message.value,
+    roomStore.curRoomId,
+    roomStore.role?.roleId!,
+    roomStore.usedAvatar
+  )
   message.value = ''
 }
 </script>
 
 <template>
   <div class="input-box">
+    <ElSelect v-model="roomStore.usedAvatar" placeholder="Select">
+      <ElOption
+        v-for="item in roleStore.roleToAvatars.get(roomStore.role?.roleId!)"
+        :key="item"
+        :value="item"
+      >
+        <ElAvatar :size="30" shape="square" fit="cover" :src="roleStore.avatarToUrl.get(item)" />
+      </ElOption>
+    </ElSelect>
     <ElInput v-model="message" placeholder="Please input" @keyup.enter="sendMessage">
       <template #append>
         <ElButton :icon="Promotion" @click="sendMessage" :disabled="message.trim() === ''" />
@@ -28,5 +43,8 @@ const sendMessage = () => {
 <style scoped>
 .input-box {
   padding: 10px;
+  display: grid;
+  grid-template-columns: 50px auto;
+  gap: 10px;
 }
 </style>
