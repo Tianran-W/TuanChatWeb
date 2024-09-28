@@ -11,224 +11,249 @@
 
 export interface CompletionDto {
   /** Editor input value for which the completion is required */
-  editorValue: string;
+  editorValue: string
   /** Parameters required for completion */
-  params: object;
+  params: object
 }
 
 export interface CreateNewFileDto {
   /** The source path where the directory will be created */
-  source: string;
+  source: string
   /** Name for the new file */
-  name: string;
+  name: string
 }
 
 export interface CreateNewFolderDto {
   /** The source path where the directory will be created */
-  source: string;
+  source: string
   /** Name for the new directory */
-  name: string;
+  name: string
 }
 
 export interface UploadFilesDto {
   /** Target directory for the uploaded files */
-  targetDirectory: string;
+  targetDirectory: string
 }
 
 export interface DeleteFileOrDirDto {
   /** The source path of the file or directory to be deleted */
-  source: string;
+  source: string
 }
 
 export interface RenameFileDto {
   /** The source path of the file or directory to be renamed */
-  source: string;
+  source: string
   /** New name for renaming the file or directory */
-  newName: string;
+  newName: string
+}
+
+export interface getGameListResp {
+  name: string
+  isDir: boolean
+  extName: string
+  path: string
 }
 
 export interface EditTextFileDto {
   /** The path of textfile */
-  path: string;
+  path: string
   /** Text data content */
-  textFile: string;
+  textFile: string
 }
 
 export interface CreateGameDto {
   /** The name of the game to be created */
-  gameName: string;
+  gameName: string
   /** The name of the derivative to be used */
-  derivative: string;
+  derivative: string
   /** The name of the template to be applied */
-  templateName: string;
+  templateName: string
 }
 
 export interface EditFileNameDto {
   /** The path to the file to be renamed */
-  path: string;
+  path: string
   /** The new name for the file */
-  newName: string;
+  newName: string
 }
 
 export interface DeleteFileDto {
   /** The path to the file to be deleted */
-  path: string;
+  path: string
 }
 
 export interface CreateNewSceneDto {
   /** The name of the game */
-  gameName: string;
+  gameName: string
   /** The name of the scene */
-  sceneName: string;
+  sceneName: string
 }
 
 export interface EditSceneDto {
   /** The name of the game */
-  gameName: string;
+  gameName: string
   /** The name of the scene */
-  sceneName: string;
+  sceneName: string
   /**
    * Scene data content
    * @format { value: string }
    */
-  sceneData: string;
+  sceneData: string
 }
 
 export interface GameConfigDto {
   /** The name of the game */
-  gameName: string;
+  gameName: string
   /** New game configuration */
-  newConfig: string;
+  newConfig: string
 }
 
 export interface MkDirDto {
   /** The source path where the directory will be created */
-  source: string;
+  source: string
   /** Name for the new directory */
-  name: string;
+  name: string
 }
 
 export interface DeleteDto {
   /** The source path of the file or directory to be deleted */
-  gameName: string;
+  gameName: string
 }
 
 export interface RenameDto {
   /** Old name for renaming the game */
-  gameName: string;
+  gameName: string
   /** New name for renaming the game */
-  newName: string;
+  newName: string
 }
 
 export interface CreateTemplateDto {
   /** The name of the template to be created */
-  templateName: string;
+  templateName: string
 }
 
 export interface ApplyTemplateToGameDto {
   /** The template name to apply */
-  templateName: string;
+  templateName: string
   /** The game name to be applied. */
-  gameName: string;
+  gameName: string
 }
 
 export interface GetStyleByClassNameDto {
   /** The name of class to be fetched */
-  className: string;
+  className: string
   /** The path of stylesheet file to be fetched */
-  filePath: string;
+  filePath: string
 }
 
-import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType } from 'axios';
-import axios from 'axios';
+import type {
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+  HeadersDefaults,
+  ResponseType
+} from 'axios'
+import axios from 'axios'
 
-export type QueryParamsType = Record<string | number, any>;
+export type QueryParamsType = Record<string | number, any>
 
-export interface FullRequestParams extends Omit<AxiosRequestConfig, 'data' | 'params' | 'url' | 'responseType'> {
+export interface FullRequestParams
+  extends Omit<AxiosRequestConfig, 'data' | 'params' | 'url' | 'responseType'> {
   /** set parameter to `true` for call `securityWorker` for this request */
-  secure?: boolean;
+  secure?: boolean
   /** request path */
-  path: string;
+  path: string
   /** content type of request body */
-  type?: ContentType;
+  type?: ContentType
   /** query params */
-  query?: QueryParamsType;
+  query?: QueryParamsType
   /** format of response (i.e. response.json() -> format: "json") */
-  format?: ResponseType;
+  format?: ResponseType
   /** request body */
-  body?: unknown;
+  body?: unknown
 }
 
-export type RequestParams = Omit<FullRequestParams, 'body' | 'method' | 'query' | 'path'>;
+export type RequestParams = Omit<FullRequestParams, 'body' | 'method' | 'query' | 'path'>
 
-export interface ApiConfig<SecurityDataType = unknown> extends Omit<AxiosRequestConfig, 'data' | 'cancelToken'> {
+export interface ApiConfig<SecurityDataType = unknown>
+  extends Omit<AxiosRequestConfig, 'data' | 'cancelToken'> {
   securityWorker?: (
-    securityData: SecurityDataType | null,
-  ) => Promise<AxiosRequestConfig | void> | AxiosRequestConfig | void;
-  secure?: boolean;
-  format?: ResponseType;
+    securityData: SecurityDataType | null
+  ) => Promise<AxiosRequestConfig | void> | AxiosRequestConfig | void
+  secure?: boolean
+  format?: ResponseType
 }
 
 export enum ContentType {
   Json = 'application/json',
   FormData = 'multipart/form-data',
   UrlEncoded = 'application/x-www-form-urlencoded',
-  Text = 'text/plain',
+  Text = 'text/plain'
 }
 
 export class HttpClient<SecurityDataType = unknown> {
-  public instance: AxiosInstance;
-  private securityData: SecurityDataType | null = null;
-  private securityWorker?: ApiConfig<SecurityDataType>['securityWorker'];
-  private secure?: boolean;
-  private format?: ResponseType;
+  public instance: AxiosInstance
+  private securityData: SecurityDataType | null = null
+  private securityWorker?: ApiConfig<SecurityDataType>['securityWorker']
+  private secure?: boolean
+  private format?: ResponseType
 
-  constructor({ securityWorker, secure, format, ...axiosConfig }: ApiConfig<SecurityDataType> = {}) {
-    this.instance = axios.create({ ...axiosConfig, baseURL: axiosConfig.baseURL || '' });
-    this.secure = secure;
-    this.format = format;
-    this.securityWorker = securityWorker;
+  constructor({
+    securityWorker,
+    secure,
+    format,
+    ...axiosConfig
+  }: ApiConfig<SecurityDataType> = {}) {
+    this.instance = axios.create({ ...axiosConfig, baseURL: axiosConfig.baseURL || '' })
+    this.secure = secure
+    this.format = format
+    this.securityWorker = securityWorker
   }
 
   public setSecurityData = (data: SecurityDataType | null) => {
-    this.securityData = data;
-  };
+    this.securityData = data
+  }
 
-  protected mergeRequestParams(params1: AxiosRequestConfig, params2?: AxiosRequestConfig): AxiosRequestConfig {
-    const method = params1.method || (params2 && params2.method);
+  protected mergeRequestParams(
+    params1: AxiosRequestConfig,
+    params2?: AxiosRequestConfig
+  ): AxiosRequestConfig {
+    const method = params1.method || (params2 && params2.method)
 
     return {
       ...this.instance.defaults,
       ...params1,
       ...(params2 || {}),
       headers: {
-        ...((method && this.instance.defaults.headers[method.toLowerCase() as keyof HeadersDefaults]) || {}),
+        ...((method &&
+          this.instance.defaults.headers[method.toLowerCase() as keyof HeadersDefaults]) ||
+          {}),
         ...(params1.headers || {}),
-        ...((params2 && params2.headers) || {}),
-      },
-    };
+        ...((params2 && params2.headers) || {})
+      }
+    }
   }
 
   protected stringifyFormItem(formItem: unknown) {
     if (typeof formItem === 'object' && formItem !== null) {
-      return JSON.stringify(formItem);
+      return JSON.stringify(formItem)
     } else {
-      return `${formItem}`;
+      return `${formItem}`
     }
   }
 
   protected createFormData(input: Record<string, unknown>): FormData {
     return Object.keys(input || {}).reduce((formData, key) => {
-      const property = input[key];
-      const propertyContent: any[] = property instanceof Array ? property : [property];
+      const property = input[key]
+      const propertyContent: any[] = property instanceof Array ? property : [property]
 
       for (const formItem of propertyContent) {
-        const isFileType = formItem instanceof Blob || formItem instanceof File;
-        formData.append(key, isFileType ? formItem : this.stringifyFormItem(formItem));
+        const isFileType = formItem instanceof Blob || formItem instanceof File
+        formData.append(key, isFileType ? formItem : this.stringifyFormItem(formItem))
       }
 
-      return formData;
-    }, new FormData());
+      return formData
+    }, new FormData())
   }
 
   public request = async <T = any, _E = any>({
@@ -244,30 +269,30 @@ export class HttpClient<SecurityDataType = unknown> {
       ((typeof secure === 'boolean' ? secure : this.secure) &&
         this.securityWorker &&
         (await this.securityWorker(this.securityData))) ||
-      {};
-    const requestParams = this.mergeRequestParams(params, secureParams);
-    const responseFormat = format || this.format || undefined;
+      {}
+    const requestParams = this.mergeRequestParams(params, secureParams)
+    const responseFormat = format || this.format || undefined
 
     if (type === ContentType.FormData && body && body !== null && typeof body === 'object') {
-      body = this.createFormData(body as Record<string, unknown>);
+      body = this.createFormData(body as Record<string, unknown>)
     }
 
     if (type === ContentType.Text && body && body !== null && typeof body !== 'string') {
-      body = JSON.stringify(body);
+      body = JSON.stringify(body)
     }
 
     return this.instance.request({
       ...requestParams,
       headers: {
         ...(requestParams.headers || {}),
-        ...(type && type !== ContentType.FormData ? { 'Content-Type': type } : {}),
+        ...(type && type !== ContentType.FormData ? { 'Content-Type': type } : {})
       },
       params: query,
       responseType: responseFormat,
       data: body,
-      url: path,
-    });
-  };
+      url: path
+    })
+  }
 }
 
 /**
@@ -290,7 +315,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<void, any>({
         path: `/api/test`,
         method: 'GET',
-        ...params,
+        ...params
       }),
 
     /**
@@ -307,7 +332,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'POST',
         body: data,
         type: ContentType.Json,
-        ...params,
+        ...params
       }),
 
     /**
@@ -322,7 +347,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<void, any>({
         path: `/api/assets/readAssets/${readDirPath}`,
         method: 'GET',
-        ...params,
+        ...params
       }),
 
     /**
@@ -337,7 +362,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<void, any>({
         path: `/api/assets/openDict/${dirPath}`,
         method: 'POST',
-        ...params,
+        ...params
       }),
 
     /**
@@ -354,7 +379,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'POST',
         body: data,
         type: ContentType.Json,
-        ...params,
+        ...params
       }),
 
     /**
@@ -371,7 +396,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'POST',
         body: data,
         type: ContentType.Json,
-        ...params,
+        ...params
       }),
 
     /**
@@ -388,7 +413,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'POST',
         body: data,
         type: ContentType.Json,
-        ...params,
+        ...params
       }),
 
     /**
@@ -405,7 +430,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'POST',
         body: data,
         type: ContentType.Json,
-        ...params,
+        ...params
       }),
 
     /**
@@ -422,7 +447,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'POST',
         body: data,
         type: ContentType.Json,
-        ...params,
+        ...params
       }),
 
     /**
@@ -439,7 +464,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'POST',
         body: data,
         type: ContentType.Json,
-        ...params,
+        ...params
       }),
 
     /**
@@ -451,10 +476,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/manageGame/gameList
      */
     manageGameControllerGetGameList: (params: RequestParams = {}) =>
-      this.request<void, any>({
+      this.request<getGameListResp[], any>({
         path: `/api/manageGame/gameList`,
         method: 'GET',
-        ...params,
+        ...params
       }),
 
     /**
@@ -471,7 +496,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'POST',
         body: data,
         type: ContentType.Json,
-        ...params,
+        ...params
       }),
 
     /**
@@ -486,7 +511,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<void, any>({
         path: `/api/manageGame/openGameDict/${gameName}`,
         method: 'GET',
-        ...params,
+        ...params
       }),
 
     /**
@@ -501,7 +526,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<void, any>({
         path: `/api/manageGame/derivativeEngines`,
         method: 'GET',
-        ...params,
+        ...params
       }),
 
     /**
@@ -515,15 +540,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     manageGameControllerOpenGameAssetsDict: (
       gameName: string,
       query: {
-        subFolder: string;
+        subFolder: string
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<void, any>({
         path: `/api/manageGame/openGameAssetsDict/${gameName}`,
         method: 'GET',
         query: query,
-        ...params,
+        ...params
       }),
 
     /**
@@ -538,7 +563,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<void, any>({
         path: `/api/manageGame/ejectGameAsWeb/${gameName}`,
         method: 'GET',
-        ...params,
+        ...params
       }),
 
     /**
@@ -553,7 +578,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<void, any>({
         path: `/api/manageGame/ejectGameAsExe/${gameName}`,
         method: 'GET',
-        ...params,
+        ...params
       }),
 
     /**
@@ -568,7 +593,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<void, any>({
         path: `/api/manageGame/ejectGameAsAndroid/${gameName}`,
         method: 'GET',
-        ...params,
+        ...params
       }),
 
     /**
@@ -583,7 +608,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<void, any>({
         path: `/api/manageGame/readGameAssets/${readDirPath}`,
         method: 'GET',
-        ...params,
+        ...params
       }),
 
     /**
@@ -600,7 +625,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'POST',
         body: data,
         type: ContentType.Json,
-        ...params,
+        ...params
       }),
 
     /**
@@ -617,7 +642,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'POST',
         body: data,
         type: ContentType.Json,
-        ...params,
+        ...params
       }),
 
     /**
@@ -634,7 +659,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'POST',
         body: data,
         type: ContentType.Json,
-        ...params,
+        ...params
       }),
 
     /**
@@ -651,7 +676,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'POST',
         body: data,
         type: ContentType.Json,
-        ...params,
+        ...params
       }),
 
     /**
@@ -668,7 +693,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'POST',
         body: data,
         type: ContentType.Json,
-        ...params,
+        ...params
       }),
 
     /**
@@ -683,7 +708,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<void, void>({
         path: `/api/manageGame/getGameConfig/${gameName}`,
         method: 'GET',
-        ...params,
+        ...params
       }),
 
     /**
@@ -700,7 +725,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'POST',
         body: data,
         type: ContentType.Json,
-        ...params,
+        ...params
       }),
 
     /**
@@ -717,7 +742,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'POST',
         body: data,
         type: ContentType.Json,
-        ...params,
+        ...params
       }),
 
     /**
@@ -734,7 +759,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'POST',
         body: data,
         type: ContentType.Json,
-        ...params,
+        ...params
       }),
 
     /**
@@ -751,7 +776,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'POST',
         body: data,
         type: ContentType.Json,
-        ...params,
+        ...params
       }),
 
     /**
@@ -768,7 +793,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'POST',
         body: data,
         type: ContentType.Json,
-        ...params,
+        ...params
       }),
 
     /**
@@ -783,7 +808,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<void, any>({
         path: `/api/manageTemplate/templateList`,
         method: 'GET',
-        ...params,
+        ...params
       }),
 
     /**
@@ -800,7 +825,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'POST',
         body: data,
         type: ContentType.Json,
-        ...params,
+        ...params
       }),
 
     /**
@@ -815,7 +840,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<void, void>({
         path: `/api/manageTemplate/getTemplateConfig/${templateName}`,
         method: 'GET',
-        ...params,
+        ...params
       }),
 
     /**
@@ -830,7 +855,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<void, void>({
         path: `/api/manageTemplate/delete/${templateName}`,
         method: 'DELETE',
-        ...params,
+        ...params
       }),
 
     /**
@@ -841,13 +866,16 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary Apply template to a game
      * @request POST:/api/manageTemplate/applyTemplateToGame
      */
-    manageTemplateControllerApplyTemplateToGame: (data: ApplyTemplateToGameDto, params: RequestParams = {}) =>
+    manageTemplateControllerApplyTemplateToGame: (
+      data: ApplyTemplateToGameDto,
+      params: RequestParams = {}
+    ) =>
       this.request<void, void>({
         path: `/api/manageTemplate/applyTemplateToGame`,
         method: 'POST',
         body: data,
         type: ContentType.Json,
-        ...params,
+        ...params
       }),
 
     /**
@@ -858,15 +886,18 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary Apply template to a game
      * @request POST:/api/manageTemplate/getStyleByClassName
      */
-    manageTemplateControllerGetStyleByClassName: (data: GetStyleByClassNameDto, params: RequestParams = {}) =>
+    manageTemplateControllerGetStyleByClassName: (
+      data: GetStyleByClassNameDto,
+      params: RequestParams = {}
+    ) =>
       this.request<void, void>({
         path: `/api/manageTemplate/getStyleByClassName`,
         method: 'POST',
         body: data,
         type: ContentType.Json,
-        ...params,
-      }),
-  };
+        ...params
+      })
+  }
   templatePreview = {
     /**
      * No description
@@ -874,11 +905,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name TemplatePreviewControllerGetTemplateAsset
      * @request GET:/template-preview/{templateName}/game/template/{path}
      */
-    templatePreviewControllerGetTemplateAsset: (path: string, templateName: string, params: RequestParams = {}) =>
+    templatePreviewControllerGetTemplateAsset: (
+      path: string,
+      templateName: string,
+      params: RequestParams = {}
+    ) =>
       this.request<void, any>({
         path: `/template-preview/${templateName}/game/template/${path}`,
         method: 'GET',
-        ...params,
-      }),
-  };
+        ...params
+      })
+  }
 }

@@ -10,6 +10,7 @@ const msgStore = useMsgStore()
 const scrollTop = ref(0)
 const innerRef = ref<HTMLDivElement>()
 const scrollbarRef = ref<InstanceType<typeof ElScrollbar>>()
+const isFetching = ref(false)
 
 defineProps<{
   msgs: Message[]
@@ -38,8 +39,11 @@ const onScroll = (scroll: { scrollLeft: number; scrollTop: number }) => {
 }
 
 const onWheel = (e: WheelEvent) => {
-  if (e.deltaY < 0 && scrollTop.value === 0) {
-    msgStore.fetchMsg(roomStore.curRoomId)
+  if (e.deltaY < 0 && scrollTop.value === 0 && !isFetching.value) {
+    isFetching.value = true
+    msgStore.fetchMsg(roomStore.curRoomId).then(() => {
+      isFetching.value = false
+    })
   }
 }
 </script>

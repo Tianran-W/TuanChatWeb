@@ -19,7 +19,7 @@ watch(
   }
 )
 
-const gameName = 'newtest'
+const gameName = 'Test'
 const prevUrl = `${import.meta.env.VITE_TERRE_URL}/games/${gameName}`
 </script>
 

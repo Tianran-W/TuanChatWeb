@@ -3,6 +3,7 @@ import { reactive, ref } from 'vue'
 import { useMsgStore } from './message'
 import { useGroupStore } from './group'
 import { useRoleStore } from './role'
+import { editScene } from '@/utils/renderer'
 import type { Message, UserRole } from '@/services'
 
 export const useRoomStore = defineStore('room', () => {
@@ -15,6 +16,7 @@ export const useRoomStore = defineStore('room', () => {
   const messages = ref<Message[]>([])
   const roleList = ref<UserRole[]>([])
   const usedAvatar = ref<number>(0)
+  const textForRenderer = ref<string>('intro:你好|欢迎来到 WebGAL 的世界;')
 
   function switchRoom(roomId: number) {
     curRoomId.value = roomId
@@ -48,5 +50,14 @@ export const useRoomStore = defineStore('room', () => {
     role.value = roleStore.groupToRole.get(roomId) || undefined
   }
 
-  return { curRoomId, messages, role, roleList, usedAvatar, switchRoom }
+  function addText(rolename: string, text: string) {
+    addLineToRenderer(`${rolename}: ${text}`)
+  }
+
+  async function addLineToRenderer(line: string) {
+    textForRenderer.value = `${textForRenderer.value}\n${line}`
+    editScene('Test', 'start', textForRenderer.value)
+  }
+
+  return { curRoomId, messages, role, roleList, usedAvatar, switchRoom, addText }
 })

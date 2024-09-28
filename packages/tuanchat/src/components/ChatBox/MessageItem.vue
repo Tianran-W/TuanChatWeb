@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ElAvatar, ElText } from 'element-plus'
+import { ElAvatar, ElButton, ElText } from 'element-plus'
 import { MsgEnum } from '@/enums'
 import { useRoleStore } from '@/stores/role'
+import { useRoomStore } from '@/stores'
 import type { TextBody } from '@/stores/types'
 import type { Message } from '@/services'
 
@@ -10,7 +11,13 @@ const props = defineProps<{
 }>()
 
 const roleStore = useRoleStore()
+const roomStore = useRoomStore()
 const msgType: MsgEnum = props.msg.messageType!
+
+const handleAddToRenderer = () => {
+  const role = roomStore.roleList.find((role) => role.roleId === props.msg.roleId)
+  roomStore.addText(role?.roleName!, (props.msg.body as TextBody).content)
+}
 </script>
 
 <template>
@@ -21,10 +28,16 @@ const msgType: MsgEnum = props.msg.messageType!
       fit="cover"
       :src="roleStore.avatarToUrl.get(props.msg.avatarId!)"
     />
-    <ElText v-if="msgType === MsgEnum.TEXT" size="large">{{
-      (msg.body as TextBody).content
-    }}</ElText>
-    <h1 v-else>Unsupported message type</h1>
+    <div class="message-content">
+      <div class="message-top">
+        <ElText size="small">{{ roomStore.role?.roleName }}</ElText>
+        <ElButton type="text" @click="handleAddToRenderer">加入对话</ElButton>
+      </div>
+      <ElText v-if="msgType === MsgEnum.TEXT" size="large">{{
+        (msg.body as TextBody).content
+      }}</ElText>
+      <h1 v-else>Unsupported message type</h1>
+    </div>
   </div>
 </template>
 
@@ -32,6 +45,17 @@ const msgType: MsgEnum = props.msg.messageType!
 .message-item {
   display: grid;
   grid-template-columns: 80px 1fr;
+  gap: 10px;
+}
+
+.message-content {
+  display: grid;
+  grid-template-rows: 10px 1fr;
+}
+
+.message-top {
+  display: grid;
+  grid-template-columns: 1fr auto;
   gap: 10px;
 }
 
