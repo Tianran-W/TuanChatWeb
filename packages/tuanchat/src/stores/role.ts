@@ -1,8 +1,10 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
+import type { UserRole } from '@/services'
 
 export const useRoleStore = defineStore('role', () => {
-  const curRole = ref<string>('')
+  const roleList = reactive<Map<number, UserRole>>(new Map<number, UserRole>())
+  const currentRole = ref<number>()
 
-  return { curRole }
+  return { roleList, currentRole }
 })

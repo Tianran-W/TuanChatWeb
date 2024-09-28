@@ -2,15 +2,15 @@
 import { ElButton, ElInput } from 'element-plus'
 import { ref } from 'vue'
 import { Promotion } from '@element-plus/icons-vue'
-import { useMsgStore, useGroupStore } from '@/stores'
+import { useMsgStore, useRoomStore } from '@/stores'
 
 const message = ref('')
 const msgStore = useMsgStore()
-const groupStore = useGroupStore()
+const roomStore = useRoomStore()
 
 const sendMessage = () => {
   if (message.value.trim() === '') return
-  msgStore.sendMsg(message.value, groupStore.currentGroup)
+  msgStore.sendMsg(message.value, roomStore.curRoomId)
   message.value = ''
 }
 </script>

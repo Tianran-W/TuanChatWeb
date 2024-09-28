@@ -2,10 +2,10 @@
 import { ElScrollbar } from 'element-plus'
 import MessageItem from './MessageItem.vue'
 import { ref, nextTick, watch } from 'vue'
-import { useGroupStore, useMsgStore } from '@/stores'
+import { useRoomStore, useMsgStore } from '@/stores'
 import type { Message } from '@/services/tuanchat/apis'
 
-const groupStore = useGroupStore()
+const roomStore = useRoomStore()
 const msgStore = useMsgStore()
 const scrollTop = ref(0)
 const innerRef = ref<HTMLDivElement>()
@@ -16,7 +16,7 @@ defineProps<{
 }>()
 
 watch(
-  () => [msgStore.curMessages.length, groupStore.currentGroup],
+  () => [msgStore.curMessages.length, roomStore.curRoomId],
   (newval, oldval) => {
     nextTick(() => {
       if (
@@ -39,7 +39,7 @@ const onScroll = (scroll: { scrollLeft: number; scrollTop: number }) => {
 
 const onWheel = (e: WheelEvent) => {
   if (e.deltaY < 0 && scrollTop.value === 0) {
-    msgStore.fetchMsg(groupStore.currentGroup)
+    msgStore.fetchMsg(roomStore.curRoomId)
   }
 }
 </script>

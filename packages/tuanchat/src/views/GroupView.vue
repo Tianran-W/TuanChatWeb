@@ -2,20 +2,21 @@
 import { ref, watch, onMounted } from 'vue'
 import { MemberList, MessageList, InputBox } from '@/components'
 import { ElContainer, ElMain, ElAside } from 'element-plus'
-import { useMsgStore } from '@/stores'
+import { useRoomStore, useMsgStore } from '@/stores'
 import { useRoute } from 'vue-router'
 
+const roomStore = useRoomStore()
 const msgStore = useMsgStore()
 const route = useRoute()
 
 onMounted(() => {
-  msgStore.switchRoom(Number(route.params.id))
+  roomStore.switchRoom(Number(route.params.id))
 })
 
 watch(
   () => route.params.id,
   (newId) => {
-    msgStore.switchRoom(Number(newId))
+    roomStore.switchRoom(Number(newId))
   }
 )
 

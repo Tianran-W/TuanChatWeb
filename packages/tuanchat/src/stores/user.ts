@@ -3,12 +3,14 @@ import { defineStore } from 'pinia'
 import type { UserInfoType } from './types'
 import { tuanApis } from '@/services'
 import { useGroupStore } from './group'
+import { useRoleStore } from './role'
 import wsIns from '@/utils/websocket/websocket'
 
 export const useUserStore = defineStore('user', () => {
   const isSign = ref(false)
   const userInfo = ref<UserInfoType>({ userId: 0, username: '', avatar: '', roleIds: [] })
   const groupStore = useGroupStore()
+  const roleStore = useRoleStore()
 
   function login(uid: string) {
     return new Promise((resolve, reject) => {
@@ -42,16 +44,20 @@ export const useUserStore = defineStore('user', () => {
   function getUserInfo(uid: string) {
     return new Promise((resolve, reject) => {
       tuanApis.getUserInfo({ userId: Number(uid) }).then((res) => {
-        if (res.data.data !== undefined) {
-          userInfo.value.userId = res.data.data.userId || 0
-          userInfo.value.username = res.data.data.username || ''
-          userInfo.value.avatar = res.data.data.avatar || ''
-          getUserDetail()
-          resolve('User info loaded')
-        } else {
+        if (res.data.data === undefined) {
           logout()
           reject(new Error('User info not found'))
+          return
         }
+        const data = res.data.data
+        userInfo.value.userId = data.userId || 0
+        userInfo.value.username = data.username || ''
+        userInfo.value.avatar = data.avatar || ''
+        data.roles?.forEach((role) => {
+          roleStore.roleList.set(role.roleId!, role)
+        })
+        getUserDetail()
+        resolve('User info loaded')
       })
     })
   }
