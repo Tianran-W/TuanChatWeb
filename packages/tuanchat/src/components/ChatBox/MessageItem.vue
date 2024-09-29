@@ -5,6 +5,7 @@ import { useRoleStore } from '@/stores/role'
 import { useRoomStore } from '@/stores'
 import type { TextBody } from '@/stores/types'
 import type { Message } from '@/services'
+import { computed } from 'vue'
 
 const props = defineProps<{
   msg: Message
@@ -13,10 +14,12 @@ const props = defineProps<{
 const roleStore = useRoleStore()
 const roomStore = useRoomStore()
 const msgType: MsgEnum = props.msg.messageType!
+const role = computed(() => {
+  return roomStore.roleList.find((role) => role.roleId === props.msg.roleId)
+})
 
 const handleAddToRenderer = () => {
-  const role = roomStore.roleList.find((role) => role.roleId === props.msg.roleId)
-  roomStore.addText(role?.roleName!, (props.msg.body as TextBody).content)
+  roomStore.addDialog(role.value!, props.msg.avatarId!, (props.msg.body as TextBody).content)
 }
 </script>
 
@@ -30,8 +33,8 @@ const handleAddToRenderer = () => {
     />
     <div class="message-content">
       <div class="message-top">
-        <ElText size="small">{{ roomStore.role?.roleName }}</ElText>
-        <ElButton type="text" @click="handleAddToRenderer">加入对话</ElButton>
+        <ElText size="small">{{ role?.roleName }}</ElText>
+        <ElButton @click="handleAddToRenderer">加入对话</ElButton>
       </div>
       <ElText v-if="msgType === MsgEnum.TEXT" size="large">{{
         (msg.body as TextBody).content

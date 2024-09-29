@@ -2,7 +2,6 @@
 import router from '../router'
 
 import { reactive, ref } from 'vue'
-import { useRoute } from 'vue-router'
 import { useUserStore } from '../stores/user'
 import { ElButton, ElForm, ElFormItem, ElInput } from 'element-plus'
 
@@ -10,7 +9,6 @@ import type { FormInstance } from 'element-plus'
 
 const userStore = useUserStore()
 const formRef = ref<FormInstance>()
-const route = useRoute()
 
 const formMember = reactive({
   uid: ''
@@ -18,20 +16,12 @@ const formMember = reactive({
 
 const submitForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return
-  formEl.validate((valid) => {
+  formEl.validate(async (valid) => {
     if (valid) {
-      userStore.login(formMember.uid).then(
-        () => {
-          if (route.query.redirect) {
-            router.push(route.query.redirect as string)
-          } else {
-            router.push('/')
-          }
-        },
-        (failedMsg) => {
-          console.log(failedMsg)
-        }
-      )
+      await userStore.login(formMember.uid).catch((err) => {
+        console.error(err)
+      })
+      router.push('/')
     }
   })
 }

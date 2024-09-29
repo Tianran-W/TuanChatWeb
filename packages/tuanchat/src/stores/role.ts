@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
 import { tuanApis } from '@/services'
+import { saveImageFromUrl } from '@/utils/renderer'
 import type { UserRole, RoleAvatar } from '@/services'
 
 export const useRoleStore = defineStore('role', () => {
@@ -20,6 +21,11 @@ export const useRoleStore = defineStore('role', () => {
         data.forEach((avatar: RoleAvatar) => {
           if (avatar.avatarId !== undefined) {
             avatarToUrl.set(avatar.avatarId, avatar.avatarUrl!)
+            saveImageFromUrl(
+              avatar.avatarUrl!,
+              'Test',
+              `role_${roleId}_avatar_${avatar.avatarId}.png`
+            )
           }
         })
         roleToAvatars.set(

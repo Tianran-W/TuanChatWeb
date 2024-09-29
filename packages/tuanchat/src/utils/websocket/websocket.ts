@@ -12,7 +12,6 @@ class WS {
   #connectReady = false
 
   constructor() {
-    this.initConnect()
     worker.onmessage = this.#onWorkerMsg
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden && !this.#connectReady) {
@@ -23,7 +22,7 @@ class WS {
 
   initConnect = () => {
     const token = localStorage.getItem('token')
-    worker.postMessage(`{"type":"initWS","value":${token}}`)
+    worker.postMessage(JSON.stringify({ type: 'initWS', value: token }))
   }
 
   send = (req: WsReqType) => {
@@ -90,7 +89,7 @@ class WS {
   }
 
   #send(msg: WsReqType) {
-    worker.postMessage(`{"type":"message","value":${JSON.stringify(msg)}}`)
+    worker.postMessage(JSON.stringify({ type: 'message', value: msg }))
   }
 }
 

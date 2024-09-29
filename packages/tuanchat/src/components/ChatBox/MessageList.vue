@@ -17,7 +17,7 @@ defineProps<{
 }>()
 
 watch(
-  () => [roomStore.messages.length, roomStore.curRoomId],
+  () => [roomStore.messages.length, roomStore.curRoom?.roomId!],
   (newval, oldval) => {
     nextTick(() => {
       if (
@@ -41,7 +41,7 @@ const onScroll = (scroll: { scrollLeft: number; scrollTop: number }) => {
 const onWheel = (e: WheelEvent) => {
   if (e.deltaY < 0 && scrollTop.value === 0 && !isFetching.value) {
     isFetching.value = true
-    msgStore.fetchMsg(roomStore.curRoomId).then(() => {
+    msgStore.fetchMsg(roomStore.curRoom?.roomId!).then(() => {
       isFetching.value = false
     })
   }

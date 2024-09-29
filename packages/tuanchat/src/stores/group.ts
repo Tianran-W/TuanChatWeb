@@ -8,17 +8,12 @@ export const useGroupStore = defineStore('group', () => {
   const subGroupMap = reactive(new Map<number, number[]>())
   const groupRoleList = reactive(new Map<number, UserRole[]>())
 
-  function getGroupList() {
-    return new Promise((resolve, reject) => {
-      tuanApis.getUserGroups().then((res) => {
-        if (res.data.data !== undefined) {
-          initGroupMap(res.data.data)
-          resolve('Group list loaded')
-        } else {
-          reject(new Error('Group list not found'))
-        }
-      })
-    })
+  async function getGroupList() {
+    const res_data = (await tuanApis.getUserGroups()).data
+    if (res_data.data === undefined) {
+      throw new Error('Group list not found')
+    }
+    initGroupMap(res_data.data)
   }
 
   function initGroupMap(grouplist: RoomGroup[]) {

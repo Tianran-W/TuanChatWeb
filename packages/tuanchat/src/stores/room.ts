@@ -4,14 +4,15 @@ import { useMsgStore } from './message'
 import { useGroupStore } from './group'
 import { useRoleStore } from './role'
 import { editScene } from '@/utils/renderer'
-import type { Message, UserRole } from '@/services'
+import type { Message, UserRole, RoomGroup } from '@/services'
 
 export const useRoomStore = defineStore('room', () => {
   const msgStore = useMsgStore()
   const groupStore = useGroupStore()
   const roleStore = useRoleStore()
+
   const cachedRoomList = reactive(new Map<number, boolean>()) // true为群，false为私聊，有key代表在缓存中
-  const curRoomId = ref<number>(0)
+  const curRoom = ref<RoomGroup>()
   const role = ref<UserRole>()
   const messages = ref<Message[]>([])
   const roleList = ref<UserRole[]>([])
@@ -19,7 +20,7 @@ export const useRoomStore = defineStore('room', () => {
   const textForRenderer = ref<string>('intro:你好|欢迎来到 WebGAL 的世界;')
 
   function switchRoom(roomId: number) {
-    curRoomId.value = roomId
+    curRoom.value = groupStore.groupList.get(roomId)
     if (!cachedRoomList.has(roomId)) {
       initRoom(roomId)
       //TODO：兼容私聊信息
@@ -50,8 +51,9 @@ export const useRoomStore = defineStore('room', () => {
     role.value = roleStore.groupToRole.get(roomId) || undefined
   }
 
-  function addText(rolename: string, text: string) {
-    addLineToRenderer(`${rolename}: ${text}`)
+  function addDialog(role: UserRole, avatarId: number, text: string) {
+    addLineToRenderer(`changeFigure:role_${role.roleId}_avatar_${avatarId}.png -left -next;`)
+    addLineToRenderer(`${role.roleName}: ${text}`)
   }
 
   async function addLineToRenderer(line: string) {
@@ -59,5 +61,5 @@ export const useRoomStore = defineStore('room', () => {
     editScene('Test', 'start', textForRenderer.value)
   }
 
-  return { curRoomId, messages, role, roleList, usedAvatar, switchRoom, addText }
+  return { curRoom, messages, role, roleList, usedAvatar, switchRoom, addDialog }
 })

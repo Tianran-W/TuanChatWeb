@@ -10,10 +10,12 @@ const roomStore = useRoomStore()
 const roleStore = useRoleStore()
 
 const sendMessage = () => {
+  console.log('send message')
+  console.log(roomStore.curRoom)
   if (message.value.trim() === '') return
   msgStore.sendMsg(
     message.value,
-    roomStore.curRoomId,
+    roomStore.curRoom?.roomId!,
     roomStore.role?.roleId!,
     roomStore.usedAvatar
   )

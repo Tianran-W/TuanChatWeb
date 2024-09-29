@@ -12,25 +12,15 @@ export const useUserStore = defineStore('user', () => {
   const groupStore = useGroupStore()
   const roleStore = useRoleStore()
 
-  function login(uid: string) {
-    return new Promise((resolve, reject) => {
-      tuanApis.login({ userId: uid, password: '123456' }).then((res) => {
-        if (res.data.data !== undefined) {
-          isSign.value = true
-          localStorage.setItem('token', res.data.data)
-          wsIns.initConnect()
-          getUserInfo(uid)
-            .then(() => {
-              resolve('Login success')
-            })
-            .catch((err) => {
-              reject(err)
-            })
-        } else {
-          reject(new Error('Login failed'))
-        }
-      })
-    })
+  async function login(uid: string) {
+    const res_data = (await tuanApis.login({ userId: uid, password: '123456' })).data
+    if (res_data.data === undefined) {
+      throw new Error('Login failed')
+    }
+    isSign.value = true
+    localStorage.setItem('token', res_data.data)
+    wsIns.initConnect()
+    await getUserInfo(uid)
   }
 
   function logout() {
@@ -42,29 +32,17 @@ export const useUserStore = defineStore('user', () => {
     localStorage.removeItem('token')
   }
 
-  function getUserInfo(uid: string) {
-    return new Promise((resolve, reject) => {
-      tuanApis.getUserInfo({ userId: Number(uid) }).then((res) => {
-        if (res.data.data === undefined) {
-          logout()
-          reject(new Error('User info not found'))
-          return
-        }
-        const data = res.data.data
-        userInfo.value.userId = data.userId!
-        userInfo.value.username = data.username!
-        userInfo.value.avatar = data.avatar!
-        roleStore.roleList = data.roles!
-        getUserDetail()
-        resolve('User info loaded')
-      })
-    })
-  }
-
-  function getUserDetail() {
-    groupStore.getGroupList().catch((err) => {
-      throw new Error(err)
-    })
+  async function getUserInfo(uid: string) {
+    const res_data = (await tuanApis.getUserInfo({ userId: Number(uid) })).data
+    if (res_data.data === undefined) {
+      logout()
+      throw new Error('Group list not found')
+    }
+    userInfo.value.userId = res_data.data.userId!
+    userInfo.value.username = res_data.data.username!
+    userInfo.value.avatar = res_data.data.avatar!
+    roleStore.roleList = res_data.data.roles!
+    await groupStore.getGroupList()
   }
 
   return { userInfo, isSign, login, logout }
