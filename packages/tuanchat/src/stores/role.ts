@@ -1,13 +1,15 @@
 import { defineStore } from 'pinia'
-import { reactive } from 'vue'
+import { ref } from 'vue'
 import { tuanApis } from '@/services'
 import type { UserRole, RoleAvatar } from '@/services'
+import type { RoleInfoType } from './types'
 
 export const useRoleStore = defineStore('role', () => {
-  const roleList = reactive(new Map<number, UserRole>())
-  const roleToAvatars = reactive(new Map<number, number[]>())
-  const avatarToUrl = reactive(new Map<number, string>())
-  const groupToRole = reactive(new Map<number, UserRole>())
+  const roleList = ref(new Map<number, UserRole>())
+  const roleInfo = ref(new Map<number, RoleInfoType>())
+  const roleToAvatars = ref(new Map<number, number[]>())
+  const avatarToUrl = ref(new Map<number, string>())
+  const groupToRole = ref(new Map<number, UserRole>())
 
   async function fetchRoleAvatars(roleId: number) {
     const data = (await tuanApis.getRoleAvatars({ roleId: roleId })).data.data
@@ -16,10 +18,10 @@ export const useRoleStore = defineStore('role', () => {
     }
     data.forEach((avatar: RoleAvatar) => {
       if (avatar.avatarId !== undefined) {
-        avatarToUrl.set(avatar.avatarId, avatar.avatarUrl!)
+        avatarToUrl.value.set(avatar.avatarId, avatar.avatarUrl!)
       }
     })
-    roleToAvatars.set(
+    roleToAvatars.value.set(
       roleId,
       data
         .filter((avatar: RoleAvatar) => avatar.avatarId !== undefined)
@@ -32,15 +34,16 @@ export const useRoleStore = defineStore('role', () => {
     if (data === undefined) {
       throw new Error('Role avatars not found')
     }
-    avatarToUrl.set(avatarId, data.avatarUrl!)
+    avatarToUrl.value.set(avatarId, data.avatarUrl!)
   }
 
   async function fetchRole(groupId: number) {
-    groupToRole.set(groupId, roleList.values().next().value)
+    groupToRole.value.set(groupId, roleList.value.values().next().value)
   }
 
   return {
     roleList,
+    roleInfo,
     roleToAvatars,
     avatarToUrl,
     groupToRole,

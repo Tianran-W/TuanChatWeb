@@ -1,6 +1,6 @@
 import { Api as TerreApi } from './terre/apis'
 import { Api as TuanApi } from './tuanchat/apis'
-import type { Message, RoomGroup, UserRole, RoleAvatar } from './tuanchat/apis'
+import type { Message, RoomGroup, UserRole, RoleAvatar, RoleAbilityTable } from './tuanchat/apis'
 
 export const computedToken = {
   get() {
@@ -14,4 +14,4 @@ export const tuanApis = new TuanApi({
   headers: { Authorization: `Bearer ${computedToken.get()}` }
 }).capi
 
-export type { Message, RoomGroup, UserRole, RoleAvatar }
+export type { Message, RoomGroup, UserRole, RoleAvatar, RoleAbilityTable }

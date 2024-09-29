@@ -1,8 +1,7 @@
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { UserInfoType } from './types'
 import { tuanApis } from '@/services'
-import type { UserRole } from '@/services'
 import { useGroupStore } from './group'
 import { useRoleStore } from './role'
 import wsIns from '@/utils/websocket/websocket'
@@ -29,7 +28,7 @@ export const useUserStore = defineStore('user', () => {
     userInfo.value.userId = 0
     userInfo.value.username = ''
     userInfo.value.avatar = ''
-    roleStore.roleList = reactive(new Map<number, UserRole>())
+    roleStore.roleList.clear()
     localStorage.removeItem('token')
   }
 

@@ -18,7 +18,7 @@ const sendMessage = () => {
     message.value,
     roomStore.curRoom?.roomId!,
     roomStore.role?.roleId!,
-    roomStore.usedAvatar === 0 ? 1 : roomStore.usedAvatar
+    roomStore.usedAvatar
   )
   message.value = ''
 }

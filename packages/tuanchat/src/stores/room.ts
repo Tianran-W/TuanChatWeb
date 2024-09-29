@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { reactive, ref } from 'vue'
+import { ref } from 'vue'
 import { useMsgStore } from './message'
 import { useGroupStore } from './group'
 import { useRoleStore } from './role'
@@ -11,20 +11,20 @@ export const useRoomStore = defineStore('room', () => {
   const groupStore = useGroupStore()
   const roleStore = useRoleStore()
 
-  const cachedRoomList = reactive(new Map<number, boolean>()) // true为群，false为私聊，有key代表在缓存中
+  const cachedRoomList = ref(new Map<number, boolean>()) // true为群，false为私聊，有key代表在缓存中
   const curRoom = ref<RoomGroup>()
   const role = ref<UserRole>()
   const messages = ref<Message[]>([])
   const roleList = ref<UserRole[]>([])
-  const usedAvatar = ref<number>(0)
+  const usedAvatar = ref<number>(1)
   const textForRenderer = ref<string>('intro:你好|欢迎来到 WebGAL 的世界;')
 
   async function switchRoom(roomId: number) {
     curRoom.value = groupStore.groupList.get(roomId)
-    if (!cachedRoomList.has(roomId)) {
+    if (!cachedRoomList.value.has(roomId)) {
       await initRoom(roomId)
       //TODO：兼容私聊信息
-      cachedRoomList.set(roomId, true)
+      cachedRoomList.value.set(roomId, true)
     } else {
       await loadRoom(roomId)
     }

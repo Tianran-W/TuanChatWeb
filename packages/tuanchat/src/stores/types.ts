@@ -1,4 +1,5 @@
 import { MsgEnum } from '@/enums/MessageType'
+import type { RoleAbilityTable } from '@/services'
 
 /** 用户信息 */
 export type UserInfoType = {
@@ -22,6 +23,10 @@ export type RoleInfoType = {
   roleName: string
   /** 角色头像 */
   roleAvatar: string
+  /** 角色描述 */
+  roleDescription: string
+  /** 角色能力 */
+  roleAbility: RoleAbilityTable
 }
 
 /** 群聊信息 */

@@ -43,8 +43,22 @@ export interface ApiResultTextMsgResp {
   data?: TextMsgResp
 }
 
+export interface AdminAddReq {
+  /** @format int64 */
+  roomId: number
+  uidList: number[]
+}
+
 export interface TextMsgResp {
   content?: string
+}
+
+export interface ApiResultBoolean {
+  success?: boolean
+  /** @format int32 */
+  errCode?: number
+  errMsg?: string
+  data?: boolean
 }
 
 export interface ChatMessageMarkRequest {
@@ -118,6 +132,10 @@ export interface Room {
   lastActiveTime?: string
 }
 
+export interface GroupAddReq {
+  uidList: number[]
+}
+
 export interface RoleAbilityTable {
   /** @format int64 */
   roleId?: number
@@ -167,7 +185,7 @@ export interface RoleAbilityTable {
   cthulhuMythos?: number
   /** @format int32 */
   disguise?: number
-  /** @format int64 */
+  /** @format int32 */
   dodge?: number
   /** @format int32 */
   drive?: number
@@ -245,6 +263,14 @@ export interface RoleAbilityTable {
   artillery?: number
 }
 
+export interface ApiResultIdRespVO {
+  success?: boolean
+  /** @format int32 */
+  errCode?: number
+  errMsg?: string
+  data?: IdRespVO
+}
+
 export interface ApiResultObject {
   success?: boolean
   /** @format int32 */
@@ -253,12 +279,23 @@ export interface ApiResultObject {
   data?: object
 }
 
+export interface IdRespVO {
+  /** @format int64 */
+  id?: number
+}
+
 export interface ApiResult {
   success?: boolean
   /** @format int32 */
   errCode?: number
   errMsg?: string
   data?: object
+}
+
+export interface MemberAddReq {
+  /** @format int64 */
+  roomId: number
+  uidList: number[]
 }
 
 export interface ApiResultUserInfoResponse {
@@ -301,6 +338,12 @@ export interface UserRole {
   /** @format date-time */
   updateTime?: string
   avatar?: string
+}
+
+export interface ParseExcelRequest {
+  /** @format int64 */
+  roleId?: number
+  excelCode?: string
 }
 
 export interface CursorPageBaseReq {
@@ -618,6 +661,27 @@ export interface FriendDeleteReq {
   targetUid: number
 }
 
+export interface CursorPageBaseResponseFriendApplyResp {
+  success: boolean
+  errCode: null
+  errMsg: null
+  data: {
+    cursor: string
+    isLast: boolean
+    list: {
+      uid?: number
+      msg?: string
+      status?: number
+    }[]
+  }
+}
+
+export interface AdminRevokeReq {
+  /** @format int64 */
+  roomId: number
+  uidList: number[]
+}
+
 /** 发送消息请求体 */
 export interface GeneralMessage {
   /** 会话id */
@@ -796,76 +860,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     login: (data: UserLoginRequest, params: RequestParams = {}) =>
-      this.request<ApiResultString, any>({
+      this.request<ApiResultString, ApiResult | ApiResultVoid>({
         path: `/capi/user/public/login`,
         method: 'POST',
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * No description
-     *
-     * @tags user-controller
-     * @name GetUserInfo
-     * @summary getUserInfo
-     * @request GET:/capi/user/info
-     * @secure
-     */
-    getUserInfo: (
-      query: {
-        /**
-         * @format int64
-         * @example 1
-         */
-        userId: number
-      },
-      params: RequestParams = {}
-    ) =>
-      this.request<ApiResultUserInfoResponse, any>({
-        path: `/capi/user/info`,
-        method: 'GET',
-        query: query,
-        secure: true,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * No description
-     *
-     * @tags friend-controller
-     * @name Apply
-     * @summary apply
-     * @request POST:/capi/user/friend/apply
-     * @secure
-     */
-    apply: (data: FriendApplyReq, params: RequestParams = {}) =>
-      this.request<ApiResultVoid, any>({
-        path: `/capi/user/friend/apply`,
-        method: 'POST',
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * No description
-     *
-     * @name UserFriendApplyList
-     * @summary 好友审批同意或忽略
-     * @request GET:/capi/user/friend/apply
-     * @secure
-     */
-    userFriendApplyList: (data: object, params: RequestParams = {}) =>
-      this.request<object, any>({
-        path: `/capi/user/friend/apply`,
-        method: 'GET',
         body: data,
         secure: true,
         type: ContentType.Json,
@@ -894,6 +891,54 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description 用于向另一个用户发送好友申请
+     *
+     * @tags friend-controller
+     * @name Apply
+     * @summary apply
+     * @request POST:/capi/user/friend/apply
+     * @secure
+     */
+    apply: (data: FriendApplyReq, params: RequestParams = {}) =>
+      this.request<ApiResultVoid, ApiResult | ApiResultVoid>({
+        path: `/capi/user/friend/apply`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags user-controller
+     * @name GetUserInfo
+     * @summary getUserInfo
+     * @request GET:/capi/user/info
+     * @secure
+     */
+    getUserInfo: (
+      query: {
+        /**
+         * @format int64
+         * @example 1
+         */
+        userId: number
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<ApiResultUserInfoResponse, ApiResult | ApiResultVoid>({
+        path: `/capi/user/info`,
+        method: 'GET',
+        query: query,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
      * No description
      *
      * @tags friend-controller
@@ -914,7 +959,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {}
     ) =>
-      this.request<ApiResultCursorPageBaseResponseFriendResp, any>({
+      this.request<ApiResultCursorPageBaseResponseFriendResp, ApiResult | ApiResultVoid>({
         path: `/capi/user/friend/page`,
         method: 'GET',
         query: query,
@@ -924,7 +969,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * No description
+     * @description 用于批量判断是否自己好友，适用于群聊中查看成员是否好友，便于显示能否添加好友
      *
      * @tags friend-controller
      * @name Check
@@ -939,7 +984,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {}
     ) =>
-      this.request<ApiResultFriendCheckResp, any>({
+      this.request<ApiResultFriendCheckResp, ApiResult | ApiResultVoid>({
         path: `/capi/user/friend/check`,
         method: 'GET',
         query: query,
@@ -973,7 +1018,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * No description
+     * @description 用于查看未读好友申请数量
      *
      * @tags friend-controller
      * @name Unread
@@ -982,7 +1027,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     unread: (params: RequestParams = {}) =>
-      this.request<ApiResultFriendUnreadResp, any>({
+      this.request<ApiResultFriendUnreadResp, ApiResult | ApiResultVoid>({
         path: `/capi/user/friend/apply/unread`,
         method: 'GET',
         secure: true,
@@ -991,7 +1036,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * No description
+     * @description 用于分页查询好友申请列表 pageSize表示查询每页的记录条数 cursor初始为null，后续每次查询使用上一次返回的cursor
      *
      * @tags friend-controller
      * @name Page
@@ -1014,7 +1059,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {}
     ) =>
-      this.request<ApiResultPageBaseRespFriendApplyResp, any>({
+      this.request<ApiResultPageBaseRespFriendApplyResp, ApiResult | ApiResultVoid>({
         path: `/capi/user/friend/apply/page`,
         method: 'GET',
         query: query,
@@ -1024,7 +1069,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * No description
+     * @description 用于删除好友关系
      *
      * @tags friend-controller
      * @name Delete
@@ -1033,7 +1078,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     delete: (data: FriendDeleteReq, params: RequestParams = {}) =>
-      this.request<ApiResultVoid, any>({
+      this.request<ApiResultVoid, ApiResult | ApiResultVoid>({
         path: `/capi/user/friend`,
         method: 'DELETE',
         body: data,
@@ -1064,7 +1109,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {}
     ) =>
-      this.request<ApiResultOssResp, any>({
+      this.request<ApiResultOssResp, ApiResult | ApiResultVoid>({
         path: `/capi/oss/upload/url`,
         method: 'GET',
         query: query,
@@ -1094,7 +1139,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {}
     ) =>
-      this.request<ApiResultCursorPageBaseResponseChatRoomResp, any>({
+      this.request<ApiResultCursorPageBaseResponseChatRoomResp, ApiResult | ApiResultVoid>({
         path: `/capi/chat/contact/page`,
         method: 'GET',
         query: query,
@@ -1113,7 +1158,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     sendMessage: (data: ChatMessageRequest, params: RequestParams = {}) =>
-      this.request<ApiResult, any>({
+      this.request<ApiResult, ApiResult | ApiResultVoid>({
         path: `/capi/chat/message`,
         method: 'POST',
         body: data,
@@ -1133,40 +1178,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     updateMessage: (data: ChatMessageRequest, params: RequestParams = {}) =>
-      this.request<ApiResultTextMsgResp, any>({
+      this.request<ApiResultTextMsgResp, ApiResult | ApiResultVoid>({
         path: `/capi/chat/message`,
         method: 'PUT',
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * No description
-     *
-     * @tags room-controller
-     * @name GroupDetail
-     * @summary groupDetail
-     * @request GET:/capi/room/info
-     * @secure
-     */
-    groupDetail: (
-      query: {
-        /**
-         * @format int64
-         * @example 1
-         */
-        roomId: number
-      },
-      params: RequestParams = {}
-    ) =>
-      this.request<ApiResultRoomResp, any>({
-        path: `/capi/room/info`,
-        method: 'GET',
-        query: query,
-        secure: true,
         format: 'json',
         ...params
       }),
@@ -1181,7 +1198,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     setMsgMark: (data: ChatMessageMarkRequest, params: RequestParams = {}) =>
-      this.request<ApiResultVoid, any>({
+      this.request<ApiResultVoid, ApiResult | ApiResultVoid>({
         path: `/capi/chat/message/mark`,
         method: 'PUT',
         body: data,
@@ -1217,8 +1234,36 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {}
     ) =>
-      this.request<ApiResultCursorPageBaseResponseChatMessageResponse, any>({
+      this.request<ApiResultCursorPageBaseResponseChatMessageResponse, ApiResult | ApiResultVoid>({
         path: `/capi/chat/message/page`,
+        method: 'GET',
+        query: query,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags room-controller
+     * @name GroupDetail
+     * @summary groupDetail
+     * @request GET:/capi/room/info
+     * @secure
+     */
+    groupDetail: (
+      query: {
+        /**
+         * @format int64
+         * @example 1
+         */
+        roomId: number
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<ApiResultRoomResp, ApiResult | ApiResultVoid>({
+        path: `/capi/room/info`,
         method: 'GET',
         query: query,
         secure: true,
@@ -1245,7 +1290,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {}
     ) =>
-      this.request<ApiResultListUserRole, any>({
+      this.request<ApiResultListUserRole, ApiResult | ApiResultVoid>({
         path: `/capi/room/group/roles`,
         method: 'GET',
         query: query,
@@ -1270,7 +1315,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {}
     ) =>
-      this.request<ApiResultListChatMemberResp, any>({
+      this.request<ApiResultListChatMemberResp, ApiResult | ApiResultVoid>({
         path: `/capi/room/group/member/page`,
         method: 'GET',
         query: query,
@@ -1289,7 +1334,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     getUserGroups: (params: RequestParams = {}) =>
-      this.request<ApiResultListRoomGroup, any>({
+      this.request<ApiResultListRoomGroup, ApiResult | ApiResultVoid>({
         path: `/capi/room/group/list`,
         method: 'GET',
         secure: true,
@@ -1369,7 +1414,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {}
     ) =>
-      this.request<ApiResultRoleAbilityTable, any>({
+      this.request<ApiResultRoleAbilityTable, ApiResult | ApiResultVoid>({
         path: `/capi/role/ability`,
         method: 'GET',
         query: query,
@@ -1388,8 +1433,28 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     setRoleAbility: (data: RoleAbilityTable, params: RequestParams = {}) =>
-      this.request<ApiResultObject, any>({
+      this.request<ApiResultObject, ApiResult | ApiResultVoid>({
         path: `/capi/role/ability`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags role-controller
+     * @name ParseExcel
+     * @summary parseExcel
+     * @request POST:/capi/role/ability/excel
+     * @secure
+     */
+    parseExcel: (data: ParseExcelRequest, params: RequestParams = {}) =>
+      this.request<ApiResultRoleAbilityTable, ApiResult | ApiResultVoid>({
+        path: `/capi/role/ability/excel`,
         method: 'POST',
         body: data,
         secure: true,
@@ -1417,7 +1482,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {}
     ) =>
-      this.request<ApiResultUserRole, any>({
+      this.request<ApiResultUserRole, ApiResult | ApiResultVoid>({
         path: `/capi/role`,
         method: 'GET',
         query: query,
@@ -1445,7 +1510,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {}
     ) =>
-      this.request<ApiResultListRoleAvatar, any>({
+      this.request<ApiResultListRoleAvatar, ApiResult | ApiResultVoid>({
         path: `/capi/role/avatar`,
         method: 'GET',
         query: query,
@@ -1478,6 +1543,46 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags room-controller
+     * @name AddAdmin
+     * @summary addAdmin
+     * @request PUT:/capi/room/group/player
+     * @secure
+     */
+    addAdmin: (data: AdminAddReq, params: RequestParams = {}) =>
+      this.request<ApiResultBoolean, ApiResult | ApiResultVoid>({
+        path: `/capi/room/group/player`,
+        method: 'PUT',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags room-controller
+     * @name RevokeAdmin
+     * @summary revokeAdmin
+     * @request DELETE:/capi/room/group/player
+     * @secure
+     */
+    revokeAdmin: (data: AdminRevokeReq, params: RequestParams = {}) =>
+      this.request<ApiResultBoolean, ApiResult | ApiResultVoid>({
+        path: `/capi/room/group/player`,
+        method: 'DELETE',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags room-controller
      * @name CreatePrivateChat
      * @summary createPrivateChat
      * @request POST:/capi/room/friend
@@ -1486,6 +1591,46 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     createPrivateChat: (data: SubRoomRequest, params: RequestParams = {}) =>
       this.request<ApiResultRoom, any>({
         path: `/capi/room/friend`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags room-controller
+     * @name AddGroup
+     * @summary addGroup
+     * @request POST:/capi/room/group
+     * @secure
+     */
+    addGroup: (data: GroupAddReq, params: RequestParams = {}) =>
+      this.request<ApiResultIdRespVO, ApiResult | ApiResultVoid>({
+        path: `/capi/room/group`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags room-controller
+     * @name AddMember
+     * @summary addMember
+     * @request POST:/capi/room/group/member
+     * @secure
+     */
+    addMember: (data: MemberAddReq, params: RequestParams = {}) =>
+      this.request<ApiResultVoid, ApiResult | ApiResultVoid>({
+        path: `/capi/room/group/member`,
         method: 'POST',
         body: data,
         secure: true,
@@ -1514,7 +1659,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {}
     ) =>
-      this.request<ApiResultRoleAvatar, any>({
+      this.request<ApiResultRoleAvatar, ApiResult | ApiResultVoid>({
         path: `/capi/avatar`,
         method: 'GET',
         query: query,

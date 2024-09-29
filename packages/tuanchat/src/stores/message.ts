@@ -1,4 +1,4 @@
-import { reactive } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { tuanApis } from '@/services'
 import type { Message } from '@/services'
@@ -9,18 +9,18 @@ import wsIns from '@/utils/websocket/websocket'
 const pageSize = 10
 
 export const useMsgStore = defineStore('chat', () => {
-  const messagesList = reactive<Map<number, Message[]>>(new Map<number, Message[]>())
+  const messagesList = ref<Map<number, Message[]>>(new Map<number, Message[]>())
   const cursorMap = new Map<number, string>()
   const isLoaded = new Map<number, boolean>()
   const ws = wsIns
 
   function pushMsg(msg: Message) {
     const roomId = msg.roomId!
-    if (messagesList.has(roomId)) {
-      messagesList.get(roomId)?.push(msg)
+    if (messagesList.value.has(roomId)) {
+      messagesList.value.get(roomId)?.push(msg)
     } else {
       fetchMsg(roomId, pageSize).then(() => {
-        messagesList.get(roomId)?.push(msg)
+        messagesList.value.get(roomId)?.push(msg)
       })
     }
   }
@@ -46,10 +46,10 @@ export const useMsgStore = defineStore('chat', () => {
     const msgs = data.list!.map((msg) => msg.message).filter((item) => item !== undefined)
     if (msgs.length > 0) {
       cursorMap.set(roomId, data.cursor!)
-      if (messagesList.has(roomId)) {
-        messagesList.get(roomId)?.unshift(...msgs)
+      if (messagesList.value.has(roomId)) {
+        messagesList.value.get(roomId)?.unshift(...msgs)
       } else {
-        messagesList.set(roomId, msgs)
+        messagesList.value.set(roomId, msgs)
       }
     }
     cursorMap.set(roomId, data.cursor!)
