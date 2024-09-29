@@ -3,7 +3,7 @@ import { reactive, ref } from 'vue'
 import { useMsgStore } from './message'
 import { useGroupStore } from './group'
 import { useRoleStore } from './role'
-import { editScene } from '@/utils/renderer'
+import { editScene, createPreview } from '@/utils/renderer'
 import type { Message, UserRole, RoomGroup } from '@/services'
 
 export const useRoomStore = defineStore('room', () => {
@@ -19,18 +19,19 @@ export const useRoomStore = defineStore('room', () => {
   const usedAvatar = ref<number>(0)
   const textForRenderer = ref<string>('intro:你好|欢迎来到 WebGAL 的世界;')
 
-  function switchRoom(roomId: number) {
+  async function switchRoom(roomId: number) {
     curRoom.value = groupStore.groupList.get(roomId)
     if (!cachedRoomList.has(roomId)) {
-      initRoom(roomId)
+      await initRoom(roomId)
       //TODO：兼容私聊信息
       cachedRoomList.set(roomId, true)
     } else {
-      loadRoom(roomId)
+      await loadRoom(roomId)
     }
   }
 
-  function initRoom(roomId: number) {
+  async function initRoom(roomId: number) {
+    await createPreview(roomId)
     msgStore.fetchMsg(roomId).then(() => {
       messages.value = msgStore.messagesList.get(roomId)!
     })
@@ -45,7 +46,7 @@ export const useRoomStore = defineStore('room', () => {
     })
   }
 
-  function loadRoom(roomId: number) {
+  async function loadRoom(roomId: number) {
     messages.value = msgStore.messagesList.get(roomId) || []
     roleList.value = groupStore.groupRoleList.get(roomId) || []
     role.value = roleStore.groupToRole.get(roomId) || undefined

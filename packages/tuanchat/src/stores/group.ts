@@ -9,11 +9,11 @@ export const useGroupStore = defineStore('group', () => {
   const groupRoleList = reactive(new Map<number, UserRole[]>())
 
   async function getGroupList() {
-    const res_data = (await tuanApis.getUserGroups()).data
-    if (res_data.data === undefined) {
+    const data = (await tuanApis.getUserGroups()).data.data
+    if (data === undefined) {
       throw new Error('Group list not found')
     }
-    initGroupMap(res_data.data)
+    initGroupMap(data)
   }
 
   function initGroupMap(grouplist: RoomGroup[]) {
@@ -41,18 +41,12 @@ export const useGroupStore = defineStore('group', () => {
     })
   }
 
-  function fetchRoles(groupId: number) {
-    return new Promise((resolve, reject) => {
-      tuanApis.groupRole({ roomId: groupId }).then((res) => {
-        if (res.data.data === undefined) {
-          reject(new Error('Group roles not found'))
-          return
-        }
-        const data = res.data.data
-        groupRoleList.set(groupId, data)
-        resolve('Group roles loaded')
-      })
-    })
+  async function fetchRoles(groupId: number) {
+    const data = (await tuanApis.groupRole({ roomId: groupId })).data.data
+    if (data === undefined) {
+      throw new Error('Group roles not found')
+    }
+    groupRoleList.set(groupId, data)
   }
 
   return { groupList, subGroupMap, groupRoleList, getGroupList, fetchRoles }

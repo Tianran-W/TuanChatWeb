@@ -1,4 +1,4 @@
-import { editScene } from './game'
+import { editScene, createPreview } from './game'
 import { saveImageFromUrl } from './download'
 
-export { editScene, saveImageFromUrl }
+export { editScene, saveImageFromUrl, createPreview }

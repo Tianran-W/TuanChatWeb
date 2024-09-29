@@ -1,10 +1,18 @@
-import { HomeView, LoginView, GroupView, SettingView } from '@/views'
+import { HomeView, LoginView, GroupView, SettingView, RoleView } from '@/views'
 
-const ContentRouter = [
+export const ContentRouter = [
   {
     path: '',
     name: 'main',
     component: HomeView,
+    meta: {
+      requiresAuth: false
+    }
+  },
+  {
+    path: 'login',
+    name: 'login',
+    component: LoginView,
     meta: {
       requiresAuth: false
     }
@@ -18,11 +26,11 @@ const ContentRouter = [
     }
   },
   {
-    path: 'login',
-    name: 'login',
-    component: LoginView,
+    path: 'role/:id',
+    name: 'role',
+    component: RoleView,
     meta: {
-      requiresAuth: false
+      requiresAuth: true
     }
   },
   {
@@ -34,5 +42,3 @@ const ContentRouter = [
     }
   }
 ]
-
-export default ContentRouter

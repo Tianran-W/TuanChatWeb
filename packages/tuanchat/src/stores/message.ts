@@ -25,41 +25,34 @@ export const useMsgStore = defineStore('chat', () => {
     }
   }
 
-  function fetchMsg(roomId: number, size: number = pageSize) {
-    return new Promise((resolve, reject) => {
-      if (isLoaded.get(roomId)) {
-        resolve('No more message')
-        return
-      }
+  async function fetchMsg(roomId: number, size: number = pageSize) {
+    if (isLoaded.get(roomId)) {
+      return
+    }
 
-      tuanApis
-        .getMsgPage({
-          pageSize: size,
-          roomId: roomId,
-          cursor: cursorMap.get(roomId) || undefined
-        })
-        .then((res) => {
-          if (res.data.data === undefined) {
-            reject(new Error('Fetch message failed'))
-            return
-          }
-          const data = res.data.data
-          if (data.isLast) {
-            isLoaded.set(roomId, true)
-          }
-          const msgs = data.list!.map((msg) => msg.message).filter((item) => item !== undefined)
-          if (msgs.length > 0) {
-            cursorMap.set(roomId, data.cursor!)
-            if (messagesList.has(roomId)) {
-              messagesList.get(roomId)?.unshift(...msgs)
-            } else {
-              messagesList.set(roomId, msgs)
-            }
-          }
-          cursorMap.set(roomId, data.cursor!)
-          resolve('Fetch message success')
-        })
-    })
+    const data = (
+      await tuanApis.getMsgPage({
+        pageSize: size,
+        roomId: roomId,
+        cursor: cursorMap.get(roomId) || undefined
+      })
+    ).data.data
+    if (data === undefined) {
+      throw new Error('Fetch message failed')
+    }
+    if (data.isLast) {
+      isLoaded.set(roomId, true)
+    }
+    const msgs = data.list!.map((msg) => msg.message).filter((item) => item !== undefined)
+    if (msgs.length > 0) {
+      cursorMap.set(roomId, data.cursor!)
+      if (messagesList.has(roomId)) {
+        messagesList.get(roomId)?.unshift(...msgs)
+      } else {
+        messagesList.set(roomId, msgs)
+      }
+    }
+    cursorMap.set(roomId, data.cursor!)
   }
 
   function sendMsg(msg: string, roomId: number, roleId: number, avatarId: number) {

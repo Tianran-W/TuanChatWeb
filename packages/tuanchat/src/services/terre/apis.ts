@@ -65,7 +65,7 @@ export interface CreateGameDto {
   /** The name of the game to be created */
   gameName: string
   /** The name of the derivative to be used */
-  derivative: string
+  derivative?: string
   /** The name of the template to be applied */
   templateName: string
 }

@@ -9,7 +9,7 @@ const props = defineProps<{
 
 const roleStore = useRoleStore()
 const roleInfo = roleStore.roleList.get(props.roleId)
-const pathToGroup = `/role/${roleInfo?.roleName}`
+const pathToGroup = `/role/${roleInfo?.roleId}`
 </script>
 
 <template>

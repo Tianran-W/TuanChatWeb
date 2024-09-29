@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import { reactive } from 'vue'
 import { tuanApis } from '@/services'
-// import { saveImageFromUrl } from '@/utils/renderer'
 import type { UserRole, RoleAvatar } from '@/services'
 
 export const useRoleStore = defineStore('role', () => {
@@ -10,54 +9,34 @@ export const useRoleStore = defineStore('role', () => {
   const avatarToUrl = reactive(new Map<number, string>())
   const groupToRole = reactive(new Map<number, UserRole>())
 
-  function fetchRoleAvatars(roleId: number) {
-    return new Promise((resolve, reject) => {
-      tuanApis.getRoleAvatars({ roleId: roleId }).then((res) => {
-        if (res.data.data === undefined) {
-          reject(new Error('Role avatars not found'))
-          return
-        }
-        const data = res.data.data
-        data.forEach((avatar: RoleAvatar) => {
-          if (avatar.avatarId !== undefined) {
-            avatarToUrl.set(avatar.avatarId, avatar.avatarUrl!)
-            // saveImageFromUrl(
-            //   avatar.avatarUrl!,
-            //   'Test',
-            //   `role_${roleId}_avatar_${avatar.avatarId}.png`
-            // )
-          }
-        })
-        roleToAvatars.set(
-          roleId,
-          data
-            .filter((avatar: RoleAvatar) => avatar.avatarId !== undefined)
-            .map((avatar: RoleAvatar) => avatar.avatarId!)
-        )
-        resolve('Role avatars loaded')
-      })
+  async function fetchRoleAvatars(roleId: number) {
+    const data = (await tuanApis.getRoleAvatars({ roleId: roleId })).data.data
+    if (data === undefined) {
+      throw new Error('Role avatars not found')
+    }
+    data.forEach((avatar: RoleAvatar) => {
+      if (avatar.avatarId !== undefined) {
+        avatarToUrl.set(avatar.avatarId, avatar.avatarUrl!)
+      }
     })
+    roleToAvatars.set(
+      roleId,
+      data
+        .filter((avatar: RoleAvatar) => avatar.avatarId !== undefined)
+        .map((avatar: RoleAvatar) => avatar.avatarId!)
+    )
   }
 
-  function fetchAvatar(avatarId: number) {
-    return new Promise((resolve, reject) => {
-      tuanApis.getRoleAvatar({ avatarId: avatarId }).then((res) => {
-        if (res.data.data === undefined) {
-          reject(new Error('Role avatars not found'))
-          return
-        }
-        const data = res.data.data
-        avatarToUrl.set(avatarId, data.avatarUrl!)
-        resolve('Role avatars loaded')
-      })
-    })
+  async function fetchAvatar(avatarId: number) {
+    const data = (await tuanApis.getRoleAvatar({ avatarId: avatarId })).data.data
+    if (data === undefined) {
+      throw new Error('Role avatars not found')
+    }
+    avatarToUrl.set(avatarId, data.avatarUrl!)
   }
 
-  function fetchRole(groupId: number) {
-    return new Promise((resolve) => {
-      groupToRole.set(groupId, roleList.values().next().value)
-      resolve('Role loaded')
-    })
+  async function fetchRole(groupId: number) {
+    groupToRole.set(groupId, roleList.values().next().value)
   }
 
   return {
