@@ -28,7 +28,7 @@ export const useUserStore = defineStore('user', () => {
     userInfo.value.userId = 0
     userInfo.value.username = ''
     userInfo.value.avatar = ''
-    roleStore.roleList = []
+    roleStore.roleList = new Map()
     localStorage.removeItem('token')
   }
 
@@ -41,7 +41,9 @@ export const useUserStore = defineStore('user', () => {
     userInfo.value.userId = res_data.data.userId!
     userInfo.value.username = res_data.data.username!
     userInfo.value.avatar = res_data.data.avatar!
-    roleStore.roleList = res_data.data.roles!
+    res_data.data.roles?.forEach((role) => {
+      roleStore.roleList.set(role.roleId!, role)
+    })
     await groupStore.getGroupList()
   }
 

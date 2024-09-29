@@ -13,11 +13,12 @@ const sendMessage = () => {
   console.log('send message')
   console.log(roomStore.curRoom)
   if (message.value.trim() === '') return
+  console.log('send message', roomStore.usedAvatar)
   msgStore.sendMsg(
     message.value,
     roomStore.curRoom?.roomId!,
     roomStore.role?.roleId!,
-    roomStore.usedAvatar
+    roomStore.usedAvatar === 0 ? 1 : roomStore.usedAvatar
   )
   message.value = ''
 }

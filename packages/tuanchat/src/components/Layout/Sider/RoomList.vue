@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { ElIcon, ElMenuItem, ElSubMenu } from 'element-plus'
-import { Message, More, List } from '@element-plus/icons-vue'
+import { Message, More, List, Avatar } from '@element-plus/icons-vue'
 import ChatItem from './ChatItem.vue'
 import GroupItem from './GroupItem.vue'
-import { useUserStore, useGroupStore } from '@/stores'
+import RoleItem from './RoleItem.vue'
+import { useUserStore, useGroupStore, useRoleStore } from '@/stores'
 
 const userStore = useUserStore()
 const groupStore = useGroupStore()
+const roleStore = useRoleStore()
 </script>
 
 <template>
@@ -34,6 +36,13 @@ const groupStore = useGroupStore()
         :groupId="groupId"
         :subGroupIds="subGroupIds"
       />
+    </ElSubMenu>
+
+    <ElSubMenu index="4">
+      <template #title>
+        <ElIcon><Avatar /></ElIcon>Role
+      </template>
+      <RoleItem v-for="roleId in roleStore.roleList.keys()" :key="roleId" :roleId="roleId" />
     </ElSubMenu>
   </span>
 </template>

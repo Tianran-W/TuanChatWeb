@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia'
-import { reactive, ref } from 'vue'
+import { reactive } from 'vue'
 import { tuanApis } from '@/services'
-import { saveImageFromUrl } from '@/utils/renderer'
+// import { saveImageFromUrl } from '@/utils/renderer'
 import type { UserRole, RoleAvatar } from '@/services'
 
 export const useRoleStore = defineStore('role', () => {
-  const roleList = ref<UserRole[]>([])
+  const roleList = reactive(new Map<number, UserRole>())
   const roleToAvatars = reactive(new Map<number, number[]>())
   const avatarToUrl = reactive(new Map<number, string>())
   const groupToRole = reactive(new Map<number, UserRole>())
@@ -21,11 +21,11 @@ export const useRoleStore = defineStore('role', () => {
         data.forEach((avatar: RoleAvatar) => {
           if (avatar.avatarId !== undefined) {
             avatarToUrl.set(avatar.avatarId, avatar.avatarUrl!)
-            saveImageFromUrl(
-              avatar.avatarUrl!,
-              'Test',
-              `role_${roleId}_avatar_${avatar.avatarId}.png`
-            )
+            // saveImageFromUrl(
+            //   avatar.avatarUrl!,
+            //   'Test',
+            //   `role_${roleId}_avatar_${avatar.avatarId}.png`
+            // )
           }
         })
         roleToAvatars.set(
@@ -55,7 +55,7 @@ export const useRoleStore = defineStore('role', () => {
 
   function fetchRole(groupId: number) {
     return new Promise((resolve) => {
-      groupToRole.set(groupId, roleList.value[0]!)
+      groupToRole.set(groupId, roleList.values().next().value)
       resolve('Role loaded')
     })
   }
