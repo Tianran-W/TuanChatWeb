@@ -42,7 +42,7 @@ const roleStore = useRoleStore()
       <template #title>
         <ElIcon><Avatar /></ElIcon>Role
       </template>
-      <RoleItem v-for="roleId in roleStore.roleList.keys()" :key="roleId" :roleId="roleId" />
+      <RoleItem v-for="roleId in roleStore.userRoleList.keys()" :key="roleId" :roleId="roleId" />
     </ElSubMenu>
   </span>
 </template>

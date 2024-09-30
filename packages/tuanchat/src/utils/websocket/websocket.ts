@@ -1,5 +1,5 @@
 import { useUserStore, useMsgStore } from '@/stores'
-import { WsRespEnum } from './types'
+import { WsRespEnum } from '@/enums'
 import type { WsReqType } from './types'
 import type { MsgType } from '@/stores/types'
 

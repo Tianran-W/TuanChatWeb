@@ -28,7 +28,7 @@ export const useUserStore = defineStore('user', () => {
     userInfo.value.userId = 0
     userInfo.value.username = ''
     userInfo.value.avatar = ''
-    roleStore.roleList.clear()
+    roleStore.userRoleList.clear()
     localStorage.removeItem('token')
   }
 
@@ -43,7 +43,13 @@ export const useUserStore = defineStore('user', () => {
     userInfo.value.avatar = data.avatar!
     data.roles?.forEach((role) => {
       console.log(role)
-      roleStore.roleList.set(role.roleId!, role)
+      roleStore.userRoleList.set(role.roleId!, role)
+      tuanApis.getRoleAbility({ roleId: role?.roleId! }).then((res) => {
+        if (res.data.data === undefined) {
+          throw new Error('Role ability not found')
+        }
+        roleStore.roleAbility.set(role.roleId!, res.data.data)
+      })
     })
     await groupStore.getGroupList()
   }

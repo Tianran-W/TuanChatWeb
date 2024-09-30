@@ -1,12 +1,11 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { tuanApis } from '@/services'
-import type { UserRole, RoleAvatar } from '@/services'
-import type { RoleInfoType } from './types'
+import type { UserRole, RoleAvatar, RoleAbilityTable } from '@/services'
 
 export const useRoleStore = defineStore('role', () => {
-  const roleList = ref(new Map<number, UserRole>())
-  const roleInfo = ref(new Map<number, RoleInfoType>())
+  const userRoleList = ref(new Map<number, UserRole>())
+  const roleAbility = ref(new Map<number, RoleAbilityTable>())
   const roleToAvatars = ref(new Map<number, number[]>())
   const avatarToUrl = ref(new Map<number, string>())
   const groupToRole = ref(new Map<number, UserRole>())
@@ -38,12 +37,12 @@ export const useRoleStore = defineStore('role', () => {
   }
 
   async function fetchRole(groupId: number) {
-    groupToRole.value.set(groupId, roleList.value.values().next().value)
+    groupToRole.value.set(groupId, userRoleList.value.values().next().value)
   }
 
   return {
-    roleList,
-    roleInfo,
+    userRoleList,
+    roleAbility,
     roleToAvatars,
     avatarToUrl,
     groupToRole,

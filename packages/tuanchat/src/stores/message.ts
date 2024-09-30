@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import { tuanApis } from '@/services'
 import type { Message } from '@/services'
 import type { WsReqType } from '@/utils/websocket/types'
+import { parseInstruction } from '@/utils/parser'
 
 import wsIns from '@/utils/websocket/websocket'
 
@@ -56,6 +57,7 @@ export const useMsgStore = defineStore('chat', () => {
   }
 
   function sendMsg(msg: string, roomId: number, roleId: number, avatarId: number) {
+    const parsedMsg = parseInstruction(msg)
     const wsReq: WsReqType = {
       type: 3,
       data: {
@@ -64,7 +66,7 @@ export const useMsgStore = defineStore('chat', () => {
         avatarId: avatarId,
         msgType: 1,
         body: {
-          content: msg
+          content: parsedMsg
         }
       }
     }

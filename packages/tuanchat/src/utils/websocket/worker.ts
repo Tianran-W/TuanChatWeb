@@ -1,4 +1,4 @@
-import { WsReqEnum } from './types'
+import { WsReqEnum } from '@/enums'
 import type { WsReqType } from './types'
 
 /* 常量 */

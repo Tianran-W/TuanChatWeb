@@ -1,3 +1,4 @@
-import { MsgEnum } from './MessageType'
+import { MsgEnum, WsRespEnum, WsReqEnum } from './MessageType'
+import { InstructionEnum } from './Instruction'
 
-export { MsgEnum }
+export { MsgEnum, WsRespEnum, WsReqEnum, InstructionEnum }
