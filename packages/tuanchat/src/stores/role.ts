@@ -6,8 +6,8 @@ import type { UserRole, RoleAvatar, RoleAbilityTable } from '@/services'
 export const useRoleStore = defineStore('role', () => {
   const userRoleList = ref(new Map<number, UserRole>())
   const roleAbility = ref(new Map<number, RoleAbilityTable>())
-  const roleToAvatars = ref(new Map<number, number[]>())
-  const avatarToUrl = ref(new Map<number, string>())
+  const roleToImages = ref(new Map<number, number[]>())
+  const imageUrls = ref(new Map<number, string>())
   const groupToRole = ref(new Map<number, UserRole>())
 
   async function fetchRoleAvatars(roleId: number) {
@@ -17,10 +17,10 @@ export const useRoleStore = defineStore('role', () => {
     }
     data.forEach((avatar: RoleAvatar) => {
       if (avatar.avatarId !== undefined) {
-        avatarToUrl.value.set(avatar.avatarId, avatar.avatarUrl!)
+        imageUrls.value.set(avatar.avatarId, avatar.spriteUrl!)
       }
     })
-    roleToAvatars.value.set(
+    roleToImages.value.set(
       roleId,
       data
         .filter((avatar: RoleAvatar) => avatar.avatarId !== undefined)
@@ -33,7 +33,7 @@ export const useRoleStore = defineStore('role', () => {
     if (data === undefined) {
       throw new Error('Role avatars not found')
     }
-    avatarToUrl.value.set(avatarId, data.avatarUrl!)
+    imageUrls.value.set(avatarId, data.spriteUrl!)
   }
 
   async function fetchRole(groupId: number) {
@@ -43,8 +43,8 @@ export const useRoleStore = defineStore('role', () => {
   return {
     userRoleList,
     roleAbility,
-    roleToAvatars,
-    avatarToUrl,
+    roleToImages,
+    imageUrls,
     groupToRole,
     fetchRole,
     fetchRoleAvatars,

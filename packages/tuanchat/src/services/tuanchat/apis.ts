@@ -531,6 +531,7 @@ export interface RoleAvatar {
   avatarId?: number
   avatarTitle?: string
   avatarUrl?: string
+  spriteUrl?: string
   /** @format date-time */
   createTime?: string
   /** @format date-time */
@@ -939,7 +940,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * No description
+     * @description 用于查询联系人(好友)列表 pageSize表示查询每页的记录条数 cursor初始为null，后续每次查询使用上一次返回的游标cursor
      *
      * @tags friend-controller
      * @name FriendList
@@ -1364,30 +1365,16 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @name RoomCreatePrivatechatList
-     * @summary 创建私聊
-     * @request GET:/capi/room/create/privatechat
+     * @tags room-controller
+     * @name CreatePrivateChat
+     * @summary createPrivateChat
+     * @request POST:/capi/room/friend
      * @secure
      */
-    roomCreatePrivatechatList: (data: object, params: RequestParams = {}) =>
-      this.request<
-        {
-          success: boolean
-          errCode: null
-          errMsg: null
-          data: {
-            roomId: number
-            type: number
-            lastMessageId: null
-            createTime: string
-            updateTime: string
-            lastActiveTime: null
-          }
-        },
-        any
-      >({
-        path: `/capi/room/create/privatechat`,
-        method: 'GET',
+    createPrivateChat: (data: SubRoomRequest, params: RequestParams = {}) =>
+      this.request<ApiResultRoom, any>({
+        path: `/capi/room/friend`,
+        method: 'POST',
         body: data,
         secure: true,
         type: ContentType.Json,
@@ -1572,26 +1559,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<ApiResultBoolean, ApiResult | ApiResultVoid>({
         path: `/capi/room/group/player`,
         method: 'DELETE',
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * No description
-     *
-     * @tags room-controller
-     * @name CreatePrivateChat
-     * @summary createPrivateChat
-     * @request POST:/capi/room/friend
-     * @secure
-     */
-    createPrivateChat: (data: SubRoomRequest, params: RequestParams = {}) =>
-      this.request<ApiResultRoom, any>({
-        path: `/capi/room/friend`,
-        method: 'POST',
         body: data,
         secure: true,
         type: ContentType.Json,

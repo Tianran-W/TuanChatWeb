@@ -3,42 +3,23 @@ import { useRoute } from 'vue-router'
 import { useRoleStore } from '@/stores'
 import { tuanApis } from '@/services'
 import { ref } from 'vue'
-import { ElButton, ElForm, ElFormItem, ElInput, ElInputNumber, ElTag, ElText } from 'element-plus'
-
-const route = useRoute()
-const roleStore = useRoleStore()
-
-const role = roleStore.userRoleList.get(Number(route.params.id))
-const roleAbility = roleStore.roleAbility.get(Number(route.params.id))
-
-const importModel = ref({
-  importMsg: ''
-})
-const roleInfo = {
-  userRole: role!,
-  roleAbility: roleAbility!
-}
-
-const onSubmit = () => {
-  //TODO: Update role info
-  tuanApis.setRoleAbility(roleInfo.roleAbility!).then((res) => {
-    roleStore.roleAbility.set(Number(route.params.id), res.data.data!)
-    isEditing.value = false
-  })
-}
-
-const importAttrs = () => {
-  tuanApis
-    .parseExcel({ roleId: role?.roleId, excelCode: importModel.value.importMsg })
-    .then((res) => {
-      roleStore.roleAbility.set(Number(route.params.id), res.data.data!)
-    })
-}
-
-const roleAbilityAsRecord = roleAbility as Record<string, number>
-const abilityDict = Object.entries(roleAbilityAsRecord).filter(([key]) => key !== 'roleId')
-
-const isEditing = ref(false)
+import { Plus } from '@element-plus/icons-vue'
+import {
+  ElButton,
+  ElDialog,
+  ElForm,
+  ElFormItem,
+  ElIcon,
+  ElInput,
+  ElInputNumber,
+  ElScrollbar,
+  ElTag,
+  ElText,
+  ElUpload
+} from 'element-plus'
+import type { UploadProps, UploadUserFile } from 'element-plus'
+import 'vue-cropper/dist/index.css'
+import { VueCropper } from 'vue-cropper'
 
 const propertyToChineseMap = new Map()
 propertyToChineseMap.set('roleId', '角色ID')
@@ -103,10 +84,90 @@ propertyToChineseMap.set('demolition', '爆破')
 propertyToChineseMap.set('lipReading', '唇语解读')
 propertyToChineseMap.set('hypnosis', '催眠')
 propertyToChineseMap.set('artillery', '火炮使用')
+
+const route = useRoute()
+
+const isEditing = ref(false)
+const roleStore = useRoleStore()
+const role = roleStore.userRoleList.get(Number(route.params.id))
+const roleAbility = roleStore.roleAbility.get(Number(route.params.id))
+const roleAbilityAsRecord = roleAbility as Record<string, number>
+const abilityDict = Object.entries(roleAbilityAsRecord).filter(([key]) => key !== 'roleId')
+
+const importModel = ref({
+  importMsg: ''
+})
+
+const roleInfo = {
+  userRole: role!,
+  roleAbility: roleAbility!
+}
+
+const onSubmit = () => {
+  //TODO: Update role info
+  tuanApis.setRoleAbility(roleInfo.roleAbility!).then((res) => {
+    roleStore.roleAbility.set(Number(route.params.id), res.data.data!)
+    isEditing.value = false
+  })
+}
+
+const importAttrs = () => {
+  tuanApis
+    .parseExcel({ roleId: role?.roleId, excelCode: importModel.value.importMsg })
+    .then((res) => {
+      roleStore.roleAbility.set(Number(route.params.id), res.data.data!)
+    })
+}
+
+const fileList = ref<UploadUserFile[]>([])
+const dialogImageUrl = ref('')
+const dialogVisible = ref(false)
+const uploadUrl = ref('')
+const cropperRef = ref<VueCropper>()
+
+const handleRemove: UploadProps['onRemove'] = (uploadFile, uploadFiles) => {
+  console.log(uploadFile, uploadFiles)
+}
+
+const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
+  dialogImageUrl.value = uploadFile.url!
+  dialogVisible.value = true
+}
+
+const handleCroppedImg = () => {
+  const res = cropperRef.value.getCropData()
+  console.log(res)
+}
 </script>
 
 <template>
   <div class="role-info">
+    <ElScrollbar>
+      <ElUpload
+        v-model:file-list="fileList"
+        list-type="picture-card"
+        :action="uploadUrl"
+        :on-preview="handlePictureCardPreview"
+        :on-remove="handleRemove"
+        :auto-upload="false"
+      >
+        <ElIcon><Plus /></ElIcon>
+      </ElUpload>
+    </ElScrollbar>
+
+    <ElDialog v-model="dialogVisible">
+      <VueCropper
+        autoCrop
+        :img="dialogImageUrl"
+        ref="cropperRef"
+        :fixed="true"
+        :fixedNumber="[1, 1]"
+        centerBox
+        class="pic-cut"
+      />
+      <ElButton type="primary" @click="handleCroppedImg">Submit</ElButton>
+    </ElDialog>
+
     <ElForm :model="roleInfo" label-width="10%">
       <ElFormItem label="Role name">
         <ElInput v-model="roleInfo.userRole.roleName" />
@@ -150,6 +211,17 @@ propertyToChineseMap.set('artillery', '火炮使用')
 <style scoped>
 .role-info {
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pic-cut {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  width: 100%;
+  height: 400px;
 }
 
 .slider-block {

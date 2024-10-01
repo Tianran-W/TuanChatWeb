@@ -28,11 +28,11 @@ const sendMessage = () => {
   <div class="input-box">
     <ElSelect v-model="roomStore.usedAvatar" placeholder="Select">
       <ElOption
-        v-for="item in roleStore.roleToAvatars.get(roomStore.role?.roleId!)"
+        v-for="item in roleStore.roleToImages.get(roomStore.role?.roleId!)"
         :key="item"
         :value="item"
       >
-        <ElAvatar :size="30" shape="square" fit="cover" :src="roleStore.avatarToUrl.get(item)" />
+        <ElAvatar :size="30" shape="square" fit="cover" :src="roleStore.imageUrls.get(item)" />
       </ElOption>
     </ElSelect>
     <ElInput v-model="message" placeholder="Please input" @keyup.enter="sendMessage">
