@@ -29,7 +29,7 @@ const handleAddToRenderer = () => {
       :size="80"
       shape="square"
       fit="cover"
-      :src="roleStore.imageUrls.get(props.msg.avatarId!)"
+      :src="roleStore.imageUrls.get(props.msg.avatarId!)?.avatarUrl"
     />
     <div class="message-content">
       <div class="message-top">

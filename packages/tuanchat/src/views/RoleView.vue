@@ -2,7 +2,7 @@
 import { useRoute } from 'vue-router'
 import { useRoleStore } from '@/stores'
 import { tuanApis } from '@/services'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
 import {
   ElButton,
@@ -20,6 +20,7 @@ import {
 import type { UploadProps, UploadUserFile } from 'element-plus'
 import 'vue-cropper/dist/index.css'
 import { VueCropper } from 'vue-cropper'
+import axios from 'axios'
 
 const propertyToChineseMap = new Map()
 propertyToChineseMap.set('roleId', '角色ID')
@@ -94,6 +95,14 @@ const roleAbility = roleStore.roleAbility.get(Number(route.params.id))
 const roleAbilityAsRecord = roleAbility as Record<string, number>
 const abilityDict = Object.entries(roleAbilityAsRecord).filter(([key]) => key !== 'roleId')
 
+const fileList = ref<UploadUserFile[]>([])
+const dialogImageUrl = ref('')
+const dialogVisible = ref(false)
+const cropperRef = ref<VueCropper>()
+const uploadRef = ref<typeof ElUpload>()
+const uploadUrl = ref('')
+const downloadUrl = ref('')
+
 const importModel = ref({
   importMsg: ''
 })
@@ -119,12 +128,6 @@ const importAttrs = () => {
     })
 }
 
-const fileList = ref<UploadUserFile[]>([])
-const dialogImageUrl = ref('')
-const dialogVisible = ref(false)
-const uploadUrl = ref('')
-const cropperRef = ref<VueCropper>()
-
 const handleRemove: UploadProps['onRemove'] = (uploadFile, uploadFiles) => {
   console.log(uploadFile, uploadFiles)
 }
@@ -134,10 +137,86 @@ const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
   dialogVisible.value = true
 }
 
-const handleCroppedImg = () => {
-  const res = cropperRef.value.getCropData()
-  console.log(res)
+const handleUploadImg = async () => {
+  //先上传头像
+  const avatar_data = (
+    await tuanApis.getUploadUrl({
+      fileName: `avatar_${role?.roleId}_${fileList.value.length}.png`,
+      scene: 1
+    })
+  ).data.data
+  if (avatar_data === undefined) {
+    throw new Error('Get upload url failed')
+  }
+  console.log(avatar_data)
+  cropperRef.value.getCropBlob(async (img: Blob) => {
+    const formData = new FormData()
+    formData.append('croppedImage', img)
+
+    await axios(avatar_data.uploadUrl!, {
+      method: 'PUT',
+      data: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+  })
+
+  //再上传立绘
+  cropperRef.value.getCropBlob(async (img: Blob) => {
+    const formData = new FormData()
+    formData.append('croppedImage', img)
+
+    await axios(uploadUrl.value!, {
+      method: 'PUT',
+      data: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+  })
+  const sprites_data = (
+    await tuanApis.getUploadUrl({
+      fileName: `avatar_${role?.roleId}_${fileList.value.length}.png`,
+      scene: 1
+    })
+  ).data.data
+  if (sprites_data === undefined) {
+    throw new Error('Get upload url failed')
+  }
+  // 更新数据库立绘和头像
+  tuanApis.setRoleAvatar({
+    roleId: role?.roleId,
+    avatarTitle: 'avatar',
+    avatarUrl: avatar_data.downloadUrl,
+    spriteUrl: downloadUrl.value
+  })
+
+  // 手动上传文件
+  uploadRef.value?.submit()
+
+  uploadUrl.value = sprites_data.uploadUrl!
+  downloadUrl.value = sprites_data.downloadUrl!
+  dialogVisible.value = false
 }
+
+onMounted(() => {
+  roleStore.fetchRoleAvatars(role?.roleId!).then(() => {
+    roleStore.roleToImages.get(role?.roleId!)?.forEach((avatarId: number) => {
+      fileList.value.push({
+        name: `sprites_${role?.roleId}_${fileList.value.length}.png`,
+        url: roleStore.imageUrls.get(avatarId)?.spriteUrl
+      })
+    })
+    // 获取第一个立绘上传地址
+    tuanApis
+      .getUploadUrl({ fileName: `avatar_${role?.roleId}_${fileList.value.length}.png`, scene: 1 })
+      .then((res) => {
+        uploadUrl.value = res.data.data?.uploadUrl!
+        downloadUrl.value = res.data.data?.downloadUrl!
+      })
+  })
+})
 </script>
 
 <template>
@@ -146,6 +225,7 @@ const handleCroppedImg = () => {
       <ElUpload
         v-model:file-list="fileList"
         list-type="picture-card"
+        ref="uploadRef"
         :action="uploadUrl"
         :on-preview="handlePictureCardPreview"
         :on-remove="handleRemove"
@@ -165,7 +245,7 @@ const handleCroppedImg = () => {
         centerBox
         class="pic-cut"
       />
-      <ElButton type="primary" @click="handleCroppedImg">Submit</ElButton>
+      <ElButton type="primary" @click="handleUploadImg">Submit</ElButton>
     </ElDialog>
 
     <ElForm :model="roleInfo" label-width="10%">

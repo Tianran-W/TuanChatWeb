@@ -74,6 +74,28 @@ export interface ChatMessageMarkRequest {
   avatarId: number
 }
 
+export interface Post {
+  /** @format int64 */
+  postId?: number
+  /** @format int64 */
+  userId?: number
+  title?: string
+  content?: string
+  coverUrl?: string
+  /** @format int32 */
+  likeNumber?: number
+  /** @format int32 */
+  commentNumber?: number
+  /** @format int32 */
+  starNumber?: number
+  /** @format date-time */
+  createTime?: string
+  /** @format date-time */
+  updateTime?: string
+  /** @format int32 */
+  status?: number
+}
+
 export interface UserLoginRequest {
   userId?: string
   password?: string
@@ -306,6 +328,12 @@ export interface ApiResultUserInfoResponse {
   data?: UserInfoResponse
 }
 
+export interface UserRoleRequest {
+  /** @format int64 */
+  roomId?: number
+  roleIdList?: number[]
+}
+
 export interface UserInfoResponse {
   /** @format int64 */
   userId?: number
@@ -371,6 +399,14 @@ export interface FriendResp {
   uid?: number
   /** @format int32 */
   activeStatus?: number
+}
+
+export interface RoleAvatarRequest {
+  /** @format int64 */
+  roleId?: number
+  avatarTitle?: string
+  avatarUrl?: string
+  spriteUrl?: string
 }
 
 export interface FriendCheckReq {
@@ -643,10 +679,24 @@ export interface ChatRoomResp {
   unreadCount?: number
 }
 
+export interface ApiResultCursorPageBaseResponsePost {
+  success?: boolean
+  /** @format int32 */
+  errCode?: number
+  errMsg?: string
+  data?: CursorPageBaseResponsePost
+}
+
 export interface CursorPageBaseResponseChatRoomResp {
   cursor?: string
   isLast?: boolean
   list?: ChatRoomResp[]
+}
+
+export interface CursorPageBaseResponsePost {
+  cursor?: string
+  isLast?: boolean
+  list?: Post[]
 }
 
 export interface ApiResultRoleAvatar {
@@ -1609,6 +1659,146 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
+     * @tags room-controller
+     * @name AddRole
+     * @summary addRole
+     * @request POST:/capi/room/group/role
+     * @secure
+     */
+    addRole: (data: UserRoleRequest, params: RequestParams = {}) =>
+      this.request<ApiResultVoid, ApiResult | ApiResultVoid>({
+        path: `/capi/room/group/role`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags community-controller
+     * @name GetPost
+     * @summary getPost
+     * @request GET:/capi/community/post
+     * @secure
+     */
+    getPost: (
+      query: {
+        /** @format int64 */
+        postId: number
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<ApiResult, ApiResult | ApiResultVoid>({
+        path: `/capi/community/post`,
+        method: 'GET',
+        query: query,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags community-controller
+     * @name ModifyPost
+     * @summary modifyPost
+     * @request PUT:/capi/community/post
+     * @secure
+     */
+    modifyPost: (data: Post, params: RequestParams = {}) =>
+      this.request<ApiResult, ApiResult | ApiResultVoid>({
+        path: `/capi/community/post`,
+        method: 'PUT',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags community-controller
+     * @name PublishPost
+     * @summary publishPost
+     * @request POST:/capi/community/post
+     * @secure
+     */
+    publishPost: (data: Post, params: RequestParams = {}) =>
+      this.request<ApiResult, ApiResult | ApiResultVoid>({
+        path: `/capi/community/post`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags community-controller
+     * @name DeletePost
+     * @summary deletePost
+     * @request DELETE:/capi/community/post
+     * @secure
+     */
+    deletePost: (
+      query: {
+        /** @format int64 */
+        postId: number
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<ApiResult, ApiResult | ApiResultVoid>({
+        path: `/capi/community/post`,
+        method: 'DELETE',
+        query: query,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags community-controller
+     * @name GetPostPage
+     * @summary getPostPage
+     * @request GET:/capi/community/post/page
+     * @secure
+     */
+    getPostPage: (
+      query?: {
+        /**
+         * @format int32
+         * @example 0
+         */
+        pageSize?: number
+        /** @example "" */
+        cursor?: string
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<ApiResultCursorPageBaseResponsePost, ApiResult | ApiResultVoid>({
+        path: `/capi/community/post/page`,
+        method: 'GET',
+        query: query,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
      * @tags avatar-controller
      * @name GetRoleAvatar
      * @summary getRoleAvatar
@@ -1631,6 +1821,26 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'GET',
         query: query,
         secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags avatar-controller
+     * @name SetRoleAvatar
+     * @summary setRoleAvatar
+     * @request POST:/capi/avatar
+     * @secure
+     */
+    setRoleAvatar: (data: RoleAvatarRequest, params: RequestParams = {}) =>
+      this.request<ApiResultRoleAvatar, ApiResult | ApiResultVoid>({
+        path: `/capi/avatar`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         format: 'json',
         ...params
       })

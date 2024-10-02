@@ -32,7 +32,12 @@ const sendMessage = () => {
         :key="item"
         :value="item"
       >
-        <ElAvatar :size="30" shape="square" fit="cover" :src="roleStore.imageUrls.get(item)" />
+        <ElAvatar
+          :size="30"
+          shape="square"
+          fit="cover"
+          :src="roleStore.imageUrls.get(item)?.spriteUrl"
+        />
       </ElOption>
     </ElSelect>
     <ElInput v-model="message" placeholder="Please input" @keyup.enter="sendMessage">

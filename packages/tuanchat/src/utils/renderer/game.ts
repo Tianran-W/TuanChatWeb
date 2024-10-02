@@ -16,7 +16,7 @@ export async function createPreview(groupId: number) {
   return (
     await terreApis.manageGameControllerCreateGame({
       gameName: `preview_${groupId}`,
-      templateName: 'WebGAL_Template'
+      templateName: 'WebGAL_Black'
     })
   ).data
 }
