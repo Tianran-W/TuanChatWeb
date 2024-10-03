@@ -36,7 +36,7 @@ const sendMessage = () => {
           :size="30"
           shape="square"
           fit="cover"
-          :src="roleStore.imageUrls.get(item)?.spriteUrl"
+          :src="roleStore.imageUrls.get(item)?.avatarUrl"
         />
       </ElOption>
     </ElSelect>

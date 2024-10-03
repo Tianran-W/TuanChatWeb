@@ -1,4 +1,5 @@
 <script setup lang="ts">
+//TODO:重构这部分，赶进度写了依托
 import { useRoute } from 'vue-router'
 import { useRoleStore } from '@/stores'
 import { tuanApis } from '@/services'
@@ -103,6 +104,8 @@ const uploadRef = ref<typeof ElUpload>()
 const uploadUrl = ref('')
 const downloadUrl = ref('')
 
+const imgBlob = ref<Blob>()
+
 const importModel = ref({
   importMsg: ''
 })
@@ -134,6 +137,7 @@ const handleRemove: UploadProps['onRemove'] = (uploadFile, uploadFiles) => {
 
 const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
   dialogImageUrl.value = uploadFile.url!
+  imgBlob.value = uploadFile.raw!
   dialogVisible.value = true
 }
 
@@ -148,36 +152,21 @@ const handleUploadImg = async () => {
   if (avatar_data === undefined) {
     throw new Error('Get upload url failed')
   }
-  console.log(avatar_data)
-  cropperRef.value.getCropBlob(async (img: Blob) => {
-    const formData = new FormData()
-    formData.append('croppedImage', img)
-
+  await cropperRef.value.getCropBlob(async (img: Blob) => {
     await axios(avatar_data.uploadUrl!, {
       method: 'PUT',
-      data: formData,
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
+      data: img
     })
   })
 
   //再上传立绘
-  cropperRef.value.getCropBlob(async (img: Blob) => {
-    const formData = new FormData()
-    formData.append('croppedImage', img)
-
-    await axios(uploadUrl.value!, {
-      method: 'PUT',
-      data: formData,
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
+  await axios(uploadUrl.value!, {
+    method: 'PUT',
+    data: imgBlob.value
   })
   const sprites_data = (
     await tuanApis.getUploadUrl({
-      fileName: `avatar_${role?.roleId}_${fileList.value.length}.png`,
+      fileName: `sprites_${role?.roleId}_${fileList.value.length}.png`,
       scene: 1
     })
   ).data.data
@@ -191,9 +180,6 @@ const handleUploadImg = async () => {
     avatarUrl: avatar_data.downloadUrl,
     spriteUrl: downloadUrl.value
   })
-
-  // 手动上传文件
-  uploadRef.value?.submit()
 
   uploadUrl.value = sprites_data.uploadUrl!
   downloadUrl.value = sprites_data.downloadUrl!
@@ -210,7 +196,7 @@ onMounted(() => {
     })
     // 获取第一个立绘上传地址
     tuanApis
-      .getUploadUrl({ fileName: `avatar_${role?.roleId}_${fileList.value.length}.png`, scene: 1 })
+      .getUploadUrl({ fileName: `sprites_${role?.roleId}_${fileList.value.length}.png`, scene: 1 })
       .then((res) => {
         uploadUrl.value = res.data.data?.uploadUrl!
         downloadUrl.value = res.data.data?.downloadUrl!

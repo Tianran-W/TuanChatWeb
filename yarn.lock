@@ -2,11 +2,6 @@
 # yarn lockfile v1
 
 
-"@alova/shared@^1.0.5":
-  version "1.0.5"
-  resolved "https://registry.npmmirror.com/@alova/shared/-/shared-1.0.5.tgz"
-  integrity sha512-/a2Qm+xebQJ1OlIgpslK+UL1J7yhkt1/Mqdq58a22+fSVdANukmUcF4j4w1DF3lxZ04SrqP+2oJprJ8UOvM+9Q==
-
 "@ampproject/remapping@^2.2.0":
   version "2.3.0"
   resolved "https://registry.npmmirror.com/@ampproject/remapping/-/remapping-2.3.0.tgz"
@@ -2573,14 +2568,6 @@ ajv@^8.0.0, ajv@^8.11.0:
     fast-uri "^3.0.1"
     json-schema-traverse "^1.0.0"
     require-from-string "^2.0.2"
-
-alova@^3.0.16:
-  version "3.0.16"
-  resolved "https://registry.npmmirror.com/alova/-/alova-3.0.16.tgz"
-  integrity sha512-iCMi/MFAyEU9ukt2Hy/htshT2gpDTa5L4b9IZzrtu/O1Oevj6zES/uC49hNEBuZWyBBky3M6tvynurMYusfFYA==
-  dependencies:
-    "@alova/shared" "^1.0.5"
-    rate-limiter-flexible "^5.0.3"
 
 ansi-colors@4.1.1:
   version "4.1.1"
@@ -6339,11 +6326,6 @@ range-parser@~1.2.1:
   version "1.2.1"
   resolved "https://registry.npmmirror.com/range-parser/-/range-parser-1.2.1.tgz"
   integrity sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==
-
-rate-limiter-flexible@^5.0.3:
-  version "5.0.3"
-  resolved "https://registry.npmmirror.com/rate-limiter-flexible/-/rate-limiter-flexible-5.0.3.tgz"
-  integrity sha512-lWx2y8NBVlTOLPyqs+6y7dxfEpT6YFqKy3MzWbCy95sTTOhOuxufP2QvRyOHpfXpB9OUJPbVLybw3z3AVAS5fA==
 
 raw-body@2.5.1:
   version "2.5.1"
