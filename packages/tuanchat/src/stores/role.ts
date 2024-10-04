@@ -21,7 +21,6 @@ export const useRoleStore = defineStore('role', () => {
           spriteUrl: avatar.spriteUrl!,
           avatarUrl: avatar.avatarUrl!
         })
-        console.log(avatar.spriteUrl)
       }
     })
     roleToImages.value.set(
@@ -44,7 +43,7 @@ export const useRoleStore = defineStore('role', () => {
   }
 
   async function fetchRole(groupId: number) {
-    groupToRole.value.set(groupId, userRoleList.value.values().next().value)
+    groupToRole.value.set(groupId, userRoleList.value.values().next().value!)
   }
 
   return {

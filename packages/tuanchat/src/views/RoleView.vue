@@ -103,6 +103,7 @@ const cropperRef = ref<VueCropper>()
 const uploadRef = ref<typeof ElUpload>()
 const uploadUrl = ref('')
 const downloadUrl = ref('')
+const spriteName = ref('')
 
 const imgBlob = ref<Blob>()
 
@@ -231,6 +232,7 @@ onMounted(() => {
         centerBox
         class="pic-cut"
       />
+      <ElInput v-model:model-value="spriteName" placeholder="立绘名称"></ElInput>
       <ElButton type="primary" @click="handleUploadImg">Submit</ElButton>
     </ElDialog>
 

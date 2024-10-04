@@ -59,7 +59,7 @@ export const useRoomStore = defineStore('room', () => {
 
   async function addLineToRenderer(line: string) {
     textForRenderer.value = `${textForRenderer.value}\n${line}`
-    editScene('Test', 'start', textForRenderer.value)
+    editScene(`preview_${curRoom.value?.roomId}`, 'start', textForRenderer.value)
   }
 
   return { curRoom, messages, role, roleList, usedAvatar, switchRoom, addDialog }
