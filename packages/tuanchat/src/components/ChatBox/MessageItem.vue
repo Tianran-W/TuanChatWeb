@@ -14,12 +14,23 @@ const props = defineProps<{
 const roleStore = useRoleStore()
 const roomStore = useRoomStore()
 const msgType: MsgEnum = props.msg.messageType!
+const renderer = roomStore.renderers.get(roomStore.curRoom?.roomId!)
 const role = computed(() => {
   return roomStore.roleList.find((role) => role.roleId === props.msg.roleId)
 })
 
-const handleAddToRenderer = () => {
-  roomStore.addDialog(role.value!, props.msg.avatarId!, (props.msg.body as TextBody).content)
+const handleAddToRenderer = async () => {
+  const spriteUrl = roleStore.imageUrls.get(props.msg.avatarId!)?.spriteUrl
+  await renderer?.uploadSprites(
+    spriteUrl!,
+    `role_${role.value?.roleId}_sprites_${props.msg.avatarId}`
+  )
+  renderer?.addDialog(
+    role.value?.roleId!,
+    role.value?.roleName!,
+    props.msg.avatarId!,
+    (props.msg.body as TextBody).content
+  )
 }
 </script>
 

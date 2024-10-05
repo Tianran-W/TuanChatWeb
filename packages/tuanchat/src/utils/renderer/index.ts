@@ -1,4 +1,5 @@
 import { editScene, createPreview } from './game'
-import { saveImageFromUrl } from './download'
+import { saveImageFromUrl, readDir, readTextFile, uploadImage } from './fileOperator'
+import { Renderer } from './renderer'
 
-export { editScene, saveImageFromUrl, createPreview }
+export { editScene, saveImageFromUrl, createPreview, readDir, readTextFile, uploadImage, Renderer }

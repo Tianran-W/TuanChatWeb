@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { useMsgStore } from './message'
 import { useGroupStore } from './group'
 import { useRoleStore } from './role'
-import { editScene, createPreview } from '@/utils/renderer'
+import { Renderer } from '@/utils/renderer'
 import type { Message, UserRole, RoomGroup } from '@/services'
 
 export const useRoomStore = defineStore('room', () => {
@@ -17,7 +17,8 @@ export const useRoomStore = defineStore('room', () => {
   const messages = ref<Message[]>([])
   const roleList = ref<UserRole[]>([])
   const usedAvatar = ref<number>(1)
-  const textForRenderer = ref<string>('intro:你好|欢迎来到 WebGAL 的世界;')
+
+  const renderers = new Map<number, Renderer>()
 
   async function switchRoom(roomId: number) {
     curRoom.value = groupStore.groupList.get(roomId)
@@ -31,7 +32,7 @@ export const useRoomStore = defineStore('room', () => {
   }
 
   async function initRoom(roomId: number) {
-    await createPreview(roomId)
+    renderers.set(roomId, new Renderer(roomId))
     msgStore.fetchMsg(roomId).then(() => {
       messages.value = msgStore.messagesList.get(roomId)!
     })
@@ -52,15 +53,5 @@ export const useRoomStore = defineStore('room', () => {
     role.value = roleStore.groupToRole.get(roomId) || undefined
   }
 
-  function addDialog(role: UserRole, avatarId: number, text: string) {
-    addLineToRenderer(`changeFigure:role_${role.roleId}_avatar_${avatarId}.png -left -next;`)
-    addLineToRenderer(`${role.roleName}: ${text}`)
-  }
-
-  async function addLineToRenderer(line: string) {
-    textForRenderer.value = `${textForRenderer.value}\n${line}`
-    editScene(`preview_${curRoom.value?.roomId}`, 'start', textForRenderer.value)
-  }
-
-  return { curRoom, messages, role, roleList, usedAvatar, switchRoom, addDialog }
+  return { curRoom, messages, role, roleList, usedAvatar, renderers, switchRoom }
 })
