@@ -5,4 +5,6 @@ import InputBox from './ChatBox/InputBox.vue'
 import PrimaryHeader from './Layout/Header/PrimaryHeader.vue'
 import PrimarySider from './Layout/Sider/PrimarySider.vue'
 
-export { MemberList, MessageList, InputBox, PrimaryHeader, PrimarySider }
+import RoleInfoForm from './RoleCard/RoleInfoForm.vue'
+
+export { MemberList, MessageList, InputBox, PrimaryHeader, PrimarySider, RoleInfoForm }

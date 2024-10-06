@@ -408,6 +408,8 @@ export interface FriendResp {
 export interface RoleAvatarRequest {
   /** @format int64 */
   roleId?: number
+  /** @format int64 */
+  avatarId?: number
   avatarTitle?: string
   avatarUrl?: string
   spriteUrl?: string
@@ -480,6 +482,11 @@ export interface FriendApplyResp {
   status?: number
 }
 
+export interface RoleAvatarCreateRequest {
+  /** @format int64 */
+  roleId?: number
+}
+
 export interface PageBaseRespFriendApplyResp {
   /** @format int32 */
   pageNo?: number
@@ -489,6 +496,15 @@ export interface PageBaseRespFriendApplyResp {
   totalRecords?: number
   isLast?: boolean
   list?: FriendApplyResp[]
+}
+
+export interface ApiResultLong {
+  success?: boolean
+  /** @format int32 */
+  errCode?: number
+  errMsg?: string
+  /** @format int64 */
+  data?: number
 }
 
 export interface ApiResultRoomResp {
@@ -506,8 +522,7 @@ export interface RoomResp {
   avatar?: string
   /** @format int32 */
   groupType?: number
-  /** @format int32 */
-  backgroundImage?: number
+  backgroundImage?: string
 }
 
 export interface ApiResultListUserRole {
@@ -1150,15 +1165,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @example 0
          */
         pageSize?: number
-        /**
-         * @format int32
-         * @example 0
-         */
-        pageNo?: number
+        /** @example "" */
+        cursor?: string
       },
       params: RequestParams = {}
     ) =>
-      this.request<ApiResultPageBaseRespFriendApplyResp, ApiResult | ApiResultVoid>({
+      this.request<ApiResultCursorPageBaseResponseFriendApplyResp, ApiResult | ApiResultVoid>({
         path: `/capi/user/friend/apply/page`,
         method: 'GET',
         query: query,
@@ -1316,6 +1328,26 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags room-controller
+     * @name CreatePrivateChat
+     * @summary createPrivateChat
+     * @request POST:/capi/room/friend
+     * @secure
+     */
+    createPrivateChat: (data: SubRoomRequest, params: RequestParams = {}) =>
+      this.request<ApiResultRoom, any>({
+        path: `/capi/room/friend`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags room-controller
      * @name GroupDetail
      * @summary groupDetail
      * @request GET:/capi/room/info
@@ -1433,15 +1465,43 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags room-controller
-     * @name CreatePrivateChat
-     * @summary createPrivateChat
-     * @request POST:/capi/room/friend
+     * @tags role-controller
+     * @name GetRole
+     * @summary getRole
+     * @request GET:/capi/role
      * @secure
      */
-    createPrivateChat: (data: SubRoomRequest, params: RequestParams = {}) =>
-      this.request<ApiResultRoom, any>({
-        path: `/capi/room/friend`,
+    getRole: (
+      query: {
+        /**
+         * @format int64
+         * @example 1
+         */
+        roleId: number
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<ApiResultUserRole, ApiResult | ApiResultVoid>({
+        path: `/capi/role`,
+        method: 'GET',
+        query: query,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags role-controller
+     * @name SaveRole
+     * @summary saveRole
+     * @request POST:/capi/role
+     * @secure
+     */
+    saveRole: (data: UserRole, params: RequestParams = {}) =>
+      this.request<ApiResultUserRole, ApiResult | ApiResultVoid>({
+        path: `/capi/role`,
         method: 'POST',
         body: data,
         secure: true,
@@ -1510,54 +1570,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     parseExcel: (data: ParseExcelRequest, params: RequestParams = {}) =>
       this.request<ApiResultRoleAbilityTable, ApiResult | ApiResultVoid>({
         path: `/capi/role/ability/excel`,
-        method: 'POST',
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * No description
-     *
-     * @tags role-controller
-     * @name GetRole
-     * @summary getRole
-     * @request GET:/capi/role
-     * @secure
-     */
-    getRole: (
-      query: {
-        /**
-         * @format int64
-         * @example 1
-         */
-        roleId: number
-      },
-      params: RequestParams = {}
-    ) =>
-      this.request<ApiResultUserRole, ApiResult | ApiResultVoid>({
-        path: `/capi/role`,
-        method: 'GET',
-        query: query,
-        secure: true,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * No description
-     *
-     * @tags role-controller
-     * @name SaveRole
-     * @summary saveRole
-     * @request POST:/capi/role
-     * @secure
-     */
-    saveRole: (data: UserRole, params: RequestParams = {}) =>
-      this.request<ApiResultUserRole, ApiResult | ApiResultVoid>({
-        path: `/capi/role`,
         method: 'POST',
         body: data,
         secure: true,
@@ -1678,14 +1690,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags room-controller
-     * @name AddMember
-     * @summary addMember
-     * @request POST:/capi/room/group/member
+     * @name AddRole
+     * @summary addRole
+     * @request POST:/capi/room/group/role
      * @secure
      */
-    addMember: (data: MemberAddReq, params: RequestParams = {}) =>
+    addRole: (data: UserRoleRequest, params: RequestParams = {}) =>
       this.request<ApiResultVoid, ApiResult | ApiResultVoid>({
-        path: `/capi/room/group/member`,
+        path: `/capi/room/group/role`,
         method: 'POST',
         body: data,
         secure: true,
@@ -1698,14 +1710,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags room-controller
-     * @name AddRole
-     * @summary addRole
-     * @request POST:/capi/room/group/role
+     * @name AddMember
+     * @summary addMember
+     * @request POST:/capi/room/group/member
      * @secure
      */
-    addRole: (data: UserRoleRequest, params: RequestParams = {}) =>
+    addMember: (data: MemberAddReq, params: RequestParams = {}) =>
       this.request<ApiResultVoid, ApiResult | ApiResultVoid>({
-        path: `/capi/room/group/role`,
+        path: `/capi/room/group/member`,
         method: 'POST',
         body: data,
         secure: true,
@@ -1730,7 +1742,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {}
     ) =>
-      this.request<ApiResult, ApiResult | ApiResultVoid>({
+      this.request<ApiResultPost, ApiResult | ApiResultVoid>({
         path: `/capi/community/post`,
         method: 'GET',
         query: query,
@@ -1768,7 +1780,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/capi/community/post
      * @secure
      */
-    publishPost: (data: Post, params: RequestParams = {}) =>
+    publishPost: (data: AddPostRequest, params: RequestParams = {}) =>
       this.request<ApiResult, ApiResult | ApiResultVoid>({
         path: `/capi/community/post`,
         method: 'POST',
@@ -1947,13 +1959,33 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags avatar-controller
+     * @name UpdateRoleAvatar
+     * @summary updateRoleAvatar
+     * @request PUT:/capi/avatar
+     * @secure
+     */
+    updateRoleAvatar: (data: RoleAvatarRequest, params: RequestParams = {}) =>
+      this.request<ApiResultRoleAvatar, ApiResult | ApiResultVoid>({
+        path: `/capi/avatar`,
+        method: 'PUT',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags avatar-controller
      * @name SetRoleAvatar
      * @summary setRoleAvatar
      * @request POST:/capi/avatar
      * @secure
      */
-    setRoleAvatar: (data: RoleAvatarRequest, params: RequestParams = {}) =>
-      this.request<ApiResultRoleAvatar, ApiResult | ApiResultVoid>({
+    setRoleAvatar: (data: RoleAvatarCreateRequest, params: RequestParams = {}) =>
+      this.request<ApiResultLong, ApiResult | ApiResultVoid>({
         path: `/capi/avatar`,
         method: 'POST',
         body: data,

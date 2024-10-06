@@ -16,6 +16,7 @@ declare module 'vue' {
     MessageList: typeof import('./src/components/ChatBox/MessageList.vue')['default']
     PrimaryHeader: typeof import('./src/components/Layout/Header/PrimaryHeader.vue')['default']
     PrimarySider: typeof import('./src/components/Layout/Sider/PrimarySider.vue')['default']
+    RoleInfoForm: typeof import('./src/components/RoleCard/RoleInfoForm.vue')['default']
     RoleItem: typeof import('./src/components/Layout/Sider/RoleItem.vue')['default']
     RoomList: typeof import('./src/components/Layout/Sider/RoomList.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
