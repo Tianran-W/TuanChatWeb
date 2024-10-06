@@ -192,7 +192,7 @@ onMounted(() => {
     roleStore.roleToImages.get(role?.roleId!)?.forEach((avatarId: number) => {
       fileList.value.push({
         name: `sprites_${role?.roleId}_${fileList.value.length}.png`,
-        url: roleStore.imageUrls.get(avatarId)?.spriteUrl
+        url: roleStore.imageUrls.get(avatarId)?.avatarUrl
       })
     })
     // 获取第一个立绘上传地址

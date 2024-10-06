@@ -16,7 +16,6 @@ export const useRoomStore = defineStore('room', () => {
   const role = ref<UserRole>()
   const messages = ref<Message[]>([])
   const roleList = ref<UserRole[]>([])
-  const usedAvatar = ref<number>(1)
 
   const renderers = new Map<number, Renderer>()
 
@@ -53,5 +52,5 @@ export const useRoomStore = defineStore('room', () => {
     role.value = roleStore.groupToRole.get(roomId) || undefined
   }
 
-  return { curRoom, messages, role, roleList, usedAvatar, renderers, switchRoom }
+  return { curRoom, messages, role, roleList, renderers, switchRoom }
 })

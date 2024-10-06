@@ -8,17 +8,15 @@ const message = ref('')
 const msgStore = useMsgStore()
 const roomStore = useRoomStore()
 const roleStore = useRoleStore()
+const usedAvatar = ref<number>(1)
 
 const sendMessage = () => {
-  console.log('send message')
-  console.log(roomStore.curRoom)
   if (message.value.trim() === '') return
-  console.log('send message', roomStore.usedAvatar)
   msgStore.sendMsg(
     message.value,
     roomStore.curRoom?.roomId!,
     roomStore.role?.roleId!,
-    roomStore.usedAvatar
+    usedAvatar.value
   )
   message.value = ''
 }
@@ -26,7 +24,7 @@ const sendMessage = () => {
 
 <template>
   <div class="input-box">
-    <ElSelect v-model="roomStore.usedAvatar" placeholder="Select">
+    <ElSelect v-model="usedAvatar" placeholder="Select">
       <ElOption
         v-for="item in roleStore.roleToImages.get(roomStore.role?.roleId!)"
         :key="item"
