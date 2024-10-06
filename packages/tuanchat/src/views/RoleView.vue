@@ -1,9 +1,12 @@
 <script setup lang="ts">
-//TODO:重构这部分，赶进度写了依托
+import axios from 'axios'
+import 'vue-cropper/dist/index.css'
+import { VueCropper } from 'vue-cropper'
+import { onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { propertyToChineseMap } from '@/enums'
 import { useRoleStore } from '@/stores'
 import { tuanApis } from '@/services'
-import { onMounted, ref } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
 import {
   ElButton,
@@ -19,90 +22,22 @@ import {
   ElUpload
 } from 'element-plus'
 import type { UploadProps, UploadUserFile } from 'element-plus'
-import 'vue-cropper/dist/index.css'
-import { VueCropper } from 'vue-cropper'
-import axios from 'axios'
-
-const propertyToChineseMap = new Map()
-propertyToChineseMap.set('roleId', '角色ID')
-propertyToChineseMap.set('strength', '力量')
-propertyToChineseMap.set('dexterity', '敏捷')
-propertyToChineseMap.set('willpower', '意志力')
-propertyToChineseMap.set('constitution', '体质')
-propertyToChineseMap.set('appearance', '外貌')
-propertyToChineseMap.set('education', '教育程度')
-propertyToChineseMap.set('size', '体型')
-propertyToChineseMap.set('intelligence', '智力')
-propertyToChineseMap.set('sanity', '理智')
-propertyToChineseMap.set('luck', '运气')
-propertyToChineseMap.set('magicPoints', '魔法点数')
-propertyToChineseMap.set('healthPoints', '生命值')
-propertyToChineseMap.set('accounting', '会计学')
-propertyToChineseMap.set('anthropology', '人类学')
-propertyToChineseMap.set('appraisal', '鉴定')
-propertyToChineseMap.set('archaeology', '考古学')
-propertyToChineseMap.set('acting', '表演')
-propertyToChineseMap.set('charm', '魅力')
-propertyToChineseMap.set('climb', '攀爬')
-propertyToChineseMap.set('computerUse', '计算机使用')
-propertyToChineseMap.set('creditRating', '信用评级')
-propertyToChineseMap.set('cthulhuMythos', '克苏鲁神话')
-propertyToChineseMap.set('disguise', '伪装')
-propertyToChineseMap.set('dodge', '闪避')
-propertyToChineseMap.set('drive', '驾驶')
-propertyToChineseMap.set('electricRepair', '电器维修')
-propertyToChineseMap.set('electronics', '电子学')
-propertyToChineseMap.set('fastTalk', '花言巧语')
-propertyToChineseMap.set('fistfight', '拳击')
-propertyToChineseMap.set('firearms', '火器使用')
-propertyToChineseMap.set('firstAid', '急救')
-propertyToChineseMap.set('history', '历史')
-propertyToChineseMap.set('intimidate', '恐吓')
-propertyToChineseMap.set('jump', '跳跃')
-propertyToChineseMap.set('english', '英语')
-propertyToChineseMap.set('russian', '俄语')
-propertyToChineseMap.set('law', '法律')
-propertyToChineseMap.set('libraryUse', '图书馆使用')
-propertyToChineseMap.set('listen', '聆听')
-propertyToChineseMap.set('locksmith', '开锁')
-propertyToChineseMap.set('machineRepair', '机械维修')
-propertyToChineseMap.set('medicine', '医学')
-propertyToChineseMap.set('naturalWorld', '自然界知识')
-propertyToChineseMap.set('navigation', '导航')
-propertyToChineseMap.set('occult', '神秘学')
-propertyToChineseMap.set('persuade', '说服')
-propertyToChineseMap.set('psychology', '心理学')
-propertyToChineseMap.set('ride', '骑乘')
-propertyToChineseMap.set('pharmacy', '药学')
-propertyToChineseMap.set('sleightOfHand', '巧手')
-propertyToChineseMap.set('investigation', '调查')
-propertyToChineseMap.set('stealth', '潜行')
-propertyToChineseMap.set('survival', '生存')
-propertyToChineseMap.set('swim', '游泳')
-propertyToChineseMap.set('throwAbility', '投掷能力')
-propertyToChineseMap.set('track', '追踪')
-propertyToChineseMap.set('animalTraining', '动物训练')
-propertyToChineseMap.set('demolition', '爆破')
-propertyToChineseMap.set('lipReading', '唇语解读')
-propertyToChineseMap.set('hypnosis', '催眠')
-propertyToChineseMap.set('artillery', '火炮使用')
 
 const route = useRoute()
+const roleStore = useRoleStore()
+
+let role = roleStore.userRoleList.get(Number(route.params.id))
+let roleAbility = roleStore.roleAbility.get(Number(route.params.id))
+let abilityDict = Object.entries(roleAbility as Record<string, number>).filter(
+  ([key]) => key !== 'roleId'
+)
 
 const isEditing = ref(false)
-const roleStore = useRoleStore()
-const role = roleStore.userRoleList.get(Number(route.params.id))
-const roleAbility = roleStore.roleAbility.get(Number(route.params.id))
-const roleAbilityAsRecord = roleAbility as Record<string, number>
-const abilityDict = Object.entries(roleAbilityAsRecord).filter(([key]) => key !== 'roleId')
-
 const fileList = ref<UploadUserFile[]>([])
 const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
 const cropperRef = ref<VueCropper>()
 const uploadRef = ref<typeof ElUpload>()
-const uploadUrl = ref('')
-const downloadUrl = ref('')
 const spriteName = ref('')
 
 const imgBlob = ref<Blob>()
@@ -117,11 +52,25 @@ const roleInfo = {
 }
 
 const onSubmit = () => {
-  //TODO: Update role info
-  tuanApis.setRoleAbility(roleInfo.roleAbility!).then((res) => {
-    roleStore.roleAbility.set(Number(route.params.id), res.data.data!)
-    isEditing.value = false
-  })
+  tuanApis
+    .saveRole(roleInfo.userRole)
+    .then((res) => {
+      roleStore.userRoleList.set(Number(route.params.id), res.data.data!)
+      isEditing.value = false
+    })
+    .catch((err) => {
+      console.error(err)
+    })
+
+  tuanApis
+    .setRoleAbility(roleInfo.roleAbility!)
+    .then((res) => {
+      roleStore.roleAbility.set(Number(route.params.id), res.data.data!)
+      isEditing.value = false
+    })
+    .catch((err) => {
+      console.error(err)
+    })
 }
 
 const importAttrs = () => {
@@ -161,10 +110,6 @@ const handleUploadImg = async () => {
   })
 
   //再上传立绘
-  await axios(uploadUrl.value!, {
-    method: 'PUT',
-    data: imgBlob.value
-  })
   const sprites_data = (
     await tuanApis.getUploadUrl({
       fileName: `sprites_${role?.roleId}_${fileList.value.length}.png`,
@@ -174,34 +119,49 @@ const handleUploadImg = async () => {
   if (sprites_data === undefined) {
     throw new Error('Get upload url failed')
   }
+  await axios(sprites_data.uploadUrl!, {
+    method: 'PUT',
+    data: imgBlob.value
+  })
   // 更新数据库立绘和头像
   tuanApis.setRoleAvatar({
     roleId: role?.roleId,
-    avatarTitle: 'avatar',
+    avatarTitle: spriteName.value,
     avatarUrl: avatar_data.downloadUrl,
-    spriteUrl: downloadUrl.value
+    spriteUrl: sprites_data.downloadUrl
   })
 
-  uploadUrl.value = sprites_data.uploadUrl!
-  downloadUrl.value = sprites_data.downloadUrl!
   dialogVisible.value = false
 }
+
+watch(
+  () => route.params.id,
+  (newId) => {
+    isEditing.value = false
+    role = roleStore.userRoleList.get(Number(newId))
+    roleAbility = roleStore.roleAbility.get(Number(newId))
+    abilityDict = Object.entries(roleAbility as Record<string, number>).filter(
+      ([key]) => key !== 'roleId'
+    )
+
+    fileList.value = []
+    roleStore.roleToImages.get(role?.roleId!)?.forEach((avatarId: number) => {
+      fileList.value.push({
+        name: `sprites_${role?.roleId}_${fileList.value.length}.png`,
+        url: roleStore.imageUrls.get(avatarId)?.spriteUrl
+      })
+    })
+  }
+)
 
 onMounted(() => {
   roleStore.fetchRoleAvatars(role?.roleId!).then(() => {
     roleStore.roleToImages.get(role?.roleId!)?.forEach((avatarId: number) => {
       fileList.value.push({
         name: `sprites_${role?.roleId}_${fileList.value.length}.png`,
-        url: roleStore.imageUrls.get(avatarId)?.avatarUrl
+        url: roleStore.imageUrls.get(avatarId)?.spriteUrl
       })
     })
-    // 获取第一个立绘上传地址
-    tuanApis
-      .getUploadUrl({ fileName: `sprites_${role?.roleId}_${fileList.value.length}.png`, scene: 1 })
-      .then((res) => {
-        uploadUrl.value = res.data.data?.uploadUrl!
-        downloadUrl.value = res.data.data?.downloadUrl!
-      })
   })
 })
 </script>
@@ -213,7 +173,6 @@ onMounted(() => {
         v-model:file-list="fileList"
         list-type="picture-card"
         ref="uploadRef"
-        :action="uploadUrl"
         :on-preview="handlePictureCardPreview"
         :on-remove="handleRemove"
         :auto-upload="false"
@@ -238,10 +197,10 @@ onMounted(() => {
 
     <ElForm :model="roleInfo" label-width="10%">
       <ElFormItem label="Role name">
-        <ElInput v-model="roleInfo.userRole.roleName" />
+        <ElInput v-model="roleInfo.userRole.roleName" :disabled="!isEditing" />
       </ElFormItem>
       <ElFormItem label="Description">
-        <ElInput v-model="roleInfo.userRole.description" type="textarea" />
+        <ElInput v-model="roleInfo.userRole.description" type="textarea" :disabled="!isEditing" />
       </ElFormItem>
       <ElFormItem label="Role ability">
         <div class="role-ability">
@@ -289,7 +248,7 @@ onMounted(() => {
   flex-direction: row;
   gap: 20px;
   width: 100%;
-  height: 400px;
+  height: 50vh;
 }
 
 .slider-block {

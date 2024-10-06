@@ -1,4 +1,4 @@
 import { MsgEnum, WsRespEnum, WsReqEnum } from './MessageType'
-import { InstructionEnum } from './Instruction'
+import { InstructionEnum, propertyToChineseMap } from './Instruction'
 
-export { MsgEnum, WsRespEnum, WsReqEnum, InstructionEnum }
+export { MsgEnum, WsRespEnum, WsReqEnum, InstructionEnum, propertyToChineseMap }

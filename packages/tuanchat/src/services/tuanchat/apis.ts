@@ -374,6 +374,10 @@ export interface ParseExcelRequest {
   excelCode?: string
 }
 
+export interface RoomReq {
+  uidList?: number[]
+}
+
 export interface CursorPageBaseReq {
   /** @format int32 */
   pageSize?: number
@@ -439,6 +443,15 @@ export interface ApiResultFriendUnreadResp {
   data?: FriendUnreadResp
 }
 
+export interface AddPostRequest {
+  /** @format int64 */
+  userId?: number
+  title?: string
+  content?: string
+  coverUrl?: string
+  imageUrls?: string[]
+}
+
 export interface FriendUnreadResp {
   /** @format int64 */
   unReadCount?: number
@@ -493,6 +506,8 @@ export interface RoomResp {
   avatar?: string
   /** @format int32 */
   groupType?: number
+  /** @format int32 */
+  backgroundImage?: number
 }
 
 export interface ApiResultListUserRole {
@@ -542,6 +557,7 @@ export interface RoomGroup {
   updateTime?: string
   /** @format int64 */
   parentGroupId?: number
+  backgroundImage?: string
 }
 
 export interface ApiResultUserRole {
@@ -580,6 +596,14 @@ export interface ApiResultRoleAbilityTable {
   errCode?: number
   errMsg?: string
   data?: RoleAbilityTable
+}
+
+export interface ApiResultCursorPageBaseResponseFriendApplyResp {
+  success?: boolean
+  /** @format int32 */
+  errCode?: number
+  errMsg?: string
+  data?: CursorPageBaseResponseFriendApplyResp
 }
 
 export interface UploadUrlReq {
@@ -712,25 +736,49 @@ export interface FriendDeleteReq {
   targetUid: number
 }
 
+export interface ApiResultPost {
+  success?: boolean
+  /** @format int32 */
+  errCode?: number
+  errMsg?: string
+  data?: Post
+}
+
 export interface CursorPageBaseResponseFriendApplyResp {
-  success: boolean
-  errCode: null
-  errMsg: null
-  data: {
-    cursor: string
-    isLast: boolean
-    list: {
-      uid?: number
-      msg?: string
-      status?: number
-    }[]
-  }
+  cursor?: string
+  isLast?: boolean
+  list?: FriendApplyResp[]
+}
+
+export interface ApiResultFullPostResponse {
+  success?: boolean
+  /** @format int32 */
+  errCode?: number
+  errMsg?: string
+  data?: FullPostResponse
 }
 
 export interface AdminRevokeReq {
   /** @format int64 */
   roomId: number
   uidList: number[]
+}
+
+export interface FullPostResponse {
+  post?: Post
+  postImageUrls?: PostImage[]
+}
+
+export interface PostImage {
+  /** @format int64 */
+  postImageId?: number
+  /** @format int64 */
+  postId?: number
+  imageUrl?: string
+  /** @format date-time */
+  createTime?: string
+  /** @format date-time */
+  updateTime?: string
 }
 
 /** 发送消息请求体 */
@@ -1142,36 +1190,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags oss-controller
-     * @name GetUploadUrl
-     * @summary getUploadUrl
-     * @request GET:/capi/oss/upload/url
-     * @secure
-     */
-    getUploadUrl: (
-      query: {
-        /** @example "" */
-        fileName: string
-        /**
-         * @format int32
-         * @example 0
-         */
-        scene: number
-      },
-      params: RequestParams = {}
-    ) =>
-      this.request<ApiResultOssResp, ApiResult | ApiResultVoid>({
-        path: `/capi/oss/upload/url`,
-        method: 'GET',
-        query: query,
-        secure: true,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * No description
-     *
      * @tags contact-controller
      * @name GetRoomPage
      * @summary getRoomPage
@@ -1532,6 +1550,26 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags role-controller
+     * @name SaveRole
+     * @summary saveRole
+     * @request POST:/capi/role
+     * @secure
+     */
+    saveRole: (data: UserRole, params: RequestParams = {}) =>
+      this.request<ApiResultUserRole, ApiResult | ApiResultVoid>({
+        path: `/capi/role`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags role-controller
      * @name GetRoleAvatars
      * @summary getRoleAvatars
      * @request GET:/capi/role/avatar
@@ -1799,6 +1837,86 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
+     * @tags community-controller
+     * @name GetImage
+     * @summary getImage
+     * @request GET:/capi/community/post/image
+     * @secure
+     */
+    getImage: (
+      query: {
+        /** @format int64 */
+        imageId: number
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<ApiResult, ApiResult | ApiResultVoid>({
+        path: `/capi/community/post/image`,
+        method: 'GET',
+        query: query,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags community-controller
+     * @name GetPostFull
+     * @summary getPostFull
+     * @request GET:/capi/community/post/full
+     * @secure
+     */
+    getPostFull: (
+      query: {
+        /** @format int64 */
+        postId: number
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<ApiResultFullPostResponse, ApiResult | ApiResultVoid>({
+        path: `/capi/community/post/full`,
+        method: 'GET',
+        query: query,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags oss-controller
+     * @name GetUploadUrl
+     * @summary getUploadUrl
+     * @request GET:/capi/oss/upload/url
+     * @secure
+     */
+    getUploadUrl: (
+      query: {
+        /** @example "" */
+        fileName: string
+        /**
+         * @format int32
+         * @example 0
+         */
+        scene: number
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<ApiResultOssResp, ApiResult | ApiResultVoid>({
+        path: `/capi/oss/upload/url`,
+        method: 'GET',
+        query: query,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
      * @tags avatar-controller
      * @name GetRoleAvatar
      * @summary getRoleAvatar
@@ -1842,6 +1960,72 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         secure: true,
         type: ContentType.Json,
         format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags avatar-controller
+     * @name DeleteRoleAvatar
+     * @summary deleteRoleAvatar
+     * @request DELETE:/capi/avatar
+     * @secure
+     */
+    deleteRoleAvatar: (
+      query: {
+        /** @format int64 */
+        avatarId: number
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<ApiResult, ApiResult | ApiResultVoid>({
+        path: `/capi/avatar`,
+        method: 'DELETE',
+        query: query,
+        secure: true,
+        format: 'json',
+        ...params
+      })
+  }
+  avatar = {
+    /**
+     * No description
+     *
+     * @name Chat20241018Be9763A44D14EbaA2D2F39Ecb548910Update
+     * @summary 测试用
+     * @request PUT:/avatar//chat/2024-10/1/8be9763a-44d1-4eba-a2d2-f39ecb548910.
+     */
+    chat20241018Be9763A44D14EbaA2D2F39Ecb548910Update: (
+      data: {
+        /**
+         * @format binary
+         * @example "file://D:\self\538c4de70680d98f3e5bb986c5a855f1548994291.png"
+         */
+        data?: File
+      },
+      query?: {
+        /** @example "AWS4-HMAC-SHA256" */
+        'X-Amz-Algorithm'?: string
+        /** @example "niK77qeSQvfseYMWVswk%2F20241002%2Fus-east-1%2Fs3%2Faws4_request" */
+        'X-Amz-Credential'?: string
+        /** @example "20241002T102035Z" */
+        'X-Amz-Date'?: string
+        /** @example "86400" */
+        'X-Amz-Expires'?: string
+        /** @example "host" */
+        'X-Amz-SignedHeaders'?: string
+        /** @example "848bd883202fb8ab270e588fbacc7d6c362244a568fbe57f7e625b8898f3c07a" */
+        'X-Amz-Signature'?: string
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<object, any>({
+        path: `/avatar//chat/2024-10/1/8be9763a-44d1-4eba-a2d2-f39ecb548910.`,
+        method: 'PUT',
+        query: query,
+        body: data,
+        type: ContentType.FormData,
         ...params
       })
   }

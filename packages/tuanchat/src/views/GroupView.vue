@@ -12,6 +12,7 @@ onMounted(() => {
   roomStore.switchRoom(Number(route.params.id))
 })
 
+// TODO: 切换房间有点bug
 watch(
   () => route.params.id,
   (newId) => {
