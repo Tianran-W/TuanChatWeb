@@ -44,7 +44,7 @@ export const useUserStore = defineStore('user', () => {
     data.roles?.forEach((role) => {
       console.log(role)
       roleStore.userRoleList.set(role.roleId!, role)
-      tuanApis.getRoleAbility({ roleId: role?.roleId! }).then((res) => {
+      tuanApis.getRoleAbility({ roleId: role.roleId! }).then((res) => {
         if (res.data.data === undefined) {
           throw new Error('Role ability not found')
         }

@@ -9,6 +9,10 @@ import { useUserStore, useGroupStore, useRoleStore } from '@/stores'
 const userStore = useUserStore()
 const groupStore = useGroupStore()
 const roleStore = useRoleStore()
+
+const handleAddRole = () => {
+  roleStore.addRole(userStore.userInfo.userId)
+}
 </script>
 
 <template>
@@ -43,6 +47,7 @@ const roleStore = useRoleStore()
         <ElIcon><Avatar /></ElIcon>Role
       </template>
       <RoleItem v-for="roleId in roleStore.userRoleList.keys()" :key="roleId" :roleId="roleId" />
+      <ElMenuItem index="4-0" @click="handleAddRole"> 添加角色 </ElMenuItem>
     </ElSubMenu>
   </span>
 </template>

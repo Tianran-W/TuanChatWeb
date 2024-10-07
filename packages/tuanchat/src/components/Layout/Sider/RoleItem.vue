@@ -9,12 +9,12 @@ const props = defineProps<{
 
 const roleStore = useRoleStore()
 const roleInfo = roleStore.userRoleList.get(props.roleId)
-const pathToGroup = `/role/${roleInfo?.roleId}`
+const pathToRoleCard = `/role/${roleInfo?.roleId}`
 </script>
 
 <template>
   <ElMenuItem index="4-1">
-    <RouterLink :to="pathToGroup">
+    <RouterLink :to="pathToRoleCard">
       <ElAvatar :src="roleInfo?.avatar" shape="square" fit="cover" />
       {{ roleInfo?.roleName }}
     </RouterLink>

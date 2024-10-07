@@ -46,12 +46,27 @@ export const useRoleStore = defineStore('role', () => {
     groupToRole.value.set(groupId, userRoleList.value.values().next().value!)
   }
 
+  async function addRole(userId: number) {
+    const newRole = (await tuanApis.saveRole({ userId: userId })).data.data
+    if (newRole === undefined) {
+      throw new Error('Create role failed')
+    }
+    userRoleList.value.set(newRole.roleId!, newRole)
+    tuanApis.getRoleAbility({ roleId: newRole.roleId! }).then((res) => {
+      if (res.data.data === undefined) {
+        throw new Error('Role ability not found')
+      }
+      roleAbility.value.set(newRole.roleId!, res.data.data)
+    })
+  }
+
   return {
     userRoleList,
     roleAbility,
     roleToImages,
     imageUrls,
     groupToRole,
+    addRole,
     fetchRole,
     fetchRoleAvatars,
     fetchAvatar
