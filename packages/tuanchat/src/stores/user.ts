@@ -13,6 +13,7 @@ export const useUserStore = defineStore('user', () => {
   const roleStore = useRoleStore()
 
   async function login(uid: string) {
+    localStorage.setItem('token', '')
     const data = (await tuanApis.login({ userId: uid, password: '123456' })).data.data
     if (data === undefined) {
       throw new Error('Login failed')
@@ -42,7 +43,6 @@ export const useUserStore = defineStore('user', () => {
     userInfo.value.username = data.username!
     userInfo.value.avatar = data.avatar!
     data.roles?.forEach((role) => {
-      console.log(role)
       roleStore.userRoleList.set(role.roleId!, role)
       tuanApis.getRoleAbility({ roleId: role.roleId! }).then((res) => {
         if (res.data.data === undefined) {

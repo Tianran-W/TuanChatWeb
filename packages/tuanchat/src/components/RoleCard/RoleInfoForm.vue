@@ -2,7 +2,7 @@
 import { propertyToChineseMap } from '@/enums'
 import { tuanApis } from '@/services'
 import { useRoleStore } from '@/stores'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { ElButton, ElForm, ElFormItem, ElInput, ElInputNumber, ElTag, ElText } from 'element-plus'
 
 const props = defineProps<{
@@ -11,18 +11,18 @@ const props = defineProps<{
 
 const roleStore = useRoleStore()
 const isEditing = ref(false)
-let role = roleStore.userRoleList.get(props.roleId)
-let roleAbility = roleStore.roleAbility.get(props.roleId)
-let abilityDict = Object.entries(roleAbility as Record<string, number>).filter(
+
+const roleInfo = computed(() => ({
+  userRole: roleStore.userRoleList.get(props.roleId)!,
+  roleAbility: roleStore.roleAbility.get(props.roleId)!
+}))
+
+let abilityDict = Object.entries(roleInfo.value.roleAbility as Record<string, number>).filter(
   ([key]) => key !== 'roleId'
 )
-const roleInfo = {
-  userRole: role!,
-  roleAbility: roleAbility!
-}
 const onSubmit = () => {
   tuanApis
-    .saveRole(roleInfo.userRole)
+    .saveRole(roleInfo.value.userRole)
     .then((res) => {
       roleStore.userRoleList.set(props.roleId, res.data.data!)
       isEditing.value = false
@@ -32,7 +32,7 @@ const onSubmit = () => {
     })
 
   tuanApis
-    .setRoleAbility(roleInfo.roleAbility!)
+    .setRoleAbility(roleInfo.value.roleAbility!)
     .then((res) => {
       roleStore.roleAbility.set(props.roleId, res.data.data!)
       isEditing.value = false
@@ -48,7 +48,7 @@ const importModel = ref({
 
 const importAttrs = () => {
   tuanApis
-    .parseExcel({ roleId: role?.roleId, excelCode: importModel.value.importMsg })
+    .parseExcel({ roleId: props.roleId, excelCode: importModel.value.importMsg })
     .then((res) => {
       roleStore.roleAbility.set(props.roleId, res.data.data!)
     })

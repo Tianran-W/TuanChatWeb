@@ -13,12 +13,13 @@ import RoleInfoForm from '@/components/RoleCard/RoleInfoForm.vue'
 
 const route = useRoute()
 const roleStore = useRoleStore()
+const roleId = ref(Number(route.params.id))
 
-let role = roleStore.userRoleList.get(Number(route.params.id))
+let role = roleStore.userRoleList.get(roleId.value)
 
 const fileList = ref<UploadUserFile[]>([])
 const dialogImageUrl = ref('')
-const dialogVisible = ref(false)
+const isCutting = ref(false)
 const cropperRef = ref<VueCropper>()
 const uploadRef = ref<typeof ElUpload>()
 const spriteName = ref('')
@@ -35,7 +36,7 @@ const handleRemove: UploadProps['onRemove'] = (uploadFile, uploadFiles) => {
 const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
   dialogImageUrl.value = uploadFile.url!
   imgBlob.value = uploadFile.raw!
-  dialogVisible.value = true
+  isCutting.value = true
 }
 
 const handleUploadImg = async () => {
@@ -89,20 +90,23 @@ const handleUploadImg = async () => {
     spriteUrl: sprites_data.downloadUrl
   })
 
-  dialogVisible.value = false
+  isCutting.value = false
 }
 
 watch(
   () => route.params.id,
   (newId) => {
-    role = roleStore.userRoleList.get(Number(newId))
+    roleId.value = Number(newId)
+    role = roleStore.userRoleList.get(roleId.value)
 
     fileList.value = []
-    roleStore.roleToImages.get(role?.roleId!)?.forEach((avatarId: number) => {
-      fileList.value.push({
-        name: `sprites_${role?.roleId}_${avatarId}.png`,
-        url: roleStore.imageUrls.get(avatarId)?.spriteUrl,
-        status: 'ready'
+    //TODO: 这里应该做一个缓存
+    roleStore.fetchRoleAvatars(role?.roleId!).then(() => {
+      roleStore.roleToImages.get(role?.roleId!)?.forEach((avatarId: number) => {
+        fileList.value.push({
+          name: `sprites_${role?.roleId}_${avatarId}.png`,
+          url: roleStore.imageUrls.get(avatarId)?.spriteUrl
+        })
       })
     })
   }
@@ -135,7 +139,7 @@ onMounted(() => {
       </ElUpload>
     </ElScrollbar>
 
-    <ElDialog v-model="dialogVisible">
+    <ElDialog v-model="isCutting">
       <VueCropper
         autoCrop
         :img="dialogImageUrl"
@@ -149,7 +153,7 @@ onMounted(() => {
       <ElButton type="primary" @click="handleUploadImg">Submit</ElButton>
     </ElDialog>
 
-    <RoleInfoForm :roleId="Number(route.params.id)" />
+    <RoleInfoForm :roleId="roleId" />
   </div>
 </template>
 

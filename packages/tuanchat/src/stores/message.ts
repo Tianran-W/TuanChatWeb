@@ -52,6 +52,8 @@ export const useMsgStore = defineStore('chat', () => {
       } else {
         messagesList.value.set(roomId, msgs)
       }
+    } else {
+      messagesList.value.set(roomId, [])
     }
     cursorMap.set(roomId, data.cursor!)
   }
