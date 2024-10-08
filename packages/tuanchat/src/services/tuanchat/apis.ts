@@ -96,9 +96,27 @@ export interface Post {
   status?: number
 }
 
+export interface RoleDTO {
+  /** @format int64 */
+  userId?: number
+  /** @format int64 */
+  roleId?: number
+  roleName?: string
+  description?: string
+  avatar?: string
+}
+
 export interface UserLoginRequest {
   userId?: string
   password?: string
+}
+
+export interface ApiResultRoleDTO {
+  success?: boolean
+  /** @format int32 */
+  errCode?: number
+  errMsg?: string
+  data?: RoleDTO
 }
 
 export interface ApiResultString {
@@ -376,6 +394,12 @@ export interface ParseExcelRequest {
 
 export interface RoomReq {
   uidList?: number[]
+}
+
+export interface ChangeBackgroundReq {
+  backgroundUrl?: string
+  /** @format int64 */
+  roomId?: number
 }
 
 export interface CursorPageBaseReq {
@@ -1428,24 +1452,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags room-controller
-     * @name GetUserGroups
-     * @summary getUserGroups
-     * @request GET:/capi/room/group/list
-     * @secure
-     */
-    getUserGroups: (params: RequestParams = {}) =>
-      this.request<ApiResultListRoomGroup, ApiResult | ApiResultVoid>({
-        path: `/capi/room/group/list`,
-        method: 'GET',
-        secure: true,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * No description
-     *
      * @name RoomCreateSubgroupList
      * @summary 创建子群
      * @request GET:/capi/room/create/subgroup
@@ -1458,6 +1464,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         body: data,
         secure: true,
         type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags room-controller
+     * @name GetUserGroups
+     * @summary getUserGroups
+     * @request GET:/capi/room/group/list
+     * @secure
+     */
+    getUserGroups: (params: RequestParams = {}) =>
+      this.request<ApiResultListRoomGroup, ApiResult | ApiResultVoid>({
+        path: `/capi/room/group/list`,
+        method: 'GET',
+        secure: true,
         format: 'json',
         ...params
       }),
@@ -1481,7 +1505,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {}
     ) =>
-      this.request<ApiResultUserRole, ApiResult | ApiResultVoid>({
+      this.request<ApiResultRoleDTO, ApiResult | ApiResultVoid>({
         path: `/capi/role`,
         method: 'GET',
         query: query,
@@ -1494,18 +1518,61 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags role-controller
-     * @name SaveRole
-     * @summary saveRole
-     * @request POST:/capi/role
+     * @name UpdateRole
+     * @summary updateRole
+     * @request PUT:/capi/role
      * @secure
      */
-    saveRole: (data: UserRole, params: RequestParams = {}) =>
-      this.request<ApiResultUserRole, ApiResult | ApiResultVoid>({
+    updateRole: (data: RoleDTO, params: RequestParams = {}) =>
+      this.request<ApiResultRoleDTO, ApiResult | ApiResultVoid>({
         path: `/capi/role`,
-        method: 'POST',
+        method: 'PUT',
         body: data,
         secure: true,
         type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags role-controller
+     * @name CreateRole
+     * @summary createRole
+     * @request POST:/capi/role
+     * @secure
+     */
+    createRole: (params: RequestParams = {}) =>
+      this.request<ApiResultRoleDTO, ApiResult | ApiResultVoid>({
+        path: `/capi/role`,
+        method: 'POST',
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags role-controller
+     * @name DeleteRole
+     * @summary deleteRole
+     * @request DELETE:/capi/role
+     * @secure
+     */
+    deleteRole: (
+      query: {
+        /** @format int64 */
+        roleId: number
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<ApiResult, ApiResult | ApiResultVoid>({
+        path: `/capi/role`,
+        method: 'DELETE',
+        query: query,
+        secure: true,
         format: 'json',
         ...params
       }),
@@ -1548,7 +1615,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     setRoleAbility: (data: RoleAbilityTable, params: RequestParams = {}) =>
-      this.request<ApiResultObject, ApiResult | ApiResultVoid>({
+      this.request<ApiResult, ApiResult | ApiResultVoid>({
         path: `/capi/role/ability`,
         method: 'POST',
         body: data,
@@ -1729,6 +1796,150 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
+     * @tags room-controller
+     * @name ChangeGroupBackground
+     * @summary changeGroupBackground
+     * @request POST:/capi/room/group/background
+     * @secure
+     */
+    changeGroupBackground: (data: ChangeBackgroundReq, params: RequestParams = {}) =>
+      this.request<ApiResult, ApiResult | ApiResultVoid>({
+        path: `/capi/room/group/background`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags oss-controller
+     * @name GetUploadUrl
+     * @summary getUploadUrl
+     * @request GET:/capi/oss/upload/url
+     * @secure
+     */
+    getUploadUrl: (
+      query: {
+        /** @example "" */
+        fileName: string
+        /**
+         * @format int32
+         * @example 0
+         */
+        scene: number
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<ApiResultOssResp, ApiResult | ApiResultVoid>({
+        path: `/capi/oss/upload/url`,
+        method: 'GET',
+        query: query,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags avatar-controller
+     * @name GetRoleAvatar
+     * @summary getRoleAvatar
+     * @request GET:/capi/avatar
+     * @secure
+     */
+    getRoleAvatar: (
+      query: {
+        /**
+         * ID 编号
+         * @format int64
+         * @example 1
+         */
+        avatarId: number
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<ApiResultRoleAvatar, ApiResult | ApiResultVoid>({
+        path: `/capi/avatar`,
+        method: 'GET',
+        query: query,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags avatar-controller
+     * @name UpdateRoleAvatar
+     * @summary updateRoleAvatar
+     * @request PUT:/capi/avatar
+     * @secure
+     */
+    updateRoleAvatar: (data: RoleAvatarRequest, params: RequestParams = {}) =>
+      this.request<ApiResultRoleAvatar, ApiResult | ApiResultVoid>({
+        path: `/capi/avatar`,
+        method: 'PUT',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags avatar-controller
+     * @name SetRoleAvatar
+     * @summary setRoleAvatar
+     * @request POST:/capi/avatar
+     * @secure
+     */
+    setRoleAvatar: (data: RoleAvatarCreateRequest, params: RequestParams = {}) =>
+      this.request<ApiResultLong, ApiResult | ApiResultVoid>({
+        path: `/capi/avatar`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags avatar-controller
+     * @name DeleteRoleAvatar
+     * @summary deleteRoleAvatar
+     * @request DELETE:/capi/avatar
+     * @secure
+     */
+    deleteRoleAvatar: (
+      query: {
+        /** @format int64 */
+        avatarId: number
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<ApiResult, ApiResult | ApiResultVoid>({
+        path: `/capi/avatar`,
+        method: 'DELETE',
+        query: query,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
      * @tags community-controller
      * @name GetPost
      * @summary getPost
@@ -1894,130 +2105,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         secure: true,
         format: 'json',
         ...params
-      }),
-
-    /**
-     * No description
-     *
-     * @tags oss-controller
-     * @name GetUploadUrl
-     * @summary getUploadUrl
-     * @request GET:/capi/oss/upload/url
-     * @secure
-     */
-    getUploadUrl: (
-      query: {
-        /** @example "" */
-        fileName: string
-        /**
-         * @format int32
-         * @example 0
-         */
-        scene: number
-      },
-      params: RequestParams = {}
-    ) =>
-      this.request<ApiResultOssResp, ApiResult | ApiResultVoid>({
-        path: `/capi/oss/upload/url`,
-        method: 'GET',
-        query: query,
-        secure: true,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * No description
-     *
-     * @tags avatar-controller
-     * @name GetRoleAvatar
-     * @summary getRoleAvatar
-     * @request GET:/capi/avatar
-     * @secure
-     */
-    getRoleAvatar: (
-      query: {
-        /**
-         * ID 编号
-         * @format int64
-         * @example 1
-         */
-        avatarId: number
-      },
-      params: RequestParams = {}
-    ) =>
-      this.request<ApiResultRoleAvatar, ApiResult | ApiResultVoid>({
-        path: `/capi/avatar`,
-        method: 'GET',
-        query: query,
-        secure: true,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * No description
-     *
-     * @tags avatar-controller
-     * @name UpdateRoleAvatar
-     * @summary updateRoleAvatar
-     * @request PUT:/capi/avatar
-     * @secure
-     */
-    updateRoleAvatar: (data: RoleAvatarRequest, params: RequestParams = {}) =>
-      this.request<ApiResultRoleAvatar, ApiResult | ApiResultVoid>({
-        path: `/capi/avatar`,
-        method: 'PUT',
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * No description
-     *
-     * @tags avatar-controller
-     * @name SetRoleAvatar
-     * @summary setRoleAvatar
-     * @request POST:/capi/avatar
-     * @secure
-     */
-    setRoleAvatar: (data: RoleAvatarCreateRequest, params: RequestParams = {}) =>
-      this.request<ApiResultLong, ApiResult | ApiResultVoid>({
-        path: `/capi/avatar`,
-        method: 'POST',
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * No description
-     *
-     * @tags avatar-controller
-     * @name DeleteRoleAvatar
-     * @summary deleteRoleAvatar
-     * @request DELETE:/capi/avatar
-     * @secure
-     */
-    deleteRoleAvatar: (
-      query: {
-        /** @format int64 */
-        avatarId: number
-      },
-      params: RequestParams = {}
-    ) =>
-      this.request<ApiResult, ApiResult | ApiResultVoid>({
-        path: `/capi/avatar`,
-        method: 'DELETE',
-        query: query,
-        secure: true,
-        format: 'json',
-        ...params
       })
   }
   avatar = {
@@ -2058,6 +2145,692 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         query: query,
         body: data,
         type: ContentType.FormData,
+        ...params
+      })
+  }
+  postLike = {
+    /**
+     * No description
+     *
+     * @name PostLikeCreate
+     * @summary 添加点赞
+     * @request POST:/postLike
+     * @secure
+     */
+    postLikeCreate: (
+      query?: {
+        /** @example "1" */
+        postId?: string
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<
+        any,
+        {
+          success: boolean
+          errCode: number
+          errMsg: string
+          data: null
+        }
+      >({
+        path: `/postLike`,
+        method: 'POST',
+        query: query,
+        secure: true,
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @name PostLikeDelete
+     * @summary 取消点赞
+     * @request DELETE:/postLike
+     * @secure
+     */
+    postLikeDelete: (
+      query?: {
+        /** @example "1" */
+        postId?: string
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<
+        {
+          success: boolean
+          errCode: null
+          errMsg: null
+          data: null
+        },
+        any
+      >({
+        path: `/postLike`,
+        method: 'DELETE',
+        query: query,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @name CheckList
+     * @summary 检查对单一帖子是否点赞
+     * @request GET:/postLike/check
+     * @secure
+     */
+    checkList: (
+      query?: {
+        /** @example "1" */
+        postId?: string
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<
+        {
+          success: boolean
+          errCode: null
+          errMsg: null
+          data: boolean
+        },
+        any
+      >({
+        path: `/postLike/check`,
+        method: 'GET',
+        query: query,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @name CheckListList
+     * @summary 批量检查是否点赞
+     * @request GET:/postLike/check/list
+     * @secure
+     */
+    checkListList: (
+      data: object[],
+      query?: {
+        /** @example "1,2,3" */
+        postIds?: number
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<any, object>({
+        path: `/postLike/check/list`,
+        method: 'GET',
+        query: query,
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params
+      })
+  }
+  subscribe = {
+    /**
+     * No description
+     *
+     * @name SubscribeCreate
+     * @summary 添加关注
+     * @request POST:/subscribe
+     * @secure
+     */
+    subscribeCreate: (data: object, params: RequestParams = {}) =>
+      this.request<
+        {
+          success: boolean
+          errCode: null
+          errMsg: null
+          data: null
+        },
+        any
+      >({
+        path: `/subscribe`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @name SubscribeDelete
+     * @summary 取消关注
+     * @request DELETE:/subscribe
+     * @secure
+     */
+    subscribeDelete: (
+      query?: {
+        /** @example "1" */
+        userId?: string
+        /** @example "2" */
+        targetUserId?: string
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<
+        {
+          success: boolean
+          errCode: null
+          errMsg: null
+          data: null
+        },
+        any
+      >({
+        path: `/subscribe`,
+        method: 'DELETE',
+        query: query,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @name CheckList
+     * @summary 判断是否关注
+     * @request GET:/subscribe/check
+     * @secure
+     */
+    checkList: (
+      query?: {
+        /** @example "1" */
+        userId?: string
+        /** @example "2" */
+        targetUserId?: string
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<
+        {
+          success: boolean
+          errCode: null
+          errMsg: null
+          data: {
+            uid: number
+            isSubscribed: boolean
+          }
+        },
+        any
+      >({
+        path: `/subscribe/check`,
+        method: 'GET',
+        query: query,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @name CheckListList
+     * @summary 批量判断是否关注
+     * @request GET:/subscribe/check/list
+     * @secure
+     */
+    checkListList: (
+      query?: {
+        /** @example "1" */
+        userId?: string
+        /** @example ["1","2","3"] */
+        targetUserIds?: string[]
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<
+        {
+          success: boolean
+          errCode: null
+          errMsg: null
+          data: {
+            checkedList: {
+              uid: number
+              isSubscribed: boolean
+            }[]
+          }
+        },
+        any
+      >({
+        path: `/subscribe/check/list`,
+        method: 'GET',
+        query: query,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @name PageList
+     * @summary 获取关注列表
+     * @request GET:/subscribe/page
+     * @secure
+     */
+    pageList: (
+      query?: {
+        /** @example "5" */
+        pageSize?: string
+        cursor?: string
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<
+        {
+          success: boolean
+          errCode: null
+          errMsg: null
+          data: {
+            cursor: string
+            isLast: boolean
+            list: {
+              userId: number
+              targetUserId: number
+              createTime: string
+            }[]
+          }
+        },
+        any
+      >({
+        path: `/subscribe/page`,
+        method: 'GET',
+        query: query,
+        secure: true,
+        format: 'json',
+        ...params
+      })
+  }
+  postStar = {
+    /**
+     * No description
+     *
+     * @name PostStarCreate
+     * @summary 添加关注
+     * @request POST:/postStar
+     * @secure
+     */
+    postStarCreate: (data: object, params: RequestParams = {}) =>
+      this.request<
+        {
+          success: boolean
+          errCode: null
+          errMsg: null
+          data: null
+        },
+        any
+      >({
+        path: `/postStar`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @name PostStarDelete
+     * @summary 取消关注
+     * @request DELETE:/postStar
+     * @secure
+     */
+    postStarDelete: (
+      query?: {
+        /** @example "2" */
+        starId?: string
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<
+        {
+          success: boolean
+          errCode: null
+          errMsg: null
+          data: null
+        },
+        any
+      >({
+        path: `/postStar`,
+        method: 'DELETE',
+        query: query,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @name PostStarList
+     * @summary 按收藏id获取帖子(不含图)
+     * @request GET:/postStar
+     * @secure
+     */
+    postStarList: (
+      query?: {
+        /** @example "3" */
+        starId?: string
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<
+        {
+          success: boolean
+          errCode: null
+          errMsg: null
+          data: {
+            postId: number
+            userId: number
+            title: string
+            content: string
+            coverUrl: string
+            likeNumber: number
+            commentNumber: number
+            starNumber: number
+            createTime: string
+            updateTime: string
+            status: null
+          }
+        },
+        any
+      >({
+        path: `/postStar`,
+        method: 'GET',
+        query: query,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @name PostStarUpdate
+     * @summary 修改收藏信息
+     * @request PUT:/postStar
+     * @secure
+     */
+    postStarUpdate: (data: object, params: RequestParams = {}) =>
+      this.request<
+        {
+          success: boolean
+          errCode: null
+          errMsg: null
+          data: null
+        },
+        any
+      >({
+        path: `/postStar`,
+        method: 'PUT',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      })
+  }
+  postFavorites = {
+    /**
+     * No description
+     *
+     * @name PostFavoritesCreate
+     * @summary 新建收藏夹
+     * @request POST:/postFavorites
+     * @secure
+     */
+    postFavoritesCreate: (data: object, params: RequestParams = {}) =>
+      this.request<
+        {
+          success: boolean
+          errCode: null
+          errMsg: null
+          data: null
+        },
+        any
+      >({
+        path: `/postFavorites`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @name PostFavoritesList
+     * @summary 根据收藏夹id获取收藏列表
+     * @request GET:/postFavorites
+     * @secure
+     */
+    postFavoritesList: (
+      query?: {
+        /** @example "1" */
+        favoritesId?: string
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<
+        {
+          success: boolean
+          errCode: null
+          errMsg: null
+          data: {
+            userId: number
+            name: string
+            postStars: {
+              starId?: number
+              userId?: number
+              favoritesId?: number
+              postId?: number
+              createTime?: string
+              updateTime?: string
+            }[]
+          }
+        },
+        any
+      >({
+        path: `/postFavorites`,
+        method: 'GET',
+        query: query,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @name PostFavoritesUpdate
+     * @summary 修改收藏夹
+     * @request PUT:/postFavorites
+     * @secure
+     */
+    postFavoritesUpdate: (data: object, params: RequestParams = {}) =>
+      this.request<
+        {
+          success: boolean
+          errCode: null
+          errMsg: null
+          data: null
+        },
+        any
+      >({
+        path: `/postFavorites`,
+        method: 'PUT',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @name PostFavoritesDelete
+     * @summary 删除收藏夹
+     * @request DELETE:/postFavorites
+     * @secure
+     */
+    postFavoritesDelete: (
+      query?: {
+        /** @example "1" */
+        favoritesId?: string
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<
+        {
+          success: boolean
+          errCode: null
+          errMsg: null
+          data: null
+        },
+        any
+      >({
+        path: `/postFavorites`,
+        method: 'DELETE',
+        query: query,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @name ListList
+     * @summary 按照用户id获取收藏夹列表
+     * @request GET:/postFavorites/list
+     * @secure
+     */
+    listList: (
+      query?: {
+        /** @example "1" */
+        userId?: string
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<
+        {
+          success: boolean
+          errCode: null
+          errMsg: null
+          data: {
+            favoritesList: {
+              favoritesId: number
+              name: string
+            }[]
+          }
+        },
+        any
+      >({
+        path: `/postFavorites/list`,
+        method: 'GET',
+        query: query,
+        secure: true,
+        format: 'json',
+        ...params
+      })
+  }
+  postComment = {
+    /**
+     * No description
+     *
+     * @name PostCommentCreate
+     * @summary 发布评论
+     * @request POST:/postComment
+     * @secure
+     */
+    postCommentCreate: (data: object, params: RequestParams = {}) =>
+      this.request<
+        {
+          success: boolean
+          errCode: null
+          errMsg: null
+          data: null
+        },
+        any
+      >({
+        path: `/postComment`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @name PostCommentUpdate
+     * @summary 修改评论
+     * @request PUT:/postComment
+     * @secure
+     */
+    postCommentUpdate: (data: object, params: RequestParams = {}) =>
+      this.request<
+        {
+          success: boolean
+          errCode: null
+          errMsg: null
+          data: null
+        },
+        any
+      >({
+        path: `/postComment`,
+        method: 'PUT',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @name PostCommentDelete
+     * @summary 删除评论
+     * @request DELETE:/postComment
+     * @secure
+     */
+    postCommentDelete: (
+      query?: {
+        /** @example "1" */
+        commentId?: string
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<
+        {
+          success: boolean
+          errCode: null
+          errMsg: null
+          data: null
+        },
+        any
+      >({
+        path: `/postComment`,
+        method: 'DELETE',
+        query: query,
+        secure: true,
+        format: 'json',
         ...params
       })
   }

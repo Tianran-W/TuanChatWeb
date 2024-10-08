@@ -11,7 +11,7 @@ const groupStore = useGroupStore()
 const roleStore = useRoleStore()
 
 const handleAddRole = () => {
-  roleStore.addRole(userStore.userInfo.userId)
+  roleStore.addRole()
 }
 </script>
 

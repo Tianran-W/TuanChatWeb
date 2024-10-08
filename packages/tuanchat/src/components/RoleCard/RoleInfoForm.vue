@@ -4,6 +4,7 @@ import { tuanApis } from '@/services'
 import { useRoleStore } from '@/stores'
 import { computed, ref } from 'vue'
 import { ElButton, ElForm, ElFormItem, ElInput, ElInputNumber, ElTag, ElText } from 'element-plus'
+import type { RoleAbilityTable } from '@/services'
 
 const props = defineProps<{
   roleId: number
@@ -17,14 +18,17 @@ const roleInfo = computed(() => ({
   roleAbility: roleStore.roleAbility.get(props.roleId)!
 }))
 
-let abilityDict = Object.entries(roleInfo.value.roleAbility as Record<string, number>).filter(
-  ([key]) => key !== 'roleId'
+const abilityDict = computed(() =>
+  Object.entries(roleInfo.value.roleAbility as Record<string, number>).filter(
+    ([key]) => key !== 'roleId'
+  )
 )
+
 const onSubmit = () => {
   tuanApis
-    .saveRole(roleInfo.value.userRole)
-    .then((res) => {
-      roleStore.userRoleList.set(props.roleId, res.data.data!)
+    .updateRole(roleInfo.value.userRole)
+    .then(() => {
+      roleStore.userRoleList.set(props.roleId, roleInfo.value.userRole)
       isEditing.value = false
     })
     .catch((err) => {
@@ -33,8 +37,8 @@ const onSubmit = () => {
 
   tuanApis
     .setRoleAbility(roleInfo.value.roleAbility!)
-    .then((res) => {
-      roleStore.roleAbility.set(props.roleId, res.data.data!)
+    .then(() => {
+      roleStore.roleAbility.set(props.roleId, roleInfo.value.roleAbility)
       isEditing.value = false
     })
     .catch((err) => {
@@ -66,9 +70,11 @@ const importAttrs = () => {
     <ElFormItem label="Role ability">
       <div class="role-ability">
         <div class="slider-block" v-if="isEditing">
-          <div class="slider-item" v-for="[attr, value] in abilityDict" :key="attr">
+          <div class="slider-item" v-for="[attr] in abilityDict" :key="attr">
             <ElText>{{ propertyToChineseMap.get(attr) }}</ElText>
-            <ElInputNumber :model-value="value" />
+            <ElInputNumber
+              v-model:model-value="roleInfo.roleAbility[attr as keyof RoleAbilityTable]"
+            />
           </div>
         </div>
         <ElTag v-else type="info" v-for="[attr, value] in abilityDict" :key="attr">{{

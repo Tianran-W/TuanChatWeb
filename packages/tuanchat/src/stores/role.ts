@@ -46,8 +46,8 @@ export const useRoleStore = defineStore('role', () => {
     groupToRole.value.set(groupId, userRoleList.value.values().next().value!)
   }
 
-  async function addRole(userId: number) {
-    const newRole = (await tuanApis.saveRole({ userId: userId })).data.data
+  async function addRole() {
+    const newRole = (await tuanApis.createRole()).data.data
     if (newRole === undefined) {
       throw new Error('Create role failed')
     }

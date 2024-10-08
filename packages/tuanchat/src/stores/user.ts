@@ -12,6 +12,7 @@ export const useUserStore = defineStore('user', () => {
   const groupStore = useGroupStore()
   const roleStore = useRoleStore()
 
+  //TODO: token也用pinia管理
   async function login(uid: string) {
     localStorage.setItem('token', '')
     const data = (await tuanApis.login({ userId: uid, password: '123456' })).data.data

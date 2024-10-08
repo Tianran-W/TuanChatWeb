@@ -17,6 +17,10 @@ export const useGroupStore = defineStore('group', () => {
   }
 
   function initGroupMap(grouplist: RoomGroup[]) {
+    if (!groupList.value || groupList.value.size === 0) {
+      return
+    }
+
     grouplist.forEach((group) => {
       if (group.roomId !== undefined) {
         groupList.value.set(group.roomId, group)
