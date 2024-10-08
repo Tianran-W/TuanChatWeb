@@ -9,15 +9,17 @@ import { computed } from 'vue'
 
 const props = defineProps<{
   msg: Message
+  readOnly: boolean
 }>()
 
 const roleStore = useRoleStore()
 const roomStore = useRoomStore()
 const msgType: MsgEnum = props.msg.messageType!
 const renderer = roomStore.renderers.get(roomStore.curRoom?.roomId!)
-const role = computed(() => {
-  return roomStore.roleList.find((role) => role.roleId === props.msg.roleId)
-})
+// const role = computed(() => {
+//   return roomStore.roleList.find((role) => role.roleId === props.msg.roleId)
+// })
+const role = computed(() => roleStore.userRoleList.get(props.msg.roleId!))
 
 const handleAddToRenderer = async () => {
   const spriteUrl = roleStore.imageUrls.get(props.msg.avatarId!)?.spriteUrl
@@ -45,7 +47,7 @@ const handleAddToRenderer = async () => {
     <div class="message-content">
       <div class="message-top">
         <ElText size="small">{{ role?.roleName }}</ElText>
-        <ElButton @click="handleAddToRenderer">加入对话</ElButton>
+        <ElButton @click="handleAddToRenderer" :disabled="readOnly">加入对话</ElButton>
       </div>
       <ElText v-if="msgType === MsgEnum.TEXT" size="large">{{
         (msg.body as TextBody).content

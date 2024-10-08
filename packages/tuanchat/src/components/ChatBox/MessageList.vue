@@ -51,7 +51,7 @@ const onWheel = (e: WheelEvent) => {
 <template>
   <ElScrollbar ref="scrollbarRef" @scroll="onScroll">
     <div class="message-list" ref="innerRef" @wheel="onWheel">
-      <MessageItem v-for="msg in msgs" :key="msg.syncId" :msg="msg" />
+      <MessageItem v-for="msg in msgs" :key="msg.syncId" :msg="msg" :readOnly="false" />
     </div>
   </ElScrollbar>
 </template>
