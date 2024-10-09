@@ -25,9 +25,7 @@ const isPreview = ref(false)
 const cropperRef = ref<VueCropper>()
 
 const spriteName = ref('')
-const uploadUrl = ref('') // 立绘上传url
-const downloadUrl = ref('') // 立绘下载url
-const uploadAvatarId = ref(0)
+const processAvatarId = ref(0)
 
 const prevMsg = ref<Message>({
   roleId: 0,
@@ -44,6 +42,7 @@ const handleRemove = (uploadFile: UploadFile) => {
     tuanApis.deleteRoleAvatar({
       avatarId: Number(uploadFile.name.split('_')[2].split('.')[0])
     })
+    fileList.value = fileList.value.filter((file) => file.name !== uploadFile.name)
   }
 }
 
@@ -69,21 +68,19 @@ const onBeforeUpload = async (rawFile: UploadRawFile) => {
   if (resId === undefined) {
     throw new Error('Set role avatar failed')
   }
-  uploadAvatarId.value = resId
+  processAvatarId.value = resId
 
   const data = (
     await tuanApis.getUploadUrl({
-      fileName: `sprites_${role?.roleId}_${uploadAvatarId.value}.png`,
+      fileName: `sprites_${role?.roleId}_${processAvatarId.value}.png`,
       scene: 1
     })
   ).data.data
   if (data === undefined) {
     throw new Error('Get upload url failed')
   }
-  uploadUrl.value = data.uploadUrl!
-  downloadUrl.value = data.downloadUrl!
 
-  await axios(uploadUrl.value, {
+  await axios(data.uploadUrl!, {
     method: 'PUT',
     data: rawFile
   })
@@ -91,16 +88,17 @@ const onBeforeUpload = async (rawFile: UploadRawFile) => {
   // 更新数据库立绘
   await tuanApis.updateRoleAvatar({
     roleId: role?.roleId,
-    avatarId: uploadAvatarId.value,
-    spriteUrl: downloadUrl.value
+    avatarId: processAvatarId.value,
+    spriteUrl: data.downloadUrl!
   })
 
   await roleStore.fetchRoleAvatars(role?.roleId!).then(() => {
     fileList.value = []
     roleStore.roleToImages.get(role?.roleId!)?.forEach((avatarId: number) => {
+      const urls = roleStore.imageUrls.get(avatarId)
       fileList.value.push({
         name: `sprites_${role?.roleId}_${avatarId}.png`,
-        url: roleStore.imageUrls.get(avatarId)?.avatarUrl,
+        url: urls?.avatarUrl ? urls.avatarUrl : urls?.spriteUrl,
         status: 'success'
       })
     })
@@ -108,14 +106,15 @@ const onBeforeUpload = async (rawFile: UploadRawFile) => {
 }
 
 const handleCrop = (uploadFile: UploadFile) => {
-  cropUrl.value = uploadFile.url!
   isCutting.value = true
+  processAvatarId.value = Number(uploadFile.name.split('_')[2].split('.')[0])
+  cropUrl.value = roleStore.imageUrls.get(processAvatarId.value)?.spriteUrl!
 }
 
 const handleCropAvatar = async () => {
   const avatar_data = (
     await tuanApis.getUploadUrl({
-      fileName: `avatar_${role?.roleId}_${uploadAvatarId.value}.png`,
+      fileName: `avatar_${role?.roleId}_${processAvatarId.value}.png`,
       scene: 1
     })
   ).data.data
@@ -130,11 +129,15 @@ const handleCropAvatar = async () => {
   })
 
   // 更新数据库头像
-  tuanApis.updateRoleAvatar({
-    avatarId: uploadAvatarId.value,
-    avatarTitle: spriteName.value,
-    avatarUrl: avatar_data.downloadUrl
-  })
+  tuanApis
+    .updateRoleAvatar({
+      avatarId: processAvatarId.value,
+      avatarTitle: spriteName.value,
+      avatarUrl: avatar_data.downloadUrl
+    })
+    .then(() => {
+      updateFileList()
+    })
 
   isCutting.value = false
 }
@@ -145,29 +148,36 @@ watch(
     roleId.value = Number(newId)
     role = roleStore.userRoleList.get(roleId.value)
 
-    fileList.value = []
-    //TODO: 这里应该做一个缓存
-    roleStore.fetchRoleAvatars(role?.roleId!).then(() => {
-      roleStore.roleToImages.get(role?.roleId!)?.forEach((avatarId: number) => {
-        fileList.value.push({
-          name: `sprites_${role?.roleId}_${avatarId}.png`,
-          url: roleStore.imageUrls.get(avatarId)?.avatarUrl
-        })
-      })
-    })
+    updateFileList()
   }
 )
 
 onMounted(() => {
   roleStore.fetchRoleAvatars(role?.roleId!).then(() => {
     roleStore.roleToImages.get(role?.roleId!)?.forEach((avatarId: number) => {
+      const urls = roleStore.imageUrls.get(avatarId)
       fileList.value.push({
         name: `sprites_${role?.roleId}_${avatarId}.png`,
-        url: roleStore.imageUrls.get(avatarId)?.avatarUrl
+        url: urls?.avatarUrl ? urls.avatarUrl : urls?.spriteUrl,
+        status: 'success'
       })
     })
   })
 })
+
+const updateFileList = () => {
+  fileList.value = []
+  roleStore.fetchRoleAvatars(role?.roleId!).then(() => {
+    roleStore.roleToImages.get(role?.roleId!)?.forEach((avatarId: number) => {
+      const urls = roleStore.imageUrls.get(avatarId)
+      fileList.value.push({
+        name: `sprites_${role?.roleId}_${avatarId}.png`,
+        url: urls?.avatarUrl ? urls.avatarUrl : urls?.spriteUrl,
+        status: 'success'
+      })
+    })
+  })
+}
 </script>
 
 <template>

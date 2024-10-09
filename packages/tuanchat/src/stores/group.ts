@@ -16,12 +16,12 @@ export const useGroupStore = defineStore('group', () => {
     initGroupMap(data)
   }
 
-  function initGroupMap(grouplist: RoomGroup[]) {
-    if (!groupList.value || groupList.value.size === 0) {
+  function initGroupMap(groupInfolist: RoomGroup[]) {
+    if (!groupInfolist || groupInfolist.length === 0) {
       return
     }
 
-    grouplist.forEach((group) => {
+    groupInfolist.forEach((group) => {
       if (group.roomId !== undefined) {
         groupList.value.set(group.roomId, group)
         if (group.parentGroupId === 0) {
@@ -30,7 +30,7 @@ export const useGroupStore = defineStore('group', () => {
       }
     })
 
-    grouplist.forEach((group) => {
+    groupInfolist.forEach((group) => {
       if (group.parentGroupId && group.parentGroupId !== 0) {
         const parentGroup = groupList.value.get(group.parentGroupId)
         if (parentGroup === undefined || parentGroup.roomId === undefined) {
