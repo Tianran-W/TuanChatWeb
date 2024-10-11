@@ -7,7 +7,9 @@ export const useRoleStore = defineStore('role', () => {
   const userRoleList = ref(new Map<number, UserRole>())
   const roleAbility = ref(new Map<number, RoleAbilityTable>())
   const roleToImages = ref(new Map<number, number[]>())
-  const imageUrls = ref(new Map<number, { spriteUrl: string; avatarUrl: string }>())
+  const imageUrls = ref(
+    new Map<number, { spriteUrl: string; avatarUrl: string; avatarTitle: string }>()
+  )
   const groupToRole = ref(new Map<number, UserRole>())
 
   async function fetchRoleAvatars(roleId: number) {
@@ -19,7 +21,8 @@ export const useRoleStore = defineStore('role', () => {
       if (avatar.avatarId !== undefined) {
         imageUrls.value.set(avatar.avatarId, {
           spriteUrl: avatar.spriteUrl!,
-          avatarUrl: avatar.avatarUrl!
+          avatarUrl: avatar.avatarUrl!,
+          avatarTitle: avatar.avatarTitle!
         })
       }
     })
@@ -38,7 +41,8 @@ export const useRoleStore = defineStore('role', () => {
     }
     imageUrls.value.set(avatarId, {
       spriteUrl: data.spriteUrl!,
-      avatarUrl: data.avatarUrl!
+      avatarUrl: data.avatarUrl!,
+      avatarTitle: data.avatarTitle!
     })
   }
 

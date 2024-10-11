@@ -2,7 +2,7 @@
 import axios from 'axios'
 import 'vue-cropper/dist/index.css'
 import { VueCropper } from 'vue-cropper'
-import { onMounted, ref, watch } from 'vue'
+import { nextTick, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useRoleStore } from '@/stores'
 import { tuanApis } from '@/services'
@@ -19,13 +19,14 @@ const roleId = ref(Number(route.params.id))
 let role = roleStore.userRoleList.get(roleId.value)
 
 const fileList = ref<UploadUserFile[]>([])
-const cropUrl = ref('')
 const isCutting = ref(false)
 const isPreview = ref(false)
-const cropperRef = ref<VueCropper>()
 
 const spriteName = ref('')
 const processAvatarId = ref(0)
+
+const cropperRef = ref<VueCropper>()
+const cropUrl = ref('')
 
 const prevMsg = ref<Message>({
   roleId: 0,
@@ -109,6 +110,8 @@ const handleCrop = (uploadFile: UploadFile) => {
   isCutting.value = true
   processAvatarId.value = Number(uploadFile.name.split('_')[2].split('.')[0])
   cropUrl.value = roleStore.imageUrls.get(processAvatarId.value)?.spriteUrl!
+  //TODO: 更新spriteName
+  spriteName.value = roleStore.imageUrls.get(processAvatarId.value)?.avatarTitle!
 }
 
 const handleCropAvatar = async () => {
@@ -121,23 +124,23 @@ const handleCropAvatar = async () => {
   if (avatar_data === undefined) {
     throw new Error('Get upload url failed')
   }
-  await cropperRef.value.getCropBlob(async (img: Blob) => {
-    await axios(avatar_data.uploadUrl!, {
+  await cropperRef.value.getCropBlob((img: Blob) => {
+    axios(avatar_data.uploadUrl!, {
       method: 'PUT',
       data: img
+    }).then(() => {
+      tuanApis
+        .updateRoleAvatar({
+          avatarId: processAvatarId.value,
+          avatarTitle: spriteName.value,
+          avatarUrl: avatar_data.downloadUrl
+        })
+        // 更新数据库头像
+        .then(() => {
+          updateFileList()
+        })
     })
   })
-
-  // 更新数据库头像
-  tuanApis
-    .updateRoleAvatar({
-      avatarId: processAvatarId.value,
-      avatarTitle: spriteName.value,
-      avatarUrl: avatar_data.downloadUrl
-    })
-    .then(() => {
-      updateFileList()
-    })
 
   isCutting.value = false
 }
