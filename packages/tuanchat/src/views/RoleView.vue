@@ -2,7 +2,7 @@
 import axios from 'axios'
 import 'vue-cropper/dist/index.css'
 import { VueCropper } from 'vue-cropper'
-import { nextTick, onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useRoleStore } from '@/stores'
 import { tuanApis } from '@/services'

@@ -2,6 +2,7 @@ import { useUserStore, useMsgStore } from '@/stores'
 import { WsRespEnum } from '@/enums'
 import type { WsReqType } from './types'
 import type { MsgType } from '@/stores/types'
+import pinia from '@/stores'
 
 const worker: Worker = new Worker(new URL('./worker.ts', import.meta.url), {
   type: 'module'
@@ -21,8 +22,7 @@ class WS {
   }
 
   initConnect = () => {
-    const token = localStorage.getItem('token')
-    worker.postMessage(JSON.stringify({ type: 'initWS', value: token }))
+    worker.postMessage(JSON.stringify({ type: 'initWS', value: useUserStore(pinia).token }))
   }
 
   send = (req: WsReqType) => {
@@ -55,7 +55,7 @@ class WS {
   // 收到消息回调
   #onMessage = (value: string) => {
     const wsResp: { type: WsRespEnum; data: { message: MsgType } } = JSON.parse(value)
-    const msgStore = useMsgStore()
+    const msgStore = useMsgStore(pinia)
     switch (wsResp.type) {
       case WsRespEnum.MESSAGE: {
         msgStore.pushMsg(wsResp.data.message)
@@ -76,7 +76,7 @@ class WS {
   #dealTasks = () => {
     this.#connectReady = true
     setTimeout(() => {
-      const userStore = useUserStore()
+      const userStore = useUserStore(pinia)
       if (userStore.isSign) {
         // 处理堆积的任务
         this.#tasks.forEach((task) => {

@@ -4,6 +4,7 @@ import type { UserInfoType } from './types'
 import { tuanApis } from '@/services'
 import { useGroupStore } from './group'
 import { useRoleStore } from './role'
+import { axiosIns } from '@/services'
 import wsIns from '@/utils/websocket/websocket'
 
 export const useUserStore = defineStore('user', () => {
@@ -11,16 +12,16 @@ export const useUserStore = defineStore('user', () => {
   const userInfo = ref<UserInfoType>({ userId: 0, username: '', avatar: '', roleIds: [] })
   const groupStore = useGroupStore()
   const roleStore = useRoleStore()
+  const token = ref('')
 
-  //TODO: token也用pinia管理
   async function login(uid: string) {
-    localStorage.setItem('token', '')
     const data = (await tuanApis.login({ userId: uid, password: '123456' })).data.data
     if (data === undefined) {
       throw new Error('Login failed')
     }
     isSign.value = true
-    localStorage.setItem('token', data)
+    token.value = data
+    axiosIns.defaults.headers.common['Authorization'] = `Bearer ${data}`
     wsIns.initConnect()
     await getUserInfo(uid)
   }
@@ -31,7 +32,8 @@ export const useUserStore = defineStore('user', () => {
     userInfo.value.username = ''
     userInfo.value.avatar = ''
     roleStore.userRoleList.clear()
-    localStorage.removeItem('token')
+    roleStore.roleAbility.clear()
+    groupStore.groupList.clear()
   }
 
   async function getUserInfo(uid: string) {
@@ -55,5 +57,5 @@ export const useUserStore = defineStore('user', () => {
     await groupStore.getGroupList()
   }
 
-  return { userInfo, isSign, login, logout }
+  return { userInfo, isSign, token, login, logout }
 })
