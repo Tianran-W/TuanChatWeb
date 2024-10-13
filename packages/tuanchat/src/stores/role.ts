@@ -64,6 +64,13 @@ export const useRoleStore = defineStore('role', () => {
     })
   }
 
+  function deleteRole(roleId: number) {
+    tuanApis.deleteRole({ roleId: roleId }).then(() => {
+      userRoleList.value.delete(roleId)
+      roleAbility.value.delete(roleId)
+    })
+  }
+
   return {
     userRoleList,
     roleAbility,
@@ -73,6 +80,7 @@ export const useRoleStore = defineStore('role', () => {
     addRole,
     fetchRole,
     fetchRoleAvatars,
-    fetchAvatar
+    fetchAvatar,
+    deleteRole
   }
 })

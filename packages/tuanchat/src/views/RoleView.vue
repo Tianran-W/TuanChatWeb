@@ -11,6 +11,7 @@ import { ElButton, ElDialog, ElIcon, ElInput, ElScrollbar, ElUpload } from 'elem
 import type { UploadFile, UploadUserFile, UploadRawFile } from 'element-plus'
 import { RoleInfoForm, MessageItem } from '@/components'
 import type { Message } from '@/services'
+import router from '@/router'
 
 const route = useRoute()
 const roleStore = useRoleStore()
@@ -187,6 +188,18 @@ const updateFileList = () => {
     })
   })
 }
+
+const deleteRole = () => {
+  tuanApis
+    .deleteRole({ roleId: roleId.value })
+    .then(() => {
+      router.push('/')
+      roleStore.deleteRole(roleId.value)
+    })
+    .catch((err) => {
+      console.error(err)
+    })
+}
 </script>
 
 <template>
@@ -242,6 +255,7 @@ const updateFileList = () => {
     </ElDialog>
 
     <RoleInfoForm :roleId="roleId" :defaultAvatar="defaultAvatar" />
+    <ElButton type="danger" @click="deleteRole">Delete</ElButton>
   </div>
 </template>
 

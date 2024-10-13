@@ -5,21 +5,16 @@ import ChatItem from './ChatItem.vue'
 import GroupItem from './GroupItem.vue'
 import RoleItem from './RoleItem.vue'
 import { useUserStore, useGroupStore, useRoleStore } from '@/stores'
+import router from '@/router'
 
 const userStore = useUserStore()
 const groupStore = useGroupStore()
 const roleStore = useRoleStore()
-
-const handleAddRole = () => {
-  roleStore.addRole()
-}
 </script>
 
 <template>
-  <ElMenuItem v-if="!userStore.isSign" index="2">
-    <RouterLink to="/login">
-      <ElIcon><More /></ElIcon>More
-    </RouterLink>
+  <ElMenuItem v-if="!userStore.isSign" index="2" @click="router.push('/login')">
+    <ElIcon><More /></ElIcon>More
   </ElMenuItem>
 
   <span v-else>
@@ -47,7 +42,7 @@ const handleAddRole = () => {
         <ElIcon><Avatar /></ElIcon>Role
       </template>
       <RoleItem v-for="roleId in roleStore.userRoleList.keys()" :key="roleId" :roleId="roleId" />
-      <ElMenuItem index="4-0" @click="handleAddRole"> 添加角色 </ElMenuItem>
+      <ElMenuItem index="4-0" @click="roleStore.addRole"> 添加角色 </ElMenuItem>
     </ElSubMenu>
   </span>
 </template>
