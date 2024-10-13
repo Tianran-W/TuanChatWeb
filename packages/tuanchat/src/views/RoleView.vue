@@ -6,7 +6,7 @@ import { onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useRoleStore } from '@/stores'
 import { tuanApis } from '@/services'
-import { Plus, ZoomIn, Delete, Crop } from '@element-plus/icons-vue'
+import { Plus, ZoomIn, Delete, Crop, Open } from '@element-plus/icons-vue'
 import { ElButton, ElDialog, ElIcon, ElInput, ElScrollbar, ElUpload } from 'element-plus'
 import type { UploadFile, UploadUserFile, UploadRawFile } from 'element-plus'
 import { RoleInfoForm, MessageItem } from '@/components'
@@ -28,6 +28,8 @@ const processAvatarId = ref(0)
 const cropperRef = ref<VueCropper>()
 const cropUrl = ref('')
 
+const defaultAvatar = ref(role?.avatar || undefined)
+
 const prevMsg = ref<Message>({
   roleId: 0,
   avatarId: 0,
@@ -45,6 +47,10 @@ const handleRemove = (uploadFile: UploadFile) => {
     })
     fileList.value = fileList.value.filter((file) => file.name !== uploadFile.name)
   }
+}
+
+const handleSetAvatar = (uploadFile: UploadFile) => {
+  defaultAvatar.value = uploadFile.url
 }
 
 const handlePictureCardPreview = (uploadFile: UploadFile) => {
@@ -208,6 +214,9 @@ const updateFileList = () => {
               <span class="el-upload-list__item-delete" @click="handleRemove(file)">
                 <ElIcon><Delete /></ElIcon>
               </span>
+              <span class="el-upload-list__item-set" @click="handleSetAvatar(file)">
+                <ElIcon><Open /></ElIcon>
+              </span>
             </span>
           </div>
         </template>
@@ -232,7 +241,7 @@ const updateFileList = () => {
       <MessageItem :msg="prevMsg" :readOnly="true" />
     </ElDialog>
 
-    <RoleInfoForm :roleId="roleId" />
+    <RoleInfoForm :roleId="roleId" :defaultAvatar="defaultAvatar" />
   </div>
 </template>
 

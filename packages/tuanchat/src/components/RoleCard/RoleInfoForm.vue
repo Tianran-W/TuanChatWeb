@@ -2,13 +2,21 @@
 import { propertyToChineseMap } from '@/enums'
 import { tuanApis } from '@/services'
 import { useRoleStore } from '@/stores'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { ElButton, ElForm, ElFormItem, ElInput, ElInputNumber, ElTag, ElText } from 'element-plus'
 import type { RoleAbilityTable } from '@/services'
 
 const props = defineProps<{
   roleId: number
+  defaultAvatar: string | undefined
 }>()
+
+watch(
+  () => props.defaultAvatar,
+  () => {
+    isEditing.value = true
+  }
+)
 
 const roleStore = useRoleStore()
 const isEditing = ref(false)
@@ -25,6 +33,7 @@ const abilityDict = computed(() =>
 )
 
 const onSubmit = () => {
+  roleInfo.value.userRole.avatar = props.defaultAvatar
   tuanApis
     .updateRole(roleInfo.value.userRole)
     .then(() => {
