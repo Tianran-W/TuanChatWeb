@@ -3,8 +3,8 @@ import { ref } from 'vue'
 import { useMsgStore } from './message'
 import { useGroupStore } from './group'
 import { useRoleStore } from './role'
-import { Renderer } from '@/utils/renderer'
 import type { Message, UserRole, RoomGroup } from '@/services'
+import { Renderer } from '@/utils/renderer'
 
 export const useRoomStore = defineStore('room', () => {
   const msgStore = useMsgStore()
@@ -16,8 +16,7 @@ export const useRoomStore = defineStore('room', () => {
   const role = ref<UserRole>()
   const messages = ref<Message[]>([])
   const roleList = ref<UserRole[]>([])
-
-  const renderers = new Map<number, Renderer>()
+  const renderer = ref<Renderer>(new Renderer(-1))
 
   async function switchRoom(roomId: number) {
     curRoom.value = groupStore.groupList.get(roomId)
@@ -31,10 +30,9 @@ export const useRoomStore = defineStore('room', () => {
   }
 
   async function initRoom(roomId: number) {
-    const renderer = new Renderer(roomId)
-    await renderer.initRender()
-    renderers.set(roomId, renderer)
-
+    groupStore.createRenderer(roomId).then(() => {
+      renderer.value = groupStore.renderers.get(roomId)!
+    })
     msgStore.fetchMsg(roomId).then(() => {
       messages.value = msgStore.messagesList.get(roomId)!
     })
@@ -50,10 +48,11 @@ export const useRoomStore = defineStore('room', () => {
   }
 
   async function loadRoom(roomId: number) {
-    messages.value = msgStore.messagesList.get(roomId) || []
-    roleList.value = groupStore.groupRoleList.get(roomId) || []
-    role.value = roleStore.groupToRole.get(roomId) || undefined
+    renderer.value = groupStore.renderers.get(roomId)!
+    messages.value = msgStore.messagesList.get(roomId)!
+    roleList.value = groupStore.groupRoleList.get(roomId)!
+    role.value = roleStore.groupToRole.get(roomId)!
   }
 
-  return { curRoom, messages, role, roleList, renderers, switchRoom }
+  return { curRoom, messages, role, roleList, renderer, switchRoom }
 })

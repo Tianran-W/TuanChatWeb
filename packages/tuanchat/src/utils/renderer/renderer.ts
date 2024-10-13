@@ -1,4 +1,4 @@
-import { checkGameExist, readTextFile, uploadImage } from './fileOperator'
+import { checkGameExist, getAsycMsg, readTextFile, uploadImage } from './fileOperator'
 import { editScene, createPreview } from './game'
 
 interface Game {
@@ -12,15 +12,16 @@ interface RendererContext {
 }
 
 export class Renderer {
-  roomId: number = 0
-  game: Game = {
+  private roomId: number = 0
+  private game: Game = {
     name: 'Default Game',
     description: 'This is a default game'
   }
-  rendererContext: RendererContext = {
+  private rendererContext: RendererContext = {
     lineNumber: 0,
     text: ''
   }
+  private syncSocket: WebSocket
 
   constructor(roomId: number) {
     this.roomId = roomId
@@ -28,6 +29,7 @@ export class Renderer {
       name: `preview_${roomId}`,
       description: `This is game preview of ${roomId}`
     }
+    this.syncSocket = new WebSocket(import.meta.env.VITE_TERRE_WS)
   }
 
   public async initRender(): Promise<void> {
@@ -37,6 +39,7 @@ export class Renderer {
       } else {
         readTextFile(this.game.name, 'scene/start.txt').then((data) => {
           this.rendererContext.text = data
+          this.rendererContext.lineNumber = data.split('\n').length
         })
       }
     })
@@ -48,13 +51,18 @@ export class Renderer {
     this.rendererContext.lineNumber += 2
   }
 
-  private async addLineToRenderer(line: string): Promise<void> {
-    this.rendererContext.text = `${this.rendererContext.text}\n${line}`
-    editScene(this.game.name, 'start', this.rendererContext.text)
+  public asycRender(): void {
+    const msg = getAsycMsg('start.txt', this.rendererContext.lineNumber)
+    this.syncSocket.send(JSON.stringify(msg))
   }
 
   public async uploadSprites(url: string, spritesName: string): Promise<void> {
     const path = `games/${this.game.name}/game/figure/`
     return await uploadImage(url, path, `${spritesName}.png`)
+  }
+
+  private async addLineToRenderer(line: string): Promise<void> {
+    this.rendererContext.text = `${this.rendererContext.text}\n${line}`
+    editScene(this.game.name, 'start', this.rendererContext.text)
   }
 }

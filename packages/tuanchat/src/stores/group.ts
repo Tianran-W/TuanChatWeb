@@ -2,11 +2,19 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { tuanApis } from '@/services'
 import type { RoomGroup, UserRole } from '@/services'
+import { Renderer } from '@/utils/renderer'
 
 export const useGroupStore = defineStore('group', () => {
   const groupList = ref<Map<number, RoomGroup>>(new Map<number, RoomGroup>())
   const subGroupMap = ref(new Map<number, number[]>())
   const groupRoleList = ref(new Map<number, UserRole[]>())
+  const renderers = new Map<number, Renderer>()
+
+  async function createRenderer(roomId: number) {
+    const renderer = new Renderer(roomId)
+    await renderer.initRender()
+    renderers.set(roomId, renderer)
+  }
 
   async function getGroupList() {
     const data = (await tuanApis.getUserGroups()).data.data
@@ -53,5 +61,13 @@ export const useGroupStore = defineStore('group', () => {
     groupRoleList.value.set(groupId, data)
   }
 
-  return { groupList, subGroupMap, groupRoleList, getGroupList, fetchRoles }
+  return {
+    renderers,
+    groupList,
+    subGroupMap,
+    groupRoleList,
+    getGroupList,
+    fetchRoles,
+    createRenderer
+  }
 })

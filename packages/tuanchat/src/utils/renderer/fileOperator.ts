@@ -10,6 +10,32 @@ interface IFile {
   pathFromBase?: string
 }
 
+export enum DebugCommand {
+  // 跳转
+  JUMP,
+  // 同步自客户端
+  SYNCFC,
+  // 同步自编辑器
+  SYNCFE,
+  // 执行指令
+  EXE_COMMAND,
+  // 重新拉取模板样式文件
+  REFETCH_TEMPLATE_FILES
+}
+
+export interface IDebugMessage {
+  event: string
+  data: {
+    command: DebugCommand
+    sceneMsg: {
+      sentence: number
+      scene: string
+    }
+    message: string
+    stageSyncMsg: any
+  }
+}
+
 interface GameInfo {
   name: string
   isDir: boolean
@@ -94,4 +120,19 @@ export async function readTextFile(game: string, path: string): Promise<string> 
 export async function checkGameExist(game: string): Promise<boolean> {
   const gameList: GameInfo[] = (await terreApis.manageGameControllerGetGameList()).data
   return gameList.some((item) => item.name === game)
+}
+
+export function getAsycMsg(sceneName: string, lineNumber: number): IDebugMessage {
+  return {
+    event: 'message',
+    data: {
+      command: DebugCommand.JUMP,
+      sceneMsg: {
+        scene: sceneName,
+        sentence: lineNumber
+      },
+      stageSyncMsg: {},
+      message: 'Sync'
+    }
+  }
 }
