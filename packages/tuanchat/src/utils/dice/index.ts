@@ -1,3 +1,3 @@
-import { rollAttr, rollDice, getFieldName } from './random'
+import { rollAttr, rollDice } from './random'
 
-export { rollAttr, rollDice, getFieldName }
+export { rollAttr, rollDice }

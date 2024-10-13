@@ -1,8 +1,9 @@
 import { InstructionEnum } from '@/enums'
-import { rollDice, rollAttr, getFieldName } from '../dice'
+import { rollDice, rollAttr } from '../dice'
 import { tuanApis, type RoleAbilityTable } from '@/services'
 import pinia from '@/stores'
 import { useRoomStore } from '@/stores'
+import { chineseToPropertyMap } from '@/enums'
 
 export function parseInstruction(instruction: string): string {
   if (!instruction.startsWith('.') && !instruction.startsWith('。')) {
@@ -29,21 +30,19 @@ function getInstructionType(instruction: string): InstructionEnum {
 }
 
 function parseDice(tokens: string[]): string {
-  const instruction = tokens.reduce((acc, cur) => {
-    return acc + cur + ' '
-  }, '')
+  const instruction = tokens.join(' ')
 
-  const rollDefaultMatch = /^.rd$/.exec(instruction)
+  const rollDefaultMatch = /^[。.]rd$/.exec(instruction)
   if (rollDefaultMatch) {
     return `骰出了${rollDice(100, 1)}点`
   }
 
-  const rollMatch = /^.r$/.exec(instruction)
+  const rollMatch = /^[。.]r$/.exec(instruction)
   if (rollMatch) {
     return `骰出了${rollDice(100, 1)}点`
   }
 
-  const rollMultipleMatch = /^.r(\d+)d(\d+)$/.exec(instruction)
+  const rollMultipleMatch = /^[。.]r(\d+)d(\d+)$/.exec(instruction)
   if (rollMultipleMatch) {
     const count = parseInt(rollMultipleMatch[1], 10)
     const sides = parseInt(rollMultipleMatch[2], 10)
@@ -76,7 +75,7 @@ function parseDice(tokens: string[]): string {
   const setAttributeMatch = /^.st\s+([\u4e00-\u9fa5a-zA-Z0-9]+)\s+(-?\d+)$/.exec(instruction)
   if (setAttributeMatch) {
     const attribute = setAttributeMatch[1]
-    const keyName = getFieldName(attribute)
+    const keyName = chineseToPropertyMap.get(attribute)
     const value = parseInt(setAttributeMatch[2], 10)
 
     const roomStore = useRoomStore(pinia)
