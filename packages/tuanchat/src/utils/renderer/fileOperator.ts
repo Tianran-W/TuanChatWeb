@@ -10,6 +10,13 @@ interface IFile {
   pathFromBase?: string
 }
 
+interface GameInfo {
+  name: string
+  isDir: boolean
+  extName: string
+  path: string
+}
+
 export async function saveImageFromUrl(
   url: string,
   gamename: string,
@@ -49,11 +56,6 @@ export async function readDir(path: string) {
   } else return []
 }
 
-export async function readTextFile(path: string) {
-  const data = (await axios.get(path)).data
-  return data.toString()
-}
-
 export async function uploadImage(image: Blob | string, filepath: string, filename: string) {
   let blob: Blob
   if (image instanceof Blob) {
@@ -81,4 +83,15 @@ export async function uploadImage(image: Blob | string, filepath: string, filena
       headers: { 'Content-Type': 'multipart/form-data' }
     })
   ).data
+}
+
+export async function readTextFile(game: string, path: string): Promise<string> {
+  const url = `http://localhost:3001/games/${game}/game/${path}`
+  const data = (await axios.get(url)).data
+  return data
+}
+
+export async function checkGameExist(game: string): Promise<boolean> {
+  const gameList: GameInfo[] = (await terreApis.manageGameControllerGetGameList()).data
+  return gameList.some((item) => item.name === game)
 }

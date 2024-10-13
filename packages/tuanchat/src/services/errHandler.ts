@@ -1,13 +1,9 @@
-interface TuanApiResponse {
-  success?: boolean
-  errCode?: number
-  errMsg?: string
-  data?: any
-}
+import type { ApiResultVoid } from './tuanchat/apis'
 
 export const repDataHandler = (res: any) => {
-  const response: TuanApiResponse = res.data
-  if (response.errCode !== undefined) {
+  const response: ApiResultVoid = res.data
+  if (response.errCode !== null && response.errCode !== undefined) {
+    console.error(response)
     return Promise.reject(response)
   }
   if (!response.success) {

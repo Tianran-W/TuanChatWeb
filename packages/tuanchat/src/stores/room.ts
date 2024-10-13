@@ -31,7 +31,10 @@ export const useRoomStore = defineStore('room', () => {
   }
 
   async function initRoom(roomId: number) {
-    renderers.set(roomId, new Renderer(roomId))
+    const renderer = new Renderer(roomId)
+    await renderer.initRender()
+    renderers.set(roomId, renderer)
+
     msgStore.fetchMsg(roomId).then(() => {
       messages.value = msgStore.messagesList.get(roomId)!
     })

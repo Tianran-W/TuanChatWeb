@@ -7,6 +7,7 @@ import { useRoleStore } from './role'
 import { axiosIns } from '@/services'
 import wsIns from '@/utils/websocket/websocket'
 
+// TODO: cookies
 export const useUserStore = defineStore('user', () => {
   const isSign = ref(false)
   const userInfo = ref<UserInfoType>({ userId: 0, username: '', avatar: '', roleIds: [] })
@@ -47,6 +48,7 @@ export const useUserStore = defineStore('user', () => {
     userInfo.value.avatar = data.avatar!
     data.roles?.forEach((role) => {
       roleStore.userRoleList.set(role.roleId!, role)
+      console.log(role)
       tuanApis.getRoleAbility({ roleId: role.roleId! }).then((res) => {
         if (res.data.data === undefined) {
           throw new Error('Role ability not found')
